@@ -14,7 +14,6 @@ from here, or symlink it wherever you want.
     nave test 0.1.92                # run the tests on node version 0.1.92
     nave use 0.1.92                 # enter a subshell where 0.1.92 is being used
     nave use 0.1.92 my-program.js   # run my-program.js with node 0.1.92
-    nave my-program.js              # run my-program.js with the active node
     nave ls                         # show the versions fetched/installed
     nave clean 0.1.92               # delete the source code for 0.1.92
     nave uninstall 0.1.92           # delete the install for 0.1.92
