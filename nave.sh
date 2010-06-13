@@ -85,7 +85,7 @@ fail () {
 nave_fetch () {
   version="$1"
   version="${version/v/}"
-  if nave_has "$version" && ! [ "$version" == "HEAD" ]; then
+  if nave_has "$version"; then
     echo "already fetched $version" >&2
     return 0
   fi
@@ -98,9 +98,9 @@ nave_fetch () {
   else
     url="http://nodejs.org/dist/node-v$version.tar.gz"
   fi
-  curl "$url" \
+  curl -L "$url" \
     | tar xzv -C "$src" --strip 1 \
-    || ( remove_dir "$src"; fail "Couldn't fetch $version" )
+    || fail "Couldn't fetch $version"
   return 0
 }
 
@@ -108,7 +108,7 @@ nave_install () {
   version="$1"
   version="${version/v/}"
 
-  if nave_installed "$version" && ! [ "$version" == "HEAD" ]; then
+  if nave_installed "$version"; then
     echo "Already installed: $version" >&2
     return 0
   fi
@@ -119,8 +119,8 @@ nave_install () {
   remove_dir "$install"
   ensure_dir "$install"
   ( cd -- "$src"
-    ./configure --prefix="$install" || fail "Failed to configure $version"
-    make || fail "Failed to make $version"
+    JOBS=8 ./configure --prefix="$install" || fail "Failed to configure $version"
+    JOBS=8 make || fail "Failed to make $version"
     make install || fail "Failed to install $version"
   ) || fail "fail"
 }
@@ -144,11 +144,13 @@ nave_ls () {
 nave_has () {
   version="$1"
   version="${version/v/}"
+  [ "$version" == "HEAD" ] && return 1
   [ -d "$NAVE_SRC/$version" ] || return 1
 }
 nave_installed () {
   version="$1"
   version="${version/v/}"
+  [ "$version" == "HEAD" ] && return 1
   [ -d "$NAVE_ROOT/$version/bin" ] || return 1
 }  
 
