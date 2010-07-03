@@ -21,7 +21,11 @@
 
 main () {
   # get the absolute path of the executable
-  SELF_PATH=$( cd -P -- "$(dirname -- "$0")" \
+  SELF_PATH="$0"
+  if [ "${SELF_PATH:0:1}" != "." ] && [ "${SELF_PATH:0:1}" != "/" ]; then
+    SELF_PATH=./"$SELF_PATH"
+  fi
+  SELF_PATH=$( cd -P -- "$(dirname -- "$SELF_PATH")" \
             && pwd -P \
             ) && SELF_PATH=$SELF_PATH/$(basename -- "$0")
 
