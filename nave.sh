@@ -47,7 +47,7 @@ main () {
   local cmd="$1"
   shift
   case $cmd in
-    install | fetch | use | install | clean | test | ls )
+    install | fetch | use | install | clean | test | ls | uninstall )
       cmd="nave_$cmd"
       ;;
     * )
