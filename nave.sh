@@ -193,7 +193,20 @@ nave_uninstall () {
 }
 
 nave_help () {
-  echo "HELP! $@"
+  cat <<EOF
+
+Usage: nave <cmd>
+
+Commands:
+
+  install <version>    Install the version passed (ex: 0.1.103)
+  use <version>        Enter a subshell where <version> is being used
+  clean <version>      Delete the source code for <version>
+  uninstall <version>  Delete the install for <version>
+  ls                   Output versions currently installed
+  help                 Output help information
+
+EOF
 }
 
 main "$@"
