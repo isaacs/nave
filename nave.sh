@@ -47,6 +47,9 @@ main () {
   local cmd="$1"
   shift
   case $cmd in
+    ls-remote)
+      nave_versions && exit
+      ;;
     install | fetch | use | install | clean | test | ls | uninstall )
       cmd="nave_$cmd"
       ;;
@@ -84,6 +87,15 @@ remove_dir () {
 fail () {
   echo "$@" >&2
   exit 1
+}
+
+nave_versions() {
+  curl http://github.com/api/v2/yaml/repos/show/ry/node/tags \
+    2> /dev/null \
+    | tail -n +3 \
+    | egrep v \
+    | cut -d ':' -f 1 \
+    | sort -r
 }
 
 nave_fetch () {
@@ -203,7 +215,8 @@ Commands:
   use <version>        Enter a subshell where <version> is being used
   clean <version>      Delete the source code for <version>
   uninstall <version>  Delete the install for <version>
-  ls                   Output versions currently installed
+  ls-remote            List remote node versions
+  ls                   List versions currently installed
   help                 Output help information
 
 EOF
