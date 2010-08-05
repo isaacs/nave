@@ -114,8 +114,8 @@ nave_fetch () {
   else
     url="http://nodejs.org/dist/node-v$version.tar.gz"
   fi
-  curl -L "$url" \
-    | tar xzv -C "$src" --strip 1 \
+  curl -# -L "$url" \
+    | tar xz -C "$src" --strip 1 \
     || fail "Couldn't fetch $version"
   return 0
 }
