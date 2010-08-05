@@ -90,11 +90,11 @@ fail () {
 }
 
 nave_versions() {
-  curl http://github.com/api/v2/yaml/repos/show/ry/node/tags \
-    2> /dev/null \
-    | tail -n +3 \
-    | egrep v \
-    | cut -d ':' -f 1 \
+  curl -s http://nodejs.org/dist/ \
+    | egrep -o '"node-v[^"]*\.tar\.gz' \
+    | cut -d '"' -f 2 \
+    | sed 's/node-v//' \
+    | sed 's/\.tar\.gz//' \
     | sort -r
 }
 
