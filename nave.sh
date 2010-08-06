@@ -50,7 +50,7 @@ main () {
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    install | fetch | use | clean | test | ls | uninstall | usemain )
+    install | fetch | use | clean | test | ls | uninstall | usemain | latest )
       cmd="nave_$cmd"
       ;;
     * )
@@ -91,6 +91,9 @@ fail () {
 nave_fetch () {
   version="$1"
   version="${version/v/}"
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
   if nave_has "$version"; then
     echo "already fetched $version" >&2
     return 0
@@ -110,6 +113,9 @@ nave_usemain () {
   local version="$1"
   local current=$(node -v || true)
   version="${version/v/}"
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
   current="${current/v/}"
   if [ "$current" == "$version" ]; then
     echo "$version already installed"
@@ -127,6 +133,9 @@ nave_usemain () {
 nave_install () {
   local version="$1"
   version="${version/v/}"
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
 
   if nave_installed "$version"; then
     echo "Already installed: $version" >&2
@@ -147,6 +156,9 @@ nave_install () {
 nave_test () {
   version="$1"
   version="${version/v/}"
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
   nave_fetch "$version"
   src="$NAVE_SRC/$version"
   ( cd -- "$src"
@@ -169,6 +181,12 @@ nave_ls_all () {
   nave_ls \
     && nave_ls_remote \
     || return 1
+}
+nave_latest () {
+  curl -s http://nodejs.org/dist/ \
+    | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
+    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
+    | tail -n1
 }
 version_list () {
   echo "$1:"
@@ -198,18 +216,26 @@ organize_version_list () {
 nave_has () {
   version="$1"
   version="${version/v/}"
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
   [ -d "$NAVE_SRC/$version" ] || return 1
 }
 nave_installed () {
   version="$1"
   version="${version/v/}"
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
   [ -d "$NAVE_ROOT/$version/bin" ] || return 1
 }
 
 nave_use () {
   local version="$1"
   version="${version/v/}"
-
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
   nave_install "$version" || fail "failed to install $version"
   bin="$NAVE_ROOT/$version/bin"
   if [ "$version" == "$NAVE" ]; then
@@ -233,11 +259,17 @@ nave_use () {
 nave_clean () {
   version="$1"
   version="${version/v/}"
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
   remove_dir "$NAVE_SRC/$version"
 }
 nave_uninstall () {
   version="$1"
   version="${version/v/}"
+  if [ "$version" == "latest" ]; then
+    version=$(nave_latest)
+  fi
   remove_dir "$NAVE_ROOT/$version"
 }
 
@@ -257,7 +289,10 @@ Commands:
   ls                   List versions currently installed
   ls-remote            List remote node versions
   ls-all               List remote and local node versions
+  latest               Show the most recent dist version
   help                 Output help information
+
+<version> can also be the string "latest" to get the latest distribution.
 
 EOF
 }
