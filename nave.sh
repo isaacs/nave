@@ -106,11 +106,7 @@ nave_fetch () {
   src="$NAVE_SRC/$version"
   remove_dir "$src"
   ensure_dir "$src"
-  if [ "$version" == "HEAD" ]; then
-    url="http://github.com/ry/node/tarball/master"
-  else
-    url="http://nodejs.org/dist/node-v$version.tar.gz"
-  fi
+  url="http://nodejs.org/dist/node-v$version.tar.gz"
   curl -# -L "$url" \
     | tar xz -C "$src" --strip 1 \
     || fail "Couldn't fetch $version"
@@ -157,13 +153,11 @@ nave_ls () {
 nave_has () {
   version="$1"
   version="${version/v/}"
-  [ "$version" == "HEAD" ] && return 1
   [ -d "$NAVE_SRC/$version" ] || return 1
 }
 nave_installed () {
   version="$1"
   version="${version/v/}"
-  [ "$version" == "HEAD" ] && return 1
   [ -d "$NAVE_ROOT/$version/bin" ] || return 1
 }  
 
