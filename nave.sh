@@ -47,8 +47,8 @@ main () {
   local cmd="$1"
   shift
   case $cmd in
-    ls-remote)
-      nave_versions && exit
+    ls-remote | ls-all)
+      cmd="nave_${cmd/-/_}"
       ;;
     install | fetch | use | install | clean | test | ls | uninstall )
       cmd="nave_$cmd"
@@ -57,8 +57,7 @@ main () {
       cmd="nave_help"
       ;;
   esac
-  $cmd "$@"
-  exit 0
+  $cmd "$@" && exit 0 || fail "failed somehow"
 }
 
 function enquote_all () {
@@ -87,12 +86,6 @@ remove_dir () {
 fail () {
   echo "$@" >&2
   exit 1
-}
-
-nave_versions() {
-  curl -s http://nodejs.org/dist/ \
-    | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
-    | sort -u -k 1,1n -k 2,2n -k 3,3n -t .
 }
 
 nave_fetch () {
@@ -145,10 +138,47 @@ nave_test () {
 }
 
 nave_ls () {
-  ( cd -- "$(dirname -- "$SELF_PATH")"
-    ls -- {"$(basename "$NAVE_SRC")","$(basename "$NAVE_ROOT")"}
-  )
+  ls -- "$(basename "$NAVE_SRC")" | version_list "src" \
+    && ls -- "$(basename "$NAVE_ROOT")" | version_list "installed" \
+    || return 1
 }
+nave_ls_remote () {
+  curl -s http://nodejs.org/dist/ \
+    | version_list "remote" \
+    || return 1
+}
+nave_ls_all () {
+  nave_ls \
+    && nave_ls_remote \
+    || return 1
+}
+version_list () {
+  echo "$1:"
+  egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
+    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
+    | organize_version_list \
+    || return 1
+}
+
+organize_version_list () {
+  local i=0
+  local v
+  while read v; do
+    if [ $i -eq 8 ]; then
+      i=0
+      echo "$v"
+    else
+      let 'i = i + 1'
+      echo -ne "$v\t"
+    fi
+  done
+  echo ""
+  [ $i -ne 0 ] && echo ""
+  return 0
+}
+
+
+
 
 nave_has () {
   version="$1"
@@ -206,8 +236,9 @@ Commands:
   use <version>        Enter a subshell where <version> is being used
   clean <version>      Delete the source code for <version>
   uninstall <version>  Delete the install for <version>
-  ls-remote            List remote node versions
   ls                   List versions currently installed
+  ls-remote            List remote node versions
+  ls-all               List remote and local node versions
   help                 Output help information
 
 EOF
