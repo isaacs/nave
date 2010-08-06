@@ -10,13 +10,20 @@ from here, or symlink it wherever you want.
 
 ## Usage
 
-    nave install 0.1.92             # install version 0.1.92 of node
-    nave test 0.1.92                # run the tests on node version 0.1.92
-    nave use 0.1.92                 # enter a subshell where 0.1.92 is being used
-    nave use 0.1.92 my-program.js   # run my-program.js with node 0.1.92
-    nave ls                         # show the versions fetched/installed
-    nave clean 0.1.92               # delete the source code for 0.1.92
-    nave uninstall 0.1.92           # delete the install for 0.1.92
+    Usage: nave <cmd>
+
+    Commands:
+
+      install <version>    Install the version passed (ex: 0.1.103)
+      use <version>        Enter a subshell where <version> is being used
+      use <ver> <program>  Enter a subshell, and run "node <program>", then exit
+      usemain <version>    Install in /usr/local/bin
+      clean <version>      Delete the source code for <version>
+      uninstall <version>  Delete the install for <version>
+      ls                   List versions currently installed
+      ls-remote            List remote node versions
+      ls-all               List remote and local node versions
+      help                 Output help information
 
 That's about it.  Enjoy.
 

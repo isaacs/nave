@@ -250,7 +250,8 @@ Commands:
 
   install <version>    Install the version passed (ex: 0.1.103)
   use <version>        Enter a subshell where <version> is being used
-  usemain <version>    Install in /usr/local/bin
+  use <ver> <program>  Enter a subshell, and run "node <program>", then exit
+  usemain <version>    Install in /usr/local/bin (ie, use as your main nodejs)
   clean <version>      Delete the source code for <version>
   uninstall <version>  Delete the install for <version>
   ls                   List versions currently installed
