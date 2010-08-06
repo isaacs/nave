@@ -2,6 +2,6 @@
 , "author" : "Isaac Z. Schlueter <i@izs.me>"
 , "contributors" : [ "TJ Holowaychuk <tj@vision-media.ca>" ]
 , "description" : "Virtual Environments for Node"
-, "version" : "0.0.4"
+, "version" : "0.0.5"
 , "bin" : { "nave" : "./nave.sh" }
 }
