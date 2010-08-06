@@ -43,7 +43,7 @@ main () {
   export NAVE_ROOT="$(dirname -- "$SELF_PATH")/installed"
   ensure_dir "$NAVE_SRC"
   ensure_dir "$NAVE_ROOT"
-  
+
   local cmd="$1"
   shift
   case $cmd in
@@ -189,7 +189,7 @@ nave_installed () {
   version="$1"
   version="${version/v/}"
   [ -d "$NAVE_ROOT/$version/bin" ] || return 1
-}  
+}
 
 nave_use () {
   version="$1"
