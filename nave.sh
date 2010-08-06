@@ -50,7 +50,7 @@ main () {
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    install | fetch | use | clean | test | ls | uninstall )
+    install | fetch | use | clean | test | ls | uninstall | usemain )
       cmd="nave_$cmd"
       ;;
     * )
@@ -106,8 +106,26 @@ nave_fetch () {
   return 0
 }
 
+nave_usemain () {
+  local version="$1"
+  local current=$(node -v || true)
+  version="${version/v/}"
+  current="${current/v/}"
+  if [ "$current" == "$version" ]; then
+    echo "$version already installed"
+    return 0
+  fi
+  nave_fetch "$version"
+  src="$NAVE_SRC/$version"
+  ( cd -- "$src"
+    JOBS=8 ./configure || fail "Failed to configure $version"
+    JOBS=8 make || fail "Failed to make $version in main env"
+    make install || fail "Failed to install $version in main env"
+  ) || fail "fail"
+}
+
 nave_install () {
-  version="$1"
+  local version="$1"
   version="${version/v/}"
 
   if nave_installed "$version"; then
@@ -177,9 +195,6 @@ organize_version_list () {
   return 0
 }
 
-
-
-
 nave_has () {
   version="$1"
   version="${version/v/}"
@@ -192,9 +207,10 @@ nave_installed () {
 }
 
 nave_use () {
-  version="$1"
+  local version="$1"
   version="${version/v/}"
-  nave_install "$version"
+
+  nave_install "$version" || fail "failed to install $version"
   bin="$NAVE_ROOT/$version/bin"
   if [ "$version" == "$NAVE" ]; then
     echo "already using $NAVE"
@@ -234,6 +250,7 @@ Commands:
 
   install <version>    Install the version passed (ex: 0.1.103)
   use <version>        Enter a subshell where <version> is being used
+  usemain <version>    Install in /usr/local/bin
   clean <version>      Delete the source code for <version>
   uninstall <version>  Delete the install for <version>
   ls                   List versions currently installed
