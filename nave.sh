@@ -91,11 +91,12 @@ fail () {
 
 nave_versions() {
   curl -s http://nodejs.org/dist/ \
-    | egrep -o '"node-v[^"]*\.tar\.gz' \
+    | egrep -o '"node-[^"]*\.tar\.gz' \
     | cut -d '"' -f 2 \
     | sed 's/node-v//' \
+    | sed 's/node-//' \
     | sed 's/\.tar\.gz//' \
-    | sort -r
+    | sort -k 1,1n -k 2,2n -k 3,3n -t .
 }
 
 nave_fetch () {
