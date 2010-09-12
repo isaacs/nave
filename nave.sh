@@ -19,6 +19,8 @@
 # Ensure that the version exists, install it, and
 # then add its prefix to the PATH, and start a subshell.
 
+tar=${TAR-tar}
+
 main () {
   # get the absolute path of the executable
   SELF_PATH="$0"
@@ -105,9 +107,9 @@ nave_fetch () {
   url="http://nodejs.org/dist/node-v$version.tar.gz"
   url2="http://nodejs.org/dist/node-$version.tar.gz"
   curl -# -L "$url" \
-    | tar xzf - -C "$src" --strip-components=1 \
+    | $tar xzf - -C "$src" --strip-components=1 \
     || curl -# -L "$url2" \
-      | tar xzf - -C "$src" --strip-components=1 \
+      | $tar xzf - -C "$src" --strip-components=1 \
       || fail "Couldn't fetch $version"
   return 0
 }
