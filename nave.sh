@@ -103,9 +103,12 @@ nave_fetch () {
   remove_dir "$src"
   ensure_dir "$src"
   url="http://nodejs.org/dist/node-v$version.tar.gz"
+  url2="http://nodejs.org/dist/node-$version.tar.gz"
   curl -# -L "$url" \
-    | tar xz -C "$src" --strip 1 \
-    || fail "Couldn't fetch $version"
+    | tar xzf - -C "$src" --strip-components=1 \
+    || curl -# -L "$url2" \
+      | tar xzf - -C "$src" --strip-components=1 \
+      || fail "Couldn't fetch $version"
   return 0
 }
 
