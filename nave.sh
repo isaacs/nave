@@ -173,8 +173,8 @@ nave_test () {
 }
 
 nave_ls () {
-  ls -- "$(basename "$NAVE_SRC")" | version_list "src" \
-    && ls -- "$(basename "$NAVE_ROOT")" | version_list "installed" \
+  ls -- $NAVE_SRC | version_list "src" \
+    && ls -- $NAVE_ROOT | version_list "installed" \
     || return 1
 }
 nave_ls_remote () {
