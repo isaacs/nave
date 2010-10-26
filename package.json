@@ -1,7 +1,10 @@
 { "name" : "nave"
 , "author" : "Isaac Z. Schlueter <i@izs.me>"
-, "contributors" : [ "TJ Holowaychuk <tj@vision-media.ca>" ]
+, "contributors" :
+  [ "TJ Holowaychuk <tj@vision-media.ca>"
+  , "Kai Chen => 陈恺 <kaichenxyz@gmail.com>"
+  ]
 , "description" : "Virtual Environments for Node"
-, "version" : "0.0.6"
+, "version" : "0.0.7"
 , "bin" : { "nave" : "./nave.sh" }
 }
