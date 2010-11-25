@@ -22,6 +22,7 @@
 tar=${TAR-tar}
 
 main () {
+  local SELF_PATH DIR SYM
   # get the absolute path of the executable
   SELF_PATH="$0"
   if [ "${SELF_PATH:0:1}" != "." ] && [ "${SELF_PATH:0:1}" != "/" ]; then
@@ -52,7 +53,8 @@ main () {
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    install | fetch | use | clean | test | ls | uninstall | usemain | latest )
+    install | fetch | use | clean | test |
+    ls |  uninstall | usemain | latest | stable )
       cmd="nave_$cmd"
       ;;
     * )
@@ -63,6 +65,7 @@ main () {
 }
 
 function enquote_all () {
+  local ARG ARGS
   ARGS=""
   for ARG in "$@"; do
     [ -n "$ARGS" ] && ARGS="$ARGS "
@@ -91,21 +94,17 @@ fail () {
 }
 
 nave_fetch () {
-  version="$1"
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
-  fi
+  local version=$(ver "$1")
   if nave_has "$version"; then
     echo "already fetched $version" >&2
     return 0
   fi
 
-  src="$NAVE_SRC/$version"
+  local src="$NAVE_SRC/$version"
   remove_dir "$src"
   ensure_dir "$src"
-  url="http://nodejs.org/dist/node-v$version.tar.gz"
-  url2="http://nodejs.org/dist/node-$version.tar.gz"
+  local url="http://nodejs.org/dist/node-v$version.tar.gz"
+  local url2="http://nodejs.org/dist/node-$version.tar.gz"
   curl -# -L "$url" \
     | $tar xzf - -C "$src" --strip-components=1 \
     || curl -# -L "$url2" \
@@ -115,11 +114,18 @@ nave_fetch () {
 }
 
 nave_usemain () {
-  local version="$1"
+  if [ ${NAVELVL-0} -gt 0 ]; then
+    fail "Can't usemain inside a nave subshell. Exit to main shell."
+  fi
+  local version=$(ver "$1")
   local current=$(node -v || true)
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
+  local wn=$(which node || true)
+  local prefix="/usr/local"
+  if [ "x$wn" != "x" ]; then
+    prefix="${wn/\/bin\/node/}"
+    if [ "x$prefix" == "x" ]; then
+      prefix="/usr/local"
+    fi
   fi
   current="${current/v/}"
   if [ "$current" == "$version" ]; then
@@ -129,27 +135,22 @@ nave_usemain () {
   nave_fetch "$version"
   src="$NAVE_SRC/$version"
   ( cd -- "$src"
-    JOBS=8 ./configure || fail "Failed to configure $version"
+    JOBS=8 ./configure --prefix $prefix || fail "Failed to configure $version"
     JOBS=8 make || fail "Failed to make $version in main env"
     make install || fail "Failed to install $version in main env"
   ) || fail "fail"
 }
 
 nave_install () {
-  local version="$1"
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
-  fi
-
+  local version=$(ver "$1")
   if nave_installed "$version"; then
     echo "Already installed: $version" >&2
     return 0
   fi
   nave_fetch "$version"
 
-  src="$NAVE_SRC/$version"
-  install="$NAVE_ROOT/$version"
+  local src="$NAVE_SRC/$version"
+  local install="$NAVE_ROOT/$version"
   remove_dir "$install"
   ensure_dir "$install"
   ( cd -- "$src"
@@ -159,13 +160,9 @@ nave_install () {
   ) || fail "fail"
 }
 nave_test () {
-  version="$1"
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
-  fi
+  local version=$(ver "$1")
   nave_fetch "$version"
-  src="$NAVE_SRC/$version"
+  local src="$NAVE_SRC/$version"
   ( cd -- "$src"
     ./configure --debug || fail "failed to ./configure --debug"
     make test-all || fail "Failed tests"
@@ -187,12 +184,27 @@ nave_ls_all () {
     && nave_ls_remote \
     || return 1
 }
+ver () {
+  local version="$1"
+  version="${version/v/}"
+  case $version in
+    latest | stable) nave_$version ;;
+    *) echo $version ;;
+  esac
+}
 nave_latest () {
   curl -s http://nodejs.org/dist/ \
     | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
 }
+nave_stable () {
+  curl -s http://nodejs.org/dist/ \
+    | egrep -o '[0-9]+\.[2468]\.[0-9]+' \
+    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
+    | tail -n1
+}
+
 version_list () {
   echo "$1:"
   egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
@@ -219,30 +231,18 @@ organize_version_list () {
 }
 
 nave_has () {
-  version="$1"
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
-  fi
+  local version=$(ver "$1")
   [ -d "$NAVE_SRC/$version" ] || return 1
 }
 nave_installed () {
-  version="$1"
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
-  fi
+  local version=$(ver "$1")
   [ -d "$NAVE_ROOT/$version/bin" ] || return 1
 }
 
 nave_use () {
-  local version="$1"
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
-  fi
+  local version=$(ver "$1")
   nave_install "$version" || fail "failed to install $version"
-  bin="$NAVE_ROOT/$version/bin"
+  local bin="$NAVE_ROOT/$version/bin"
   if [ "$version" == "$NAVE" ]; then
     echo "already using $NAVE"
     if [ $# -gt 1 ]; then
@@ -251,31 +251,22 @@ nave_use () {
     fi
     return
   fi
-  lvl=$[ ${NAVELVL-0} + 1 ]
+  local lvl=$[ ${NAVELVL-0} + 1 ]
   echo "using $version"
   if [ $# -gt 1 ]; then
     shift
-    PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" "$SHELL" -c "$(enquote_all node "$@")"
+    PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" "$SHELL" \
+      -c "$(enquote_all node "$@")"
   else
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" "$SHELL"
   fi
 }
 
 nave_clean () {
-  version="$1"
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
-  fi
-  remove_dir "$NAVE_SRC/$version"
+  remove_dir "$NAVE_SRC/$(ver "$1")"
 }
 nave_uninstall () {
-  version="$1"
-  version="${version/v/}"
-  if [ "$version" == "latest" ]; then
-    version=$(nave_latest)
-  fi
-  remove_dir "$NAVE_ROOT/$version"
+  remove_dir "$NAVE_ROOT/$(ver "$1")"
 }
 
 nave_help () {
@@ -297,7 +288,8 @@ Commands:
   latest               Show the most recent dist version
   help                 Output help information
 
-<version> can also be the string "latest" to get the latest distribution.
+<version> can be the string "latest" to get the latest distribution.
+<version> can be the string "stable" to get the latest stable version.
 
 EOF
 }
