@@ -53,7 +53,7 @@ main () {
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    install | fetch | use | clean | test |
+    install | fetch | use | clean | test | \
     ls |  uninstall | usemain | latest | stable )
       cmd="nave_$cmd"
       ;;
