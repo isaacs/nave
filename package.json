@@ -5,6 +5,6 @@
   , "Kai Chen => 陈恺 <kaichenxyz@gmail.com>"
   ]
 , "description" : "Virtual Environments for Node"
-, "version" : "0.0.7"
+, "version" : "0.1.0"
 , "bin" : { "nave" : "./nave.sh" }
 }
