@@ -53,7 +53,10 @@ main () {
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    install | fetch | use | clean | test | \
+#    use)
+#      cmd="nave_named"
+#      ;;
+    install | fetch | use | clean | test | named | \
     ls |  uninstall | usemain | latest | stable )
       cmd="nave_$cmd"
       ;;
@@ -251,25 +254,97 @@ nave_use () {
       shift
       node "$@"
     fi
-    return
+    return $?
   fi
   local lvl=$[ ${NAVELVL-0} + 1 ]
   echo "using $version"
   if [ $# -gt 1 ]; then
     shift
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
+      NAVEVERSION="$version" \
       npm_config_binroot="$PATH" npm_config_root="$lib" \
-      npm_config_manroot="$man" MANPATH="$man" \
+      npm_config_manroot="$man" \
       NODE_PATH="$lib" \
       "$SHELL" -c "$(enquote_all node "$@")"
   else
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
+      NAVEVERSION="$version" \
       npm_config_binroot="$PATH" npm_config_root="$lib" \
-      npm_config_manroot="$man" MANPATH="$man" \
+      npm_config_manroot="$man" \
       NODE_PATH="$lib" \
       "$SHELL"
   fi
+  return $?
 }
+
+nave_named () {
+  local name="$1"
+  shift
+  if [ "$name" == "$NAVE" ]; then
+    echo "already using $name"
+    if [ $# -gt 0 ]; then
+      node "$@"
+    fi
+    return $?
+  fi
+  if ! [ -d "$NAVE_ROOT/$name" ]; then
+    add_named_env "$name" || fail "failed to create $name env"
+  fi
+  local bin="$NAVE_ROOT/$name/bin"
+  local npmbin="$NAVE_ROOT/$name/npm-bin"
+  local lib="$NAVE_ROOT/$name/lib/node"
+  local man="$NAVE_ROOT/$name/share/man"
+  ensure_dir bin
+  ensure_dir npmbin
+  ensure_dir lib
+  ensure_dir man
+  local version
+  if [ -L "$bin" ]; then
+    version="$(ls -laF -- "$bin" | egrep -o '[^/]+/bin$' | cut -d / -f 1)"
+  else
+    version="$name"
+  fi
+  local lvl=$[ ${NAVELVL-0} + 1 ]
+  # get the version
+  if [ $# -gt 0 ]; then
+    PATH="$bin:$npmbin:$PATH" \
+      NAVELVL=$lvl \
+      NAVE="$name" \
+      NAVEVERSION="$version" \
+      NAVENAME="$name" \
+      npm_config_binroot="$npmbin" \
+      npm_config_root="$lib" \
+      npm_config_manroot="$man" \
+      NODE_PATH="$lib" \
+      "$SHELL" -c "$(enquote_all node "$@")"
+  else
+    echo "setting path to $bin:$npmbin:$PATH"
+    PATH="$bin:$npmbin:$PATH" \
+      NAVELVL=$lvl \
+      NAVE="$name" \
+      NAVEVERSION="$version" \
+      NAVENAME="$name" \
+      npm_config_binroot="$npmbin" \
+      npm_config_root="$lib" \
+      npm_config_manroot="$man" \
+      NODE_PATH="$lib" \
+      "$SHELL"
+  fi
+  return $?
+}
+
+add_named_env () {
+  local name="$1"
+  echo "Creating new env named '$name'"
+  echo "What version of node?"
+  local version
+  read -p "x.y.z > " version
+  nave_install "$version" || fail "failed to install $version"
+  ensure_dir -p -- "$NAVE_ROOT/$name/lib/node"
+  ensure_dir -p -- "$NAVE_ROOT/$name/share/man"
+  ln -s -- "$NAVE_ROOT/$version/bin" "$NAVE_ROOT/$name/bin"
+}
+
 
 nave_clean () {
   remove_dir "$NAVE_SRC/$(ver "$1")"
