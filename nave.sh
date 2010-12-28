@@ -244,6 +244,9 @@ nave_installed () {
 
 nave_use () {
   local version=$(ver "$1")
+  if [ -z "$version" ]; then
+    fail "Must supply a version"
+  fi
   nave_install "$version" || fail "failed to install $version"
   local bin="$NAVE_ROOT/$version/bin"
   local lib="$NAVE_ROOT/$version/lib/node"
@@ -262,14 +265,14 @@ nave_use () {
     shift
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
       NAVEVERSION="$version" \
-      npm_config_binroot="$PATH" npm_config_root="$lib" \
+      npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
       "$SHELL" -c "$(enquote_all node "$@")"
   else
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
       NAVEVERSION="$version" \
-      npm_config_binroot="$PATH" npm_config_root="$lib" \
+      npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
       "$SHELL"
