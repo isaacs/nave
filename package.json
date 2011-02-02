@@ -6,6 +6,6 @@
   , "Marco Rogers (http://marcorogers.com/)"
   ]
 , "description" : "Virtual Environments for Node"
-, "version" : "0.1.3"
+, "version" : "0.1.4"
 , "bin" : { "nave" : "./nave.sh" }
 }
