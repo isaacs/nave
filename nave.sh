@@ -11,13 +11,17 @@
 # a subshell with that version's folder at the start of the
 # $PATH
 
-# nave --version <version> program.js
+# nave use <version> program.js
 # Like "nave use", but have the subshell start the program.js
 # immediately.
 
 # When told to use a version:
 # Ensure that the version exists, install it, and
 # then add its prefix to the PATH, and start a subshell.
+
+if [ "$NAVE_DEBUG" != "" ]; then
+  set -x
+fi
 
 tar=${TAR-tar}
 
@@ -42,8 +46,20 @@ main () {
               )/$(basename -- "$SYM")
   done
 
-  export NAVE_SRC="$(dirname -- "$SELF_PATH")/src"
-  export NAVE_ROOT="$(dirname -- "$SELF_PATH")/installed"
+  if ! [ -d "$NAVE_DIR" ]; then
+    if [ -d "$HOME" ]; then
+      NAVE_DIR="$HOME"/.nave
+    else
+      NAVE_DIR=/usr/local/nave
+    fi
+  fi
+  if ! [ -d "$NAVE_DIR" ] && ! mkdir -p -- "$NAVE_DIR"; then
+    NAVE_DIR="$(dirname -- "$SELF_PATH")"
+  fi
+
+  export NAVE_DIR
+  export NAVE_SRC="$NAVE_DIR/src"
+  export NAVE_ROOT="$NAVE_DIR/installed"
   ensure_dir "$NAVE_SRC"
   ensure_dir "$NAVE_ROOT"
 
