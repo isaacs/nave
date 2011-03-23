@@ -17,13 +17,17 @@ from here, or symlink it wherever you want.
       install <version>    Install the version passed (ex: 0.1.103)
       use <version>        Enter a subshell where <version> is being used
       use <ver> <program>  Enter a subshell, and run "node <program>", then exit
-      usemain <version>    Install in /usr/local/bin
+      usemain <version>    Install in /usr/local/bin (ie, use as your main nodejs)
       clean <version>      Delete the source code for <version>
       uninstall <version>  Delete the install for <version>
       ls                   List versions currently installed
       ls-remote            List remote node versions
       ls-all               List remote and local node versions
+      latest               Show the most recent dist version
       help                 Output help information
+
+    <version> can be the string "latest" to get the latest distribution.
+    <version> can be the string "stable" to get the latest stable version.
 
 That's about it.  Enjoy.
 
