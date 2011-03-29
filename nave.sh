@@ -154,8 +154,8 @@ nave_usemain () {
   nave_fetch "$version"
   src="$NAVE_SRC/$version"
   ( cd -- "$src"
-    JOBS=8 ./configure --debug --prefix $prefix || fail "Failed to configure $version"
-    JOBS=8 make || fail "Failed to make $version in main env"
+    JOBS=${JOBS:-8} ./configure --debug --prefix $prefix || fail "Failed to configure $version"
+    JOBS=${JOBS:-8} make || fail "Failed to make $version in main env"
     make install || fail "Failed to install $version in main env"
   ) || fail "fail"
 }
@@ -173,8 +173,8 @@ nave_install () {
   remove_dir "$install"
   ensure_dir "$install"
   ( cd -- "$src"
-    JOBS=8 ./configure --debug --prefix="$install" || fail "Failed to configure $version"
-    JOBS=8 make || fail "Failed to make $version"
+    JOBS=${JOBS:-8} ./configure --debug --prefix="$install" || fail "Failed to configure $version"
+    JOBS=${JOBS:-8} make || fail "Failed to make $version"
     make install || fail "Failed to install $version"
   ) || fail "fail"
 }
