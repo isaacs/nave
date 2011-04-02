@@ -73,11 +73,11 @@ main () {
 #      cmd="nave_named"
 #      ;;
     install | fetch | use | clean | test | named | \
-    ls |  uninstall | usemain | latest | stable )
+    ls |  uninstall | usemain | latest | stable | help )
       cmd="nave_$cmd"
       ;;
     * )
-      cmd="nave_help"
+      fail "nave: '$cmd' is not a nave command. See 'nave help'."
       ;;
   esac
   $cmd "$@" && exit 0 || fail "failed somehow"
