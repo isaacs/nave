@@ -9,4 +9,5 @@
 , "version" : "0.1.5"
 , "preferGlobal" : true
 , "bin" : { "nave" : "./nave.sh" }
+, "preferGlobal" : true
 }
