@@ -8,4 +8,5 @@
 , "description" : "Virtual Environments for Node"
 , "version" : "0.1.4"
 , "bin" : { "nave" : "./nave.sh" }
+, "preferGlobal" : true
 }
