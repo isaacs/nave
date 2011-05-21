@@ -153,9 +153,12 @@ nave_usemain () {
   fi
   nave_fetch "$version"
   src="$NAVE_SRC/$version"
+
   ( cd -- "$src"
-    JOBS=8 ./configure --debug --prefix $prefix || fail "Failed to configure $version"
-    JOBS=8 make || fail "Failed to make $version in main env"
+    JOBS=${JOBS:-8} ./configure --debug --prefix $prefix \
+      || fail "Failed to configure $version"
+    JOBS=${JOBS:-8} make \
+      || fail "Failed to make $version in main env"
     make install || fail "Failed to install $version in main env"
   ) || fail "fail"
 }
@@ -173,8 +176,10 @@ nave_install () {
   remove_dir "$install"
   ensure_dir "$install"
   ( cd -- "$src"
-    JOBS=8 ./configure --debug --prefix="$install" || fail "Failed to configure $version"
-    JOBS=8 make || fail "Failed to make $version"
+    JOBS=${JOBS:-8} ./configure --debug --prefix="$install" \
+      || fail "Failed to configure $version"
+    JOBS=${JOBS:-8} make \
+      || fail "Failed to make $version"
     make install || fail "Failed to install $version"
   ) || fail "fail"
 }
@@ -279,19 +284,23 @@ nave_use () {
   echo "using $version"
   if [ $# -gt 1 ]; then
     shift
+    hash -r
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
       NAVEVERSION="$version" \
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
       "$SHELL" -c "$(enquote_all node "$@")"
+    hash -r
   else
+    hash -r
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
       NAVEVERSION="$version" \
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
       "$SHELL"
+    hash -r
   fi
   return $?
 }
