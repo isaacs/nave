@@ -50,7 +50,7 @@ main () {
     if [ -d "$HOME" ]; then
       NAVE_DIR="$HOME"/.nave
     else
-      NAVE_DIR=/usr/local/nave
+      NAVE_DIR=/usr/local/lib/nave
     fi
   fi
   if ! [ -d "$NAVE_DIR" ] && ! mkdir -p -- "$NAVE_DIR"; then
