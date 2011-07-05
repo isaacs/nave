@@ -46,8 +46,11 @@ main () {
               )/$(basename -- "$SYM")
   done
 
+
   if ! [ -d "$NAVE_DIR" ]; then
-    if [ -d "$HOME" ]; then
+    if [ $SELF_PATH = "/usr/local/bin/nave" ]; then
+      NAVE_DIR=/usr/local/lib/nave
+    elif [ -d "$HOME" ]; then
       NAVE_DIR="$HOME"/.nave
     else
       NAVE_DIR=/usr/local/lib/nave

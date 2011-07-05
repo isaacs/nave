@@ -40,6 +40,14 @@ nested situation.  Not really sure what this would be useful for, though.)
 When you're done using a specific version of node, just exit the shell to return
 to where you were before using nave.
 
+## Install for All Users
+To be able to share the compiled versions of node.js between all users.
+As an advanced option, if `nave.sh` is saved as `/usr/local/bin/nave` Then `NAVE_DIR = /usr/local/lib/nave/`
+But then it requires root access to be able to compile node.js.
+
+    curl https://raw.github.com/isaacs/nave/master/nave.sh > /usr/local/bin/nave
+    chmod 755 /usr/local/bin/nave
+
 ## Credits
 
 nave borrows concepts, inspiration, and code from Tim Caswell's "nvm" and Kris
