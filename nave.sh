@@ -124,10 +124,14 @@ nave_fetch () {
   ensure_dir "$src"
   local url="http://nodejs.org/dist/node-v$version.tar.gz"
   local url2="http://nodejs.org/dist/node-$version.tar.gz"
+  local url3="http://nodejs.org/dist/v$version/node-v$version.tar.gz"
+  echo "$url3"
   curl -# -L "$url" \
     | $tar xzf - -C "$src" --strip-components=1 \
     || curl -# -L "$url2" \
       | $tar xzf - -C "$src" --strip-components=1 \
+      || curl -# -L "$url3" \
+        | $tar xzf - -C "$src" --strip-components=1 \
       || fail "Couldn't fetch $version"
   return 0
 }
