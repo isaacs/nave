@@ -73,7 +73,7 @@ main () {
 #      cmd="nave_named"
 #      ;;
     install | fetch | use | clean | test | named | \
-    ls |  uninstall | usemain | latest | stable )
+    ls |  uninstall | usemain | latest | stable | has | installed )
       cmd="nave_$cmd"
       ;;
     * )
