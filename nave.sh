@@ -162,9 +162,9 @@ nave_usemain () {
   src="$NAVE_SRC/$version"
 
   ( cd -- "$src"
-    JOBS=${JOBS:-8} ./configure --debug --prefix $prefix \
+    JOBS=${JOBS:-2} ./configure --debug --prefix $prefix \
       || fail "Failed to configure $version"
-    JOBS=${JOBS:-8} make \
+    JOBS=${JOBS:-2} make \
       || fail "Failed to make $version in main env"
     make install || fail "Failed to install $version in main env"
   ) || fail "fail"
