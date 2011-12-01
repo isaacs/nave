@@ -23,6 +23,9 @@ if [ "$NAVE_DEBUG" != "" ]; then
   set -x
 fi
 
+# Use fancy pants globs
+shopt -s extglob
+
 tar=${TAR-tar}
 
 main () {
@@ -224,7 +227,7 @@ ver () {
   version="${version/v/}"
   case $version in
     latest | stable) nave_$version ;;
-    ?.?) nave_version_family "$version" ;;
+    +([0-9])\.+([0-9])) nave_version_family "$version" ;;
     *) echo $version ;;
   esac
 }
