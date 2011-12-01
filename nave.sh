@@ -330,7 +330,7 @@ nave_use () {
     echo "already using $version"
     if [ $# -gt 1 ]; then
       shift
-      node "$@"
+      "$@"
     fi
     return $?
   fi
@@ -380,7 +380,7 @@ nave_named () {
   if [ "$name" == "$NAVENAME" ] && [ "$version" == "$NAVEVERSION" ]; then
     echo "already using $name"
     if [ $# -gt 0 ]; then
-      node "$@"
+      "$@"
     fi
     return $?
   fi
@@ -405,7 +405,7 @@ nave_named () {
       NAVEVERSION="$version" \
       NAVENAME="$name" \
       NODE_PATH="$lib" \
-      "$SHELL" -c "$(enquote_all node "$@")"
+      "$SHELL" -c "$(enquote_all "$@")"
   else
     PATH="$bin:$PATH" \
       NAVELVL=$lvl \
@@ -469,7 +469,7 @@ Commands:
 
 install <version>    Install the version passed (ex: 0.1.103)
 use <version>        Enter a subshell where <version> is being used
-use <ver> <program>  Enter a subshell, and run "node <program>", then exit
+use <ver> <program>  Enter a subshell, and run "<program>", then exit
 use <name> <ver>     Create a named env, using the specified version.
                      If the name already exists, but the version differs,
                      then it will update the link.
