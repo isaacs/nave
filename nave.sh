@@ -101,6 +101,7 @@ ensure_dir () {
     mkdir -p -- "$1" || fail "couldn't create $1"
   fi
 }
+
 remove_dir () {
   if [ -d "$1" ]; then
     rm -rf -- "$1" || fail "Could not remove $1"
@@ -189,6 +190,7 @@ nave_install () {
     make install || fail "Failed to install $version"
   ) || fail "fail"
 }
+
 nave_test () {
   local version=$(ver "$1")
   nave_fetch "$version"
@@ -204,16 +206,19 @@ nave_ls () {
     && ls -- $NAVE_ROOT | version_list "installed" \
     || return 1
 }
+
 nave_ls_remote () {
   curl -s http://nodejs.org/dist/ \
     | version_list "remote" \
     || return 1
 }
+
 nave_ls_all () {
   nave_ls \
     && nave_ls_remote \
     || return 1
 }
+
 ver () {
   local version="$1"
   version="${version/v/}"
@@ -228,6 +233,7 @@ nave_latest () {
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
 }
+
 nave_stable () {
   curl -s http://nodejs.org/dist/ \
     | egrep -o '[0-9]+\.[2468]\.[0-9]+' \
@@ -264,6 +270,7 @@ nave_has () {
   local version=$(ver "$1")
   [ -d "$NAVE_SRC/$version" ] || return 1
 }
+
 nave_installed () {
   local version=$(ver "$1")
   [ -d "$NAVE_ROOT/$version/bin" ] || return 1
