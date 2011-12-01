@@ -65,9 +65,11 @@ to something like this instead:
 ## Compatibility
 
 Prior to version 0.2, nave would run programs as `node <program>`.
-However, this is somewhat more limiting, so was dropped.
+However, this is somewhat more limiting, so was dropped.  If you prefer the
+old style, just prefix your command with `node`.
 
-If you prefer the old style, just prefix your command with `node`.
+Nave requires bash.  It will probably never work on Windows, or other systems
+lack a native Bourne Again Shell.  Sorry.
 
 ## Credits
 
