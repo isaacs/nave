@@ -224,9 +224,20 @@ ver () {
   version="${version/v/}"
   case $version in
     latest | stable) nave_$version ;;
+    ?.?) nave_version_family "$version" ;;
     *) echo $version ;;
   esac
 }
+
+nave_version_family () {
+  local family="$1"
+  family="${family/v/}"
+  curl -s http://nodejs.org/dist/ \
+    | egrep -o $family'\.[0-9]+' \
+    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
+    | tail -n1
+}
+
 nave_latest () {
   curl -s http://nodejs.org/dist/ \
     | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
