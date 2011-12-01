@@ -207,6 +207,7 @@ nave_test () {
 nave_ls () {
   ls -- $NAVE_SRC | version_list "src" \
     && ls -- $NAVE_ROOT | version_list "installed" \
+    && nave_ls_named \
     || return 1
 }
 
@@ -214,6 +215,16 @@ nave_ls_remote () {
   curl -s http://nodejs.org/dist/ \
     | version_list "remote" \
     || return 1
+}
+
+nave_ls_named () {
+  echo "named:"
+  ls -- "$NAVE_ROOT" \
+    | egrep -v '[0-9]+\.[0-9]+\.[0-9]+' \
+    | sort \
+    | while read name; do
+      echo "$name: $(ver $($NAVE_ROOT/$name/bin/node -v 2>/dev/null))"
+    done
 }
 
 nave_ls_all () {
@@ -224,11 +235,13 @@ nave_ls_all () {
 
 ver () {
   local version="$1"
+  local nonames="$2"
   version="${version/v/}"
   case $version in
     latest | stable) nave_$version ;;
     +([0-9])\.+([0-9])) nave_version_family "$version" ;;
-    *) echo $version ;;
+    +([0-9])\.+([0-9])\.+([0-9])) echo $version ;;
+    *) [ "$nonames" = "" ] && echo $version ;;
   esac
 }
 
@@ -253,6 +266,13 @@ nave_stable () {
     | egrep -o '[0-9]+\.[2468]\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
+}
+
+version_list_named () {
+  egrep -v '[0-9]+\.[0-9]+\.[0-9]+' \
+    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
+    | organize_version_list \
+    || return 1
 }
 
 version_list () {
@@ -292,21 +312,33 @@ nave_installed () {
 
 nave_use () {
   local version=$(ver "$1")
+
+  # if it's not a version number, then treat as a name.
+  case "$version" in
+    +([0-9])\.+([0-9])\.+([0-9])) ;;
+    *)
+      nave_named "$@"
+      return $?
+      ;;
+  esac
+
   if [ -z "$version" ]; then
     fail "Must supply a version"
   fi
-  nave_install "$version" || fail "failed to install $version"
-  local bin="$NAVE_ROOT/$version/bin"
-  local lib="$NAVE_ROOT/$version/lib/node"
-  local man="$NAVE_ROOT/$version/share/man"
-  if [ "$version" == "$NAVE" ]; then
-    echo "already using $NAVE"
+
+  if [ "$version" == "$NAVENAME" ]; then
+    echo "already using $version"
     if [ $# -gt 1 ]; then
       shift
       node "$@"
     fi
     return $?
   fi
+
+  nave_install "$version" || fail "failed to install $version"
+  local bin="$NAVE_ROOT/$version/bin"
+  local lib="$NAVE_ROOT/$version/lib/node"
+  local man="$NAVE_ROOT/$version/share/man"
   local lvl=$[ ${NAVELVL-0} + 1 ]
   echo "using $version"
   if [ $# -gt 1 ]; then
@@ -314,6 +346,7 @@ nave_use () {
     hash -r
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
       NAVEVERSION="$version" \
+      NAVENAME="$version" \
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
@@ -323,6 +356,7 @@ nave_use () {
     hash -r
     PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
       NAVEVERSION="$version" \
+      NAVENAME="$version" \
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
@@ -335,53 +369,49 @@ nave_use () {
 nave_named () {
   local name="$1"
   shift
-  if [ "$name" == "$NAVE" ]; then
+
+  local version=$(ver "$1" NONAMES)
+  if [ "$version" != "" ]; then
+    shift
+  fi
+
+  add_named_env "$name" "$version" || fail "failed to create $name env"
+
+  if [ "$name" == "$NAVENAME" ] && [ "$version" == "$NAVEVERSION" ]; then
     echo "already using $name"
     if [ $# -gt 0 ]; then
       node "$@"
     fi
     return $?
   fi
-  if ! [ -d "$NAVE_ROOT/$name" ]; then
-    add_named_env "$name" || fail "failed to create $name env"
+
+  if [ "$version" = "" ]; then
+    version="$(ver "$("$NAVE_ROOT/$name/bin/node" -v 2>/dev/null)")"
   fi
+
   local bin="$NAVE_ROOT/$name/bin"
-  local npmbin="$NAVE_ROOT/$name/npm-bin"
   local lib="$NAVE_ROOT/$name/lib/node"
   local man="$NAVE_ROOT/$name/share/man"
   ensure_dir bin
-  ensure_dir npmbin
   ensure_dir lib
   ensure_dir man
-  local version
-  if [ -L "$bin" ]; then
-    version="$(ls -laF -- "$bin" | egrep -o '[^/]+/bin$' | cut -d / -f 1)"
-  else
-    version="$name"
-  fi
+
   local lvl=$[ ${NAVELVL-0} + 1 ]
   # get the version
   if [ $# -gt 0 ]; then
-    PATH="$bin:$npmbin:$PATH" \
+    PATH="$bin:$PATH" \
       NAVELVL=$lvl \
-      NAVE="$name" \
+      NAVE="$version-$name" \
       NAVEVERSION="$version" \
       NAVENAME="$name" \
-      npm_config_binroot="$npmbin" \
-      npm_config_root="$lib" \
-      npm_config_manroot="$man" \
       NODE_PATH="$lib" \
       "$SHELL" -c "$(enquote_all node "$@")"
   else
-    echo "setting path to $bin:$npmbin:$PATH"
-    PATH="$bin:$npmbin:$PATH" \
+    PATH="$bin:$PATH" \
       NAVELVL=$lvl \
-      NAVE="$name" \
+      NAVE="$version-$name" \
       NAVEVERSION="$version" \
       NAVENAME="$name" \
-      npm_config_binroot="$npmbin" \
-      npm_config_root="$lib" \
-      npm_config_manroot="$man" \
       NODE_PATH="$lib" \
       "$SHELL"
   fi
@@ -390,20 +420,42 @@ nave_named () {
 
 add_named_env () {
   local name="$1"
-  echo "Creating new env named '$name'"
-  echo "What version of node?"
-  local version
-  read -p "x.y.z > " version
-  nave_install "$version" || fail "failed to install $version"
-  ensure_dir -p -- "$NAVE_ROOT/$name/lib/node"
-  ensure_dir -p -- "$NAVE_ROOT/$name/share/man"
-  ln -s -- "$NAVE_ROOT/$version/bin" "$NAVE_ROOT/$name/bin"
-}
+  local version="$2"
+  local cur="$(ver "$($NAVE_ROOT/$name/bin/node -v 2>/dev/null)" "NONAMES")"
 
+  if [ "$version" != "" ]; then
+    version="$(ver "$version" "NONAMES")"
+  else
+    version="$cur"
+  fi
+
+  if [ "$version" = "" ]; then
+    echo "What version of node?"
+    read -p "stable, latest, x.y, or x.y.z > " version
+    version=$(ver "$version")
+  fi
+
+  # if that version is already there, then nothing to do.
+  if [ "$cur" = "$version" ]; then
+    return 0
+  fi
+
+  echo "Creating new env named '$name' using node $version"
+
+  nave_install "$version" || fail "failed to install $version"
+  ensure_dir "$NAVE_ROOT/$name/bin"
+  ensure_dir "$NAVE_ROOT/$name/lib/node"
+  ensure_dir "$NAVE_ROOT/$name/lib/node_modules"
+  ensure_dir "$NAVE_ROOT/$name/share/man"
+
+  ln -sf -- "$NAVE_ROOT/$version/bin/node" "$NAVE_ROOT/$name/bin/node"
+  ln -sf -- "$NAVE_ROOT/$version/bin/node-waf" "$NAVE_ROOT/$name/bin/node-waf"
+}
 
 nave_clean () {
   remove_dir "$NAVE_SRC/$(ver "$1")"
 }
+
 nave_uninstall () {
   remove_dir "$NAVE_ROOT/$(ver "$1")"
 }
@@ -415,17 +467,20 @@ Usage: nave <cmd>
 
 Commands:
 
-  install <version>    Install the version passed (ex: 0.1.103)
-  use <version>        Enter a subshell where <version> is being used
-  use <ver> <program>  Enter a subshell, and run "node <program>", then exit
-  usemain <version>    Install in /usr/local/bin (ie, use as your main nodejs)
-  clean <version>      Delete the source code for <version>
-  uninstall <version>  Delete the install for <version>
-  ls                   List versions currently installed
-  ls-remote            List remote node versions
-  ls-all               List remote and local node versions
-  latest               Show the most recent dist version
-  help                 Output help information
+install <version>    Install the version passed (ex: 0.1.103)
+use <version>        Enter a subshell where <version> is being used
+use <ver> <program>  Enter a subshell, and run "node <program>", then exit
+use <name> <ver>     Create a named env, using the specified version.
+                     If the name already exists, but the version differs,
+                     then it will update the link.
+usemain <version>    Install in /usr/local/bin (ie, use as your main nodejs)
+clean <version>      Delete the source code for <version>
+uninstall <version>  Delete the install for <version>
+ls                   List versions currently installed
+ls-remote            List remote node versions
+ls-all               List remote and local node versions
+latest               Show the most recent dist version
+help                 Output help information
 
 <version> can be the string "latest" to get the latest distribution.
 <version> can be the string "stable" to get the latest stable version.
