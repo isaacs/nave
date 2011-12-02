@@ -188,9 +188,9 @@ nave_install () {
   remove_dir "$install"
   ensure_dir "$install"
   ( cd -- "$src"
-    JOBS=${JOBS:-8} ./configure --debug --prefix="$install" \
+    JOBS=${JOBS:-2} ./configure --debug --prefix="$install" \
       || fail "Failed to configure $version"
-    JOBS=${JOBS:-8} make \
+    JOBS=${JOBS:-2} make \
       || fail "Failed to make $version"
     make install || fail "Failed to install $version"
   ) || fail "fail"
