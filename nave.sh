@@ -144,6 +144,20 @@ nave_fetch () {
   fail "Couldn't fetch $version"
 }
 
+build () {
+  local version="$1"
+  nave_fetch "$version"
+  local src="$NAVE_SRC/$version"
+
+  ( cd -- "$src"
+    JOBS=${JOBS:-2} ./configure --debug --prefix="$2" \
+      || fail "Failed to configure $version"
+    JOBS=${JOBS:-2} make \
+      || fail "Failed to make $version"
+    make install || fail "Failed to install $version"
+  ) || fail "fail"
+}
+
 nave_usemain () {
   if [ ${NAVELVL-0} -gt 0 ]; then
     fail "Can't usemain inside a nave subshell. Exit to main shell."
@@ -163,16 +177,8 @@ nave_usemain () {
     echo "$version already installed"
     return 0
   fi
-  nave_fetch "$version"
-  src="$NAVE_SRC/$version"
 
-  ( cd -- "$src"
-    JOBS=${JOBS:-2} ./configure --debug --prefix $prefix \
-      || fail "Failed to configure $version"
-    JOBS=${JOBS:-2} make \
-      || fail "Failed to make $version in main env"
-    make install || fail "Failed to install $version in main env"
-  ) || fail "fail"
+  build "$version in main env" "$prefix"
 }
 
 nave_install () {
@@ -181,19 +187,11 @@ nave_install () {
     echo "Already installed: $version" >&2
     return 0
   fi
-  nave_fetch "$version"
-
-  local src="$NAVE_SRC/$version"
   local install="$NAVE_ROOT/$version"
   remove_dir "$install"
   ensure_dir "$install"
-  ( cd -- "$src"
-    JOBS=${JOBS:-2} ./configure --debug --prefix="$install" \
-      || fail "Failed to configure $version"
-    JOBS=${JOBS:-2} make \
-      || fail "Failed to make $version"
-    make install || fail "Failed to install $version"
-  ) || fail "fail"
+
+  build "$version" "$install"
 }
 
 nave_test () {
