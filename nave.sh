@@ -127,19 +127,22 @@ nave_fetch () {
   remove_dir "$src"
   ensure_dir "$src"
 
-  # fixme: use array here.
-  local url="http://nodejs.org/dist/v$version/node-v$version.tar.gz"
-  local url2="http://nodejs.org/dist/node-v$version.tar.gz"
-  local url3="http://nodejs.org/dist/node-$version.tar.gz"
-  curl -# -L "$url" \
-    | $tar xzf - -C "$src" --strip-components=1 \
-    || curl -# -L "$url2" \
-      | $tar xzf - -C "$src" --strip-components=1 \
-      || curl -# -L "$url3" \
-        | $tar xzf - -C "$src" --strip-components=1 \
-        || fail "Couldn't fetch $version"
+  local url
+  local urls=(
+    "http://nodejs.org/dist/v$version/node-v$version.tar.gz"
+    "http://nodejs.org/dist/node-v$version.tar.gz"
+    "http://nodejs.org/dist/node-$version.tar.gz"
+  )
+  for url in "${urls[@]}"; do
+    curl -#Lf "$url" \
+      | $tar xzf - -C "$src" --strip-components=1
+    if [ $? -eq 0 ]; then
+      return 0
+    fi
+  done
 
-  return 0
+  remove_dir "$src"
+  fail "Couldn't fetch $version"
 }
 
 build () {
@@ -176,7 +179,7 @@ nave_usemain () {
     return 0
   fi
 
-  build "$version in main env" "$prefix"
+  build "$version" "$prefix"
 }
 
 nave_install () {
