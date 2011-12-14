@@ -128,8 +128,8 @@ nave_fetch () {
   ensure_dir "$src"
 
   # fixme: use array here.
-  local url="http://nodejs.org/dist/node-v$version.tar.gz"
-  local url2="http://nodejs.org/dist/v$version/node-v$version.tar.gz"
+  local url="http://nodejs.org/dist/v$version/node-v$version.tar.gz"
+  local url2="http://nodejs.org/dist/node-v$version.tar.gz"
   local url3="http://nodejs.org/dist/node-$version.tar.gz"
   curl -# -L "$url" \
     | $tar xzf - -C "$src" --strip-components=1 \
