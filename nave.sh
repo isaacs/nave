@@ -352,7 +352,7 @@ nave_use () {
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
-      "$SHELL" -c "$(enquote_all node "$@")"
+      "$SHELL" -c "$(enquote_all "$@")"
     hash -r
   else
     hash -r
