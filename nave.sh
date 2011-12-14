@@ -128,8 +128,8 @@ nave_fetch () {
   ensure_dir "$src"
 
   declare -a urls=(
-    "http://nodejs.org/dist/node-v$version.tar.gz"
     "http://nodejs.org/dist/v$version/node-v$version.tar.gz"
+    "http://nodejs.org/dist/node-v$version.tar.gz"
     "http://nodejs.org/dist/node-$version.tar.gz"
   )
   for url in "${urls[@]}"; do
