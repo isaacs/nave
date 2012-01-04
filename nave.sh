@@ -134,10 +134,13 @@ nave_fetch () {
     "http://nodejs.org/dist/node-$version.tar.gz"
   )
   for url in "${urls[@]}"; do
-    curl -#Lf "$url" \
-      | $tar xzf - -C "$src" --strip-components=1
+    curl -#Lf "$url" > "$src".tgz
     if [ $? -eq 0 ]; then
-      return 0
+      $tar xzf "$src".tgz -C "$src" --strip-components=1
+      if [ $? -eq 0 ]; then
+        echo "fetched from $url"
+        return 0
+      fi
     fi
   done
 
