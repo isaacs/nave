@@ -138,7 +138,7 @@ nave_fetch () {
     if [ $? -eq 0 ]; then
       $tar xzf "$src".tgz -C "$src" --strip-components=1
       if [ $? -eq 0 ]; then
-        echo "fetched from $url"
+        echo "fetched from $url" >&2
         return 0
       fi
     fi
@@ -178,7 +178,7 @@ nave_usemain () {
   fi
   current="${current/v/}"
   if [ "$current" == "$version" ]; then
-    echo "$version already installed"
+    echo "$version already installed" >&2
     return 0
   fi
 
@@ -331,7 +331,7 @@ nave_use () {
   fi
 
   if [ "$version" == "$NAVENAME" ]; then
-    echo "already using $version"
+    echo "already using $version" >&2
     if [ $# -gt 1 ]; then
       shift
       "$@"
@@ -344,7 +344,7 @@ nave_use () {
   local lib="$NAVE_ROOT/$version/lib/node"
   local man="$NAVE_ROOT/$version/share/man"
   local lvl=$[ ${NAVELVL-0} + 1 ]
-  echo "using $version"
+  echo "using $version" >&2
   if [ $# -gt 1 ]; then
     shift
     hash -r
@@ -382,7 +382,7 @@ nave_named () {
   add_named_env "$name" "$version" || fail "failed to create $name env"
 
   if [ "$name" == "$NAVENAME" ] && [ "$version" == "$NAVEVERSION" ]; then
-    echo "already using $name"
+    echo "already using $name" >&2
     if [ $# -gt 0 ]; then
       "$@"
     fi
@@ -444,7 +444,7 @@ add_named_env () {
     return 0
   fi
 
-  echo "Creating new env named '$name' using node $version"
+  echo "Creating new env named '$name' using node $version" >&2
 
   nave_install "$version" || fail "failed to install $version"
   ensure_dir "$NAVE_ROOT/$name/bin"
