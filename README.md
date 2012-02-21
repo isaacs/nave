@@ -49,19 +49,6 @@ to where you were before using nave.
 * `$NAVE_DIR` Set to the location where you'd like nave to do its
   business.  Defaults to `~/.nave`.
 
-## Troubleshooting
-
-If nave doesn't seem to update the version of node that you're using,
-make sure you're not explicitly setting the `PATH` environ in your
-.bashrc or .bash_profile files.  Nave works by setting the PATH, so you
-should change any line like this:
-
-    export PATH=/blah/blah:/foo/foo
-
-to something like this instead:
-
-    export PATH=$PATH:/blah/blah:/foo/foo
-
 ## Compatibility
 
 Prior to version 0.2, nave would run programs as `node <program>`.
@@ -70,6 +57,27 @@ old style, just prefix your command with `node`.
 
 Nave requires bash.  It will probably never work on Windows, or other systems
 lack a native Bourne Again Shell.  Sorry.
+
+Nave works out of the box with bash.  If you use zsh, sh, ksh, csh, or
+any other sh as your shell, then you should need to add this line or its
+equivalent to your init script:
+
+    export PATH=$NAVE_PATH:$PATH
+
+## Configuration
+
+Nave will source `~/.naverc` on initialization of a new subshell, if it
+exists and is readable.
+
+You may control the place where nave puts things by setting the
+`NAVE_DIR` environment variable.  However, note that this must be set
+somewhere *other* than `~/.naverc`, since it needs to be set in the
+*parent* shell where the `nave` command is invoked.
+
+By default, nave puts its stuff in `~/.nave/`.  If this directory does
+not exist and cannot be created, then it will attempt to use the location
+of the nave.sh bash script itself.  If it cannot write to this location,
+then it will exit with an error.
 
 ## Credits
 

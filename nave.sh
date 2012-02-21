@@ -60,6 +60,26 @@ main () {
     NAVE_DIR="$(dirname -- "$SELF_PATH")"
   fi
 
+  # set up the naverc init file.
+  if ! [ -f "$NAVE_DIR/naverc" ]; then
+    cat > "$NAVE_DIR/naverc" <<RC
+[ "\$NAVE_DEBUG" != "" ] && set -x || true
+if [ "\$NAVE_LOGIN" != "" ]; then
+  [ -f ~/.bash_profile ] && . ~/.bash_profile || true
+  [ -f ~/.bash_login ] && .  ~/.bash_login || true
+  [ -f ~/.profile ] && . ~/.profile || true
+fi
+[ -f ~/.bashrc ] && . ~/.bashrc || true
+export PATH=\$NAVEPATH:\$PATH
+[ -f ~/.naverc ] && . ~/.naverc || true
+RC
+  fi
+
+  # couldn't write file
+  if ! [ -f "$NAVE_DIR/naverc" ]; then
+    fail "Nave dir $NAVE_DIR is not writable."
+  fi
+
   export NAVE_DIR
   export NAVE_SRC="$NAVE_DIR/src"
   export NAVE_ROOT="$NAVE_DIR/installed"
@@ -348,23 +368,27 @@ nave_use () {
   if [ $# -gt 1 ]; then
     shift
     hash -r
-    PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
+    NAVELVL=$lvl NAVE="$version" \
+      NAVEPATH="$bin" \
       NAVEVERSION="$version" \
       NAVENAME="$version" \
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
-      "$SHELL" -c "$(enquote_all "$@")"
+      NAVE_LOGIN="" \
+      "$SHELL" -c "$(enquote_all "$@")" --rcfile "$NAVE_DIR/naverc"
     hash -r
   else
     hash -r
-    PATH="$bin:$PATH" NAVELVL=$lvl NAVE="$version" \
+    NAVELVL=$lvl NAVE="$version" \
+      NAVEPATH="$bin" \
       NAVEVERSION="$version" \
       NAVENAME="$version" \
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
       NODE_PATH="$lib" \
-      "$SHELL"
+      NAVE_LOGIN="1" \
+      "$SHELL" --rcfile "$NAVE_DIR/naverc"
     hash -r
   fi
   return $?
@@ -403,21 +427,23 @@ nave_named () {
   local lvl=$[ ${NAVELVL-0} + 1 ]
   # get the version
   if [ $# -gt 0 ]; then
-    PATH="$bin:$PATH" \
+    NAVEPATH="$bin" \
       NAVELVL=$lvl \
       NAVE="$version-$name" \
       NAVEVERSION="$version" \
       NAVENAME="$name" \
       NODE_PATH="$lib" \
-      "$SHELL" -c "$(enquote_all "$@")"
+      NAVE_LOGIN="" \
+      "$SHELL" -c "$(enquote_all "$@")" --rcfile "$NAVE_DIR/naverc"
   else
-    PATH="$bin:$PATH" \
+    NAVEPATH="$bin" \
       NAVELVL=$lvl \
       NAVE="$version-$name" \
       NAVEVERSION="$version" \
       NAVENAME="$name" \
       NODE_PATH="$lib" \
-      "$SHELL"
+      NAVE_LOGIN="1" \
+      "$SHELL" --rcfile "$NAVE_DIR/naverc"
   fi
   return $?
 }
