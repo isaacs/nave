@@ -61,22 +61,28 @@ main () {
   fi
 
   # set up the naverc init file.
-  if ! [ -f "$NAVE_DIR/naverc" ]; then
+  # Important! Update this number any time the init content is changed.
+  local rcversion="#2"
+  if ! [ -f "$NAVE_DIR/naverc" ] \
+      || [ "$(head -n1 "$NAVE_DIR/naverc")" != "$rcversion" ]; then
     cat > "$NAVE_DIR/naverc" <<RC
+$rcversion
 [ "\$NAVE_DEBUG" != "" ] && set -x || true
 if [ "\$NAVE_LOGIN" != "" ]; then
   [ -f ~/.bash_profile ] && . ~/.bash_profile || true
   [ -f ~/.bash_login ] && .  ~/.bash_login || true
   [ -f ~/.profile ] && . ~/.profile || true
+else
+  [ -f ~/.bashrc ] && . ~/.bashrc || true
 fi
-[ -f ~/.bashrc ] && . ~/.bashrc || true
 export PATH=\$NAVEPATH:\$PATH
 [ -f ~/.naverc ] && . ~/.naverc || true
 RC
   fi
 
   # couldn't write file
-  if ! [ -f "$NAVE_DIR/naverc" ]; then
+  if ! [ -f "$NAVE_DIR/naverc" ] \
+      || [ "$(head -n1 "$NAVE_DIR/naverc")" != "$rcversion" ]; then
     fail "Nave dir $NAVE_DIR is not writable."
   fi
 
