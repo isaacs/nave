@@ -384,7 +384,7 @@ nave_use () {
       npm_config_prefix="$prefix" \
       NODE_PATH="$lib" \
       NAVE_LOGIN="" \
-      "$SHELL" -c "$(enquote_all "$@")" --rcfile "$NAVE_DIR/naverc"
+      "$SHELL" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
     hash -r
   else
     hash -r
@@ -443,7 +443,7 @@ nave_named () {
       NAVENAME="$name" \
       NODE_PATH="$lib" \
       NAVE_LOGIN="" \
-      "$SHELL" -c "$(enquote_all "$@")" --rcfile "$NAVE_DIR/naverc"
+      "$SHELL" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
   else
     NAVEPATH="$bin" \
       NAVELVL=$lvl \
