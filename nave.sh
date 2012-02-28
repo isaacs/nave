@@ -366,9 +366,10 @@ nave_use () {
   fi
 
   nave_install "$version" || fail "failed to install $version"
-  local bin="$NAVE_ROOT/$version/bin"
-  local lib="$NAVE_ROOT/$version/lib/node"
-  local man="$NAVE_ROOT/$version/share/man"
+  local prefix="$NAVE_ROOT/$version"
+  local bin="$prefix/bin"
+  local lib="$prefix/lib/node"
+  local man="$prefix/share/man"
   local lvl=$[ ${NAVELVL-0} + 1 ]
   echo "using $version" >&2
   if [ $# -gt 1 ]; then
@@ -380,6 +381,7 @@ nave_use () {
       NAVENAME="$version" \
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
+      npm_config_prefix="$prefix" \
       NODE_PATH="$lib" \
       NAVE_LOGIN="" \
       "$SHELL" -c "$(enquote_all "$@")" --rcfile "$NAVE_DIR/naverc"
@@ -392,6 +394,7 @@ nave_use () {
       NAVENAME="$version" \
       npm_config_binroot="$bin" npm_config_root="$lib" \
       npm_config_manroot="$man" \
+      npm_config_prefix="$prefix" \
       NODE_PATH="$lib" \
       NAVE_LOGIN="1" \
       "$SHELL" --rcfile "$NAVE_DIR/naverc"
