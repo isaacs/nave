@@ -180,7 +180,11 @@ build () {
   local src="$NAVE_SRC/$version"
 
   ( cd -- "$src"
-    JOBS=${JOBS:-2} ./configure --debug --prefix="$2" \
+    [ -f ~/.naverc ] && . ~/.naverc || true
+    if [ "$NAVE_CONFIG" == "" ]; then
+      NAVE_CONFIG=("--debug")
+    fi
+    JOBS=${JOBS:-2} ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
       || fail "Failed to configure $version"
     JOBS=${JOBS:-2} make \
       || fail "Failed to make $version"
@@ -229,7 +233,11 @@ nave_test () {
   nave_fetch "$version"
   local src="$NAVE_SRC/$version"
   ( cd -- "$src"
-    ./configure --debug || fail "failed to ./configure --debug"
+    [ -f ~/.naverc ] && . ~/.naverc || true
+    if [ "$NAVE_CONFIG" == "" ]; then
+      NAVE_CONFIG=("--debug")
+    fi
+    ./configure "${NAVE_CONFIG[@]}" || fail "failed to ./configure --debug"
     make test-all || fail "Failed tests"
   ) || fail "failed"
 }
