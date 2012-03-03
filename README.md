@@ -48,6 +48,13 @@ to where you were before using nave.
 * `$NAVE_DEBUG` Set to 1 to run nave in `bash -x` style.
 * `$NAVE_DIR` Set to the location where you'd like nave to do its
   business.  Defaults to `~/.nave`.
+* `$NAVE_CONFIG` Set this to an array of arguments to pass to
+  `./configure`.  Defaults to `("--debug")`.  (Note that parens are
+  required to supply multiple arguments.  I use `("--debug"
+  "--without-npm")` on my own system, since I'm usually using nave to
+  test npm, so installing it in the subshell doesn't help much.)  This
+  can be set in the `~/.naverc` file, or in your normal
+  `~/.bash{rc,_profile}` files.
 
 ## Compatibility
 
