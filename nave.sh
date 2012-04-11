@@ -186,7 +186,7 @@ build () {
     fi
     JOBS=${JOBS:-2} ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
       || fail "Failed to configure $version"
-    JOBS=${JOBS:-2} make \
+    JOBS=${JOBS:-2} make -j$(sysctl -n hw.ncpu)\
       || fail "Failed to make $version"
     make install || fail "Failed to install $version"
   ) || fail "fail"
