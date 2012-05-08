@@ -178,15 +178,19 @@ build () {
   local version="$1"
   nave_fetch "$version"
   local src="$NAVE_SRC/$version"
+  local jobs=$NAVE_JOBS
+  jobs=${jobs:-$JOBS}
+  jobs=${jobs:-$(sysctl -n hw.ncpu)}
+  jobs=${jobs:-2}
 
   ( cd -- "$src"
     [ -f ~/.naverc ] && . ~/.naverc || true
     if [ "$NAVE_CONFIG" == "" ]; then
       NAVE_CONFIG=("--debug")
     fi
-    JOBS=${JOBS:-2} ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
+    JOBS=$jobs ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
       || fail "Failed to configure $version"
-    JOBS=${JOBS:-2} make \
+    JOBS=$jobs make -j$jobs \
       || fail "Failed to make $version"
     make install || fail "Failed to install $version"
   ) || fail "fail"
@@ -340,7 +344,7 @@ organize_version_list () {
 
 nave_has () {
   local version=$(ver "$1")
-  [ -d "$NAVE_SRC/$version" ] || return 1
+  [ -d "$NAVE_SRC/$version/configure" ] || return 1
 }
 
 nave_installed () {

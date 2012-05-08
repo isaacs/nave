@@ -55,6 +55,10 @@ to where you were before using nave.
   test npm, so installing it in the subshell doesn't help much.)  This
   can be set in the `~/.naverc` file, or in your normal
   `~/.bash{rc,_profile}` files.
+* `$NAVE_JOBS` If set, this will be the number of jobs to run when
+  building node.  If this isn't set, it'll use the `$JOBS` env, then try
+  to guess a reasonable value based on the number of CPUs, then fall
+  back on 2 if `sysctl -n hw.ncpu` fails.
 
 ## Compatibility
 
