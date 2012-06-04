@@ -23,6 +23,11 @@ if [ "$NAVE_DEBUG" != "" ]; then
   set -x
 fi
 
+if [ -z "$BASH" ]; then
+  echo "Nave only works with bash.  Sorry." >&2
+  exit 1
+fi
+
 # Use fancy pants globs
 shopt -s extglob
 
@@ -396,7 +401,7 @@ nave_use () {
       npm_config_prefix="$prefix" \
       NODE_PATH="$lib" \
       NAVE_LOGIN="" \
-      "$SHELL" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
+      "$BASH" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
     hash -r
   else
     hash -r
@@ -409,7 +414,7 @@ nave_use () {
       npm_config_prefix="$prefix" \
       NODE_PATH="$lib" \
       NAVE_LOGIN="1" \
-      "$SHELL" --rcfile "$NAVE_DIR/naverc"
+      "$BASH" --rcfile "$NAVE_DIR/naverc"
     hash -r
   fi
   return $?
@@ -455,7 +460,7 @@ nave_named () {
       NAVENAME="$name" \
       NODE_PATH="$lib" \
       NAVE_LOGIN="" \
-      "$SHELL" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
+      "$BASH" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
   else
     NAVEPATH="$bin" \
       NAVELVL=$lvl \
@@ -464,7 +469,7 @@ nave_named () {
       NAVENAME="$name" \
       NODE_PATH="$lib" \
       NAVE_LOGIN="1" \
-      "$SHELL" --rcfile "$NAVE_DIR/naverc"
+      "$BASH" --rcfile "$NAVE_DIR/naverc"
   fi
   return $?
 }
