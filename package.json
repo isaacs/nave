@@ -4,4 +4,5 @@
 , "version" : "0.2.13"
 , "preferGlobal" : true
 , "bin" : { "nave" : "./nave.sh" }
+, "LICENSE": "BSD"
 }
