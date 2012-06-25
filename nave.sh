@@ -50,7 +50,7 @@ main () {
     case "$1"
     in
         -o)
-            NAVE_CURL_OPTS="$1"; shift;;
+            NAVE_CURL_OPTS="$2"; shift; shift;;
         --)
             shift; break;;
     esac
