@@ -10,7 +10,11 @@ from here, or symlink it wherever you want.
 
 ## Usage
 
-    Usage: nave <cmd>
+    Usage: nave [-o curl options] <cmd>
+
+    Options:
+
+    -o options           Override default cURL options (-#Lf)
 
     Commands:
 

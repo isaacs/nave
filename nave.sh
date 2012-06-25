@@ -33,7 +33,29 @@ shopt -s extglob
 
 tar=${TAR-tar}
 
+NAVE_CURL_OPTS="-#Lf"
+
 main () {
+  # Parse options via getopt(1)
+  args=`getopt o: $*`
+  if [ $? -ne 0 ]
+  then
+    nave_help
+    exit 2
+  fi
+
+  set -- $args
+  while [ $# -ge 0 ]
+  do
+    case "$1"
+    in
+        -o)
+            NAVE_CURL_OPTS="$1"; shift;;
+        --)
+            shift; break;;
+    esac
+  done
+
   local SELF_PATH DIR SYM
   # get the absolute path of the executable
   SELF_PATH="$0"
@@ -165,7 +187,7 @@ nave_fetch () {
     "http://nodejs.org/dist/node-$version.tar.gz"
   )
   for url in "${urls[@]}"; do
-    curl -#Lf "$url" > "$src".tgz
+    curl $NAVE_CURL_OPTS "$url" > "$src".tgz
     if [ $? -eq 0 ]; then
       $tar xzf "$src".tgz -C "$src" --strip-components=1
       if [ $? -eq 0 ]; then
@@ -519,7 +541,11 @@ nave_uninstall () {
 nave_help () {
   cat <<EOF
 
-Usage: nave <cmd>
+Usage: nave [-o curl options] <cmd>
+
+Options:
+
+-o options           Override default cURL options (-#Lf)
 
 Commands:
 
