@@ -461,6 +461,7 @@ nave_use () {
       NODE_PATH="$lib" \
       NAVE_LOGIN="" \
       "$BASH" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
+    exit_code=$?
     hash -r
   else
     hash -r
@@ -474,9 +475,10 @@ nave_use () {
       NODE_PATH="$lib" \
       NAVE_LOGIN="1" \
       "$BASH" --rcfile "$NAVE_DIR/naverc"
+    exit_code=$?
     hash -r
   fi
-  return $?
+  return $exit_code
 }
 
 nave_named () {
