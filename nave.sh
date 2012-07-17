@@ -212,7 +212,7 @@ build () {
 
   ( cd -- "$src"
     [ -f ~/.naverc ] && . ~/.naverc || true
-    if [ "$NAVE_CONFIG" == "" ]; then
+    if [ "$NAVE_CONFIG" == "--debug" ]; then
       NAVE_CONFIG=("--debug")
     fi
     JOBS=$jobs ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
