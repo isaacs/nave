@@ -33,7 +33,29 @@ shopt -s extglob
 
 tar=${TAR-tar}
 
+NAVE_CURL_OPTS="-#Lf"
+
 main () {
+  # Parse options via getopt(1)
+  args=`getopt o: $*`
+  if [ $? -ne 0 ]
+  then
+    nave_help
+    exit 2
+  fi
+
+  set -- $args
+  while [ $# -ge 0 ]
+  do
+    case "$1"
+    in
+        -o)
+            NAVE_CURL_OPTS="$2"; shift; shift;;
+        --)
+            shift; break;;
+    esac
+  done
+
   local SELF_PATH DIR SYM
   # get the absolute path of the executable
   SELF_PATH="$0"
@@ -165,7 +187,7 @@ nave_fetch () {
     "http://nodejs.org/dist/node-$version.tar.gz"
   )
   for url in "${urls[@]}"; do
-    curl -#Lf "$url" > "$src".tgz
+    curl $NAVE_CURL_OPTS "$url" > "$src".tgz
     if [ $? -eq 0 ]; then
       $tar xzf "$src".tgz -C "$src" --strip-components=1
       if [ $? -eq 0 ]; then
@@ -190,7 +212,7 @@ build () {
 
   ( cd -- "$src"
     [ -f ~/.naverc ] && . ~/.naverc || true
-    if [ "$NAVE_CONFIG" == "" ]; then
+    if [ "$NAVE_CONFIG" == "--debug" ]; then
       NAVE_CONFIG=("--debug")
     fi
     JOBS=$jobs ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
@@ -402,6 +424,7 @@ nave_use () {
       NODE_PATH="$lib" \
       NAVE_LOGIN="" \
       "$BASH" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
+    exit_code=$?
     hash -r
   else
     hash -r
@@ -415,9 +438,10 @@ nave_use () {
       NODE_PATH="$lib" \
       NAVE_LOGIN="1" \
       "$BASH" --rcfile "$NAVE_DIR/naverc"
+    exit_code=$?
     hash -r
   fi
-  return $?
+  return $exit_code
 }
 
 nave_named () {
@@ -519,7 +543,11 @@ nave_uninstall () {
 nave_help () {
   cat <<EOF
 
-Usage: nave <cmd>
+Usage: nave [-o curl options] <cmd>
+
+Options:
+
+-o options           Override default cURL options (-#Lf)
 
 Commands:
 
