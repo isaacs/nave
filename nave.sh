@@ -231,7 +231,6 @@ nave_install () {
     return 0
   fi
   local install="$NAVE_ROOT/$version"
-  remove_dir "$install"
   ensure_dir "$install"
 
   build "$version" "$install"
@@ -349,7 +348,7 @@ organize_version_list () {
 
 nave_has () {
   local version=$(ver "$1")
-  [ -d "$NAVE_SRC/$version/configure" ] || return 1
+  [ -x "$NAVE_SRC/$version/configure" ] || return 1
 }
 
 nave_installed () {
