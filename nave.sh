@@ -31,6 +31,19 @@ fi
 # Use fancy pants globs
 shopt -s extglob
 
+# Try to figure out the os and arch for binary fetching
+uname="$(uname -a)"
+os=
+arch=x86
+case "$uname" in
+  Linux\ *) os=linux ;;
+  Darwin\ *) os=darwin ;;
+  SunOS\ *) os=sunos ;;
+esac
+case "$uname" in
+  *x86_64*) arch=x64 ;;
+esac
+
 tar=${TAR-tar}
 
 main () {
@@ -181,6 +194,40 @@ nave_fetch () {
 
 build () {
   local version="$1"
+
+  # shortcut - try the binary if possible.
+  if [ -n "$os" ]; then
+    local binavail
+    # binaries started with node 0.8.6
+    case "$version" in
+      0.8.[012345]) binavail=0 ;;
+      0.[1234567]) binavail=0 ;;
+      *) binavail=1 ;;
+    esac
+    if [ $binavail -eq 1 ]; then
+      local t="$version-$os-$arch"
+      local url="http://nodejs.org/dist/v$version/node-v${t}.tar.gz"
+      local tgz="$NAVE_SRC/$t.tgz"
+      curl -#Lf "$url" > "$tgz"
+      if [ $? -ne 0 ]; then
+        # binary download failed.  oh well.  cleanup, and proceed.
+        rm "$tgz"
+        echo "Binary download failed, trying source." >&2
+      else
+        # unpack straight into the build target.
+        $tar xzf "$tgz" -C "$2" --strip-components 1
+        if [ $? -ne 0 ]; then
+          rm "$tgz"
+          nave_uninstall "$version"
+          echo "Binary unpack failed, trying source." >&2
+        fi
+        # it worked!
+        echo "installed from binary" >&2
+        return 0
+      fi
+    fi
+  fi
+
   nave_fetch "$version"
   local src="$NAVE_SRC/$version"
   local jobs=$NAVE_JOBS
