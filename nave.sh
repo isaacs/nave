@@ -188,8 +188,10 @@ nave_fetch () {
     fi
   done
 
+  rm "$src".tgz
   remove_dir "$src"
-  fail "Couldn't fetch $version"
+  echo "Couldn't fetch $version" >&2
+  return 1
 }
 
 build () {
@@ -229,6 +231,11 @@ build () {
   fi
 
   nave_fetch "$version"
+  if [ $? != 0 ]; then
+    # fetch failed, don't continue and try to build it.
+    return 1
+  fi
+
   local src="$NAVE_SRC/$version"
   local jobs=$NAVE_JOBS
   jobs=${jobs:-$JOBS}
@@ -246,6 +253,7 @@ build () {
       || fail "Failed to make $version"
     make install || fail "Failed to install $version"
   ) || fail "fail"
+  return $?
 }
 
 nave_usemain () {
@@ -281,6 +289,11 @@ nave_install () {
   ensure_dir "$install"
 
   build "$version" "$install"
+  local ret=$?
+  if [ $ret -ne 0 ]; then
+    remove_dir "$install"
+    return $ret
+  fi
 }
 
 nave_test () {
@@ -400,7 +413,7 @@ nave_has () {
 
 nave_installed () {
   local version=$(ver "$1")
-  [ -d "$NAVE_ROOT/$version/bin" ] || return 1
+  [ -x "$NAVE_ROOT/$version/bin/node" ] || return 1
 }
 
 nave_use () {
@@ -555,7 +568,7 @@ add_named_env () {
 }
 
 nave_clean () {
-  remove_dir "$NAVE_SRC/$(ver "$1")"
+  rm -rf "$NAVE_SRC/$(ver "$1")" "$NAVE_SRC/$(ver "$1")".tgz
 }
 
 nave_uninstall () {
