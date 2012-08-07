@@ -342,7 +342,7 @@ nave_ls_named () {
 
 nave_ls_all () {
   nave_ls \
-    && nave_ls_remote \
+    && (echo ""; nave_ls_remote) \
     || return 1
 }
 
