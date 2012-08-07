@@ -245,7 +245,7 @@ build () {
   ( cd -- "$src"
     [ -f ~/.naverc ] && . ~/.naverc || true
     if [ "$NAVE_CONFIG" == "" ]; then
-      NAVE_CONFIG=("--debug")
+      NAVE_CONFIG=()
     fi
     JOBS=$jobs ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
       || fail "Failed to configure $version"
@@ -303,9 +303,9 @@ nave_test () {
   ( cd -- "$src"
     [ -f ~/.naverc ] && . ~/.naverc || true
     if [ "$NAVE_CONFIG" == "" ]; then
-      NAVE_CONFIG=("--debug")
+      NAVE_CONFIG=()
     fi
-    ./configure "${NAVE_CONFIG[@]}" || fail "failed to ./configure --debug"
+    ./configure "${NAVE_CONFIG[@]}" || fail "failed to ./configure"
     make test-all || fail "Failed tests"
   ) || fail "failed"
 }
