@@ -127,7 +127,14 @@ RC
       cmd="nave_help"
       ;;
   esac
-  $cmd "$@" && exit 0 || fail "failed somehow"
+  $cmd "$@"
+  local ret=$?
+  if [ $ret -eq 0 ]; then
+    exit 0
+  else
+    echo "failed with code=$ret" >&2
+    exit $ret
+  fi
 }
 
 function enquote_all () {
