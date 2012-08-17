@@ -376,7 +376,7 @@ nave_latest () {
 
 nave_stable () {
   curl -s http://nodejs.org/dist/ \
-    | egrep -o '[0-9]+\.[02468]+\.[0-9]+' \
+    | egrep -o '[0-9]+\.[1-9]?[02468]+\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
 }
