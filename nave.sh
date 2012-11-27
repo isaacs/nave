@@ -24,9 +24,21 @@ if [ "$NAVE_DEBUG" != "" ]; then
 fi
 
 if [ -z "$BASH" ]; then
-  echo "Nave only works with bash.  Sorry." >&2
+  cat >&2 <<MSG
+Nave is a bash program, and must be run with bash.
+MSG
   exit 1
 fi
+
+shell=`basename "$SHELL"`
+case "$shell" in
+  bash) ;;
+  zsh) ;;
+  *)
+    echo "Nave only supports zsh and bash shells." >&2
+    exit 1
+    ;;
+esac
 
 # Use fancy pants globs
 shopt -s extglob
@@ -79,28 +91,47 @@ main () {
   fi
 
   # set up the naverc init file.
+  # For zsh compatibility, we name this file ".zshenv" instead of
+  # the more reasonable "naverc" name.
   # Important! Update this number any time the init content is changed.
-  local rcversion="#2"
-  if ! [ -f "$NAVE_DIR/naverc" ] \
-      || [ "$(head -n1 "$NAVE_DIR/naverc")" != "$rcversion" ]; then
-    cat > "$NAVE_DIR/naverc" <<RC
+  local rcversion="#3"
+  local rcfile="$NAVE_DIR/.zshenv"
+  if ! [ -f "$rcfile" ] \
+      || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
+
+    cat > "$rcfile" <<RC
 $rcversion
 [ "\$NAVE_DEBUG" != "" ] && set -x || true
-if [ "\$NAVE_LOGIN" != "" ]; then
-  [ -f ~/.bash_profile ] && . ~/.bash_profile || true
-  [ -f ~/.bash_login ] && .  ~/.bash_login || true
-  [ -f ~/.profile ] && . ~/.profile || true
+if [ "\$BASH" != "" ]; then
+  if [ "\$NAVE_LOGIN" != "" ]; then
+    [ -f ~/.bash_profile ] && . ~/.bash_profile || true
+    [ -f ~/.bash_login ] && .  ~/.bash_login || true
+    [ -f ~/.profile ] && . ~/.profile || true
+  else
+    [ -f ~/.bashrc ] && . ~/.bashrc || true
+  fi
 else
-  [ -f ~/.bashrc ] && . ~/.bashrc || true
+  [ -f ~/.zshenv ] && . ~/.zshenv || true
+  if [ "\$NAVE_LOGIN" != "" ]; then
+    [ -f ~/.zprofile ] && . ~/.zprofile || true
+    [ -f ~/.zshrc ] && . ~/.zshrc || true
+    [ -f ~/.zlogin ] && . ~/.zlogin || true
+  else
+    [ -f ~/.zshrc ] && . ~/.zshrc || true
+  fi
 fi
 export PATH=\$NAVEPATH:\$PATH
 [ -f ~/.naverc ] && . ~/.naverc || true
 RC
+
+    cat > "$NAVE_DIR/.zlogout" <<RC
+[ -f ~/.zlogout ] && . ~/.zlogout || true
+RC
+
   fi
 
   # couldn't write file
-  if ! [ -f "$NAVE_DIR/naverc" ] \
-      || [ "$(head -n1 "$NAVE_DIR/naverc")" != "$rcversion" ]; then
+  if ! [ -f "$rcfile" ] || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
     fail "Nave dir $NAVE_DIR is not writable."
   fi
 
@@ -450,41 +481,89 @@ nave_use () {
 
   nave_install "$version" || fail "failed to install $version"
   local prefix="$NAVE_ROOT/$version"
-  local bin="$prefix/bin"
-  local lib="$prefix/lib/node"
-  local man="$prefix/share/man"
   local lvl=$[ ${NAVELVL-0} + 1 ]
   echo "using $version" >&2
   if [ $# -gt 1 ]; then
     shift
-    hash -r
-    NAVELVL=$lvl NAVE="$version" \
-      NAVEPATH="$bin" \
-      NAVEVERSION="$version" \
-      NAVENAME="$version" \
-      npm_config_binroot="$bin" npm_config_root="$lib" \
-      npm_config_manroot="$man" \
-      npm_config_prefix="$prefix" \
-      NODE_PATH="$lib" \
-      NAVE_LOGIN="" \
-      "$BASH" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
-    exit_code=$?
-    hash -r
+    nave_exec "$lvl" "$version" "$version" "$prefix" "$@"
+    return $?
   else
-    hash -r
-    NAVELVL=$lvl NAVE="$version" \
-      NAVEPATH="$bin" \
-      NAVEVERSION="$version" \
-      NAVENAME="$version" \
-      npm_config_binroot="$bin" npm_config_root="$lib" \
-      npm_config_manroot="$man" \
-      npm_config_prefix="$prefix" \
-      NODE_PATH="$lib" \
-      NAVE_LOGIN="1" \
-      "$BASH" --rcfile "$NAVE_DIR/naverc"
-    exit_code=$?
-    hash -r
+    nave_login "$lvl" "$version" "$version" "$prefix"
+    return $?
   fi
+}
+
+# internal
+nave_exec () {
+  nave_run "exec" "$@"
+  return $?
+}
+
+nave_login () {
+  nave_run "login" "$@"
+  return $?
+}
+
+nave_run () {
+  local exec="$1"
+  shift
+  local lvl="$1"
+  shift
+  local name="$1"
+  shift
+  local version="$1"
+  shift
+  local prefix="$1"
+  shift
+
+  local bin="$prefix/bin"
+  local lib="$prefix/lib/node"
+  local man="$prefix/share/man"
+  ensure_dir "$bin"
+  ensure_dir "$lib"
+  ensure_dir "$man"
+
+  # now $@ is the command to run, or empty if it's not an exec.
+  local exit_code
+  local args=()
+  local isLogin
+
+  if [ "$exec" == "exec" ]; then
+    isLogin=""
+    # source the nave env file, then run the command.
+    args=("-c" ". $(enquote_all $NAVE_DIR/.zshenv); $(enquote_all "$@")")
+  elif [ "$shell" == "zsh" ]; then
+    isLogin="1"
+    # no need to set rcfile, since ZDOTDIR is set.
+    args=()
+  else
+    isLogin="1"
+    # bash, use --rcfile argument
+    args=("--rcfile" "$NAVE_DIR/.zshenv")
+  fi
+
+  local nave="$version"
+  if [ "$version" != "$name" ]; then
+    nave="$name"-"$version"
+  fi
+
+  NAVELVL=$lvl \
+  NAVEPATH="$bin" \
+  NAVEVERSION="$version" \
+  NAVENAME="$name" \
+  NAVE="$nave" \
+  npm_config_binroot="$bin"\
+  npm_config_root="$lib" \
+  npm_config_manroot="$man" \
+  npm_config_prefix="$prefix" \
+  NODE_PATH="$lib" \
+  NAVE_LOGIN="$isLogin" \
+  NAVE_DIR="$NAVE_DIR" \
+  ZDOTDIR="$NAVE_DIR" \
+    "$SHELL" "${args[@]}"
+
+  exit_code=$?
+  hash -r
   return $exit_code
 }
 
@@ -511,35 +590,17 @@ nave_named () {
     version="$(ver "$("$NAVE_ROOT/$name/bin/node" -v 2>/dev/null)")"
   fi
 
-  local bin="$NAVE_ROOT/$name/bin"
-  local lib="$NAVE_ROOT/$name/lib/node"
-  local man="$NAVE_ROOT/$name/share/man"
-  ensure_dir bin
-  ensure_dir lib
-  ensure_dir man
+  local prefix="$NAVE_ROOT/$name"
 
   local lvl=$[ ${NAVELVL-0} + 1 ]
   # get the version
   if [ $# -gt 0 ]; then
-    NAVEPATH="$bin" \
-      NAVELVL=$lvl \
-      NAVE="$version-$name" \
-      NAVEVERSION="$version" \
-      NAVENAME="$name" \
-      NODE_PATH="$lib" \
-      NAVE_LOGIN="" \
-      "$BASH" -c ". $(enquote_all $NAVE_DIR/naverc); $(enquote_all "$@")"
+    nave_exec "$lvl" "$name" "$version" "$prefix" "$@"
+    return $?
   else
-    NAVEPATH="$bin" \
-      NAVELVL=$lvl \
-      NAVE="$version-$name" \
-      NAVEVERSION="$version" \
-      NAVENAME="$name" \
-      NODE_PATH="$lib" \
-      NAVE_LOGIN="1" \
-      "$BASH" --rcfile "$NAVE_DIR/naverc"
+    nave_login "$lvl" "$name" "$version" "$prefix"
+    return $?
   fi
-  return $?
 }
 
 add_named_env () {
