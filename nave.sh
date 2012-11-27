@@ -638,7 +638,7 @@ add_named_env () {
 }
 
 nave_clean () {
-  rm -rf "$NAVE_SRC/$(ver "$1")" "$NAVE_SRC/$(ver "$1")".tgz
+  rm -rf "$NAVE_SRC/$(ver "$1")" "$NAVE_SRC/$(ver "$1")".tgz "$NAVE_SRC/$(ver "$1")"-*.tgz
 }
 
 nave_uninstall () {
