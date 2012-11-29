@@ -119,7 +119,9 @@ else
   else
     [ -f ~/.zshrc ] && . ~/.zshrc || true
   fi
+  export DISABLE_AUTO_UPDATE=true
 fi
+unset ZDOTDIR
 export PATH=\$NAVEPATH:\$PATH
 [ -f ~/.naverc ] && . ~/.naverc || true
 RC
