@@ -112,6 +112,7 @@ if [ "\$BASH" != "" ]; then
   fi
 else
   [ -f ~/.zshenv ] && . ~/.zshenv || true
+  export DISABLE_AUTO_UPDATE=true
   if [ "\$NAVE_LOGIN" != "" ]; then
     [ -f ~/.zprofile ] && . ~/.zprofile || true
     [ -f ~/.zshrc ] && . ~/.zshrc || true
@@ -119,7 +120,6 @@ else
   else
     [ -f ~/.zshrc ] && . ~/.zshrc || true
   fi
-  export DISABLE_AUTO_UPDATE=true
 fi
 unset ZDOTDIR
 export PATH=\$NAVEPATH:\$PATH
