@@ -46,13 +46,14 @@ shopt -s extglob
 # Try to figure out the os and arch for binary fetching
 uname="$(uname -a)"
 os=
-arch=x86
+arch=
 case "$uname" in
   Linux\ *) os=linux ;;
   Darwin\ *) os=darwin ;;
   SunOS\ *) os=sunos ;;
 esac
 case "$uname" in
+  *i386*) arch=x86 ;;
   *x86_64*) arch=x64 ;;
 esac
 
