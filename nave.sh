@@ -315,6 +315,13 @@ nave_usemain () {
     echo "$version already installed" >&2
     return 0
   fi
+  if nave_installed "$version"; then
+    echo "node v$version found locally, copying to global." >&2
+    cp $NAVE_ROOT/$version/bin/node $prefix/bin
+    cp $NAVE_ROOT/$version/bin/npm $prefix/bin
+    cp -r $NAVE_ROOT/$version/lib/node_modules/npm $prefix/lib/node_modules
+    return 0
+  fi
 
   build "$version" "$prefix"
 }
