@@ -321,6 +321,9 @@ nave_usemain () {
 
 nave_install () {
   local version=$(ver "$1")
+  if [ -z "$version" ]; then
+    fail "Must supply a version ('stable', 'latest' or numeric)"
+  fi
   if nave_installed "$version"; then
     echo "Already installed: $version" >&2
     return 0
