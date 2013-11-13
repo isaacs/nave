@@ -218,7 +218,7 @@ nave_fetch () {
     "http://nodejs.org/dist/node-$version.tar.gz"
   )
   for url in "${urls[@]}"; do
-    curl -#Lf "$url" > "$src".tgz
+    get -#Lf "$url" > "$src".tgz
     if [ $? -eq 0 ]; then
       $tar xzf "$src".tgz -C "$src" --strip-components=1
       if [ $? -eq 0 ]; then
@@ -232,6 +232,11 @@ nave_fetch () {
   remove_dir "$src"
   echo "Couldn't fetch $version" >&2
   return 1
+}
+
+get () {
+  curl -H "user-agent:nave/$(curl --version | head -n1)" "$@"
+  return $?
 }
 
 build () {
@@ -250,7 +255,7 @@ build () {
       local t="$version-$os-$arch"
       local url="http://nodejs.org/dist/v$version/node-v${t}.tar.gz"
       local tgz="$NAVE_SRC/$t.tgz"
-      curl -#Lf "$url" > "$tgz"
+      get -#Lf "$url" > "$tgz"
       if [ $? -ne 0 ]; then
         # binary download failed.  oh well.  cleanup, and proceed.
         rm "$tgz"
@@ -361,7 +366,7 @@ nave_ls () {
 }
 
 nave_ls_remote () {
-  curl -s http://nodejs.org/dist/ \
+  get -s http://nodejs.org/dist/ \
     | version_list "remote" \
     || return 1
 }
@@ -397,21 +402,21 @@ ver () {
 nave_version_family () {
   local family="$1"
   family="${family/v/}"
-  curl -s http://nodejs.org/dist/ \
+  get -s http://nodejs.org/dist/ \
     | egrep -o $family'\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
 }
 
 nave_latest () {
-  curl -s http://nodejs.org/dist/ \
+  get -s http://nodejs.org/dist/ \
     | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
 }
 
 nave_stable () {
-  curl -s http://nodejs.org/dist/ \
+  get -s http://nodejs.org/dist/ \
     | egrep -o '[0-9]+\.[0-9]*[02468]\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
