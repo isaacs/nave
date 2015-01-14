@@ -54,6 +54,7 @@ case "$uname" in
 esac
 case "$uname" in
   *x86_64*) arch=x64 ;;
+  *raspberrypi*) arch=arm-pi ;;
 esac
 
 tar=${TAR-tar}
