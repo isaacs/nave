@@ -215,6 +215,7 @@ nave_fetch () {
 
   local url
   local urls=(
+    "https://iojs.org/dist/v$version/iojs-v$version.tar.gz"
     "http://nodejs.org/dist/v$version/node-v$version.tar.gz"
     "http://nodejs.org/dist/node-v$version.tar.gz"
     "http://nodejs.org/dist/node-$version.tar.gz"
@@ -255,25 +256,27 @@ build () {
     esac
     if [ $binavail -eq 1 ]; then
       local t="$version-$os-$arch"
-      local url="http://nodejs.org/dist/v$version/node-v${t}.tar.gz"
       local tgz="$NAVE_SRC/$t.tgz"
-      get -#Lf "$url" > "$tgz"
-      if [ $? -ne 0 ]; then
-        # binary download failed.  oh well.  cleanup, and proceed.
-        rm "$tgz"
-        echo "Binary download failed, trying source." >&2
-      else
-        # unpack straight into the build target.
-        $tar xzf "$tgz" -C "$2" --strip-components 1
+      for url in "https://iojs.org/dist/v$version/iojs-v${t}.tar.gz" \
+                "http://nodejs.org/dist/v$version/node-v${t}.tar.gz"; do
+        get -#Lf "$url" > "$tgz"
         if [ $? -ne 0 ]; then
+          # binary download failed.  oh well.  cleanup, and proceed.
           rm "$tgz"
-          nave_uninstall "$version"
-          echo "Binary unpack failed, trying source." >&2
+        else
+          # unpack straight into the build target.
+          $tar xzf "$tgz" -C "$2" --strip-components 1
+          if [ $? -ne 0 ]; then
+            rm "$tgz"
+            nave_uninstall "$version"
+            echo "Binary unpack failed, trying source." >&2
+          fi
+          # it worked!
+          echo "installed from binary" >&2
+          return 0
         fi
-        # it worked!
-        echo "installed from binary" >&2
-        return 0
-      fi
+      done
+      echo "Binary download failed, trying source." >&2
     fi
   fi
 
@@ -404,14 +407,15 @@ ver () {
 nave_version_family () {
   local family="$1"
   family="${family/v/}"
-  get -s http://nodejs.org/dist/ \
+  { get -s http://nodejs.org/dist/;
+    get -s https://iojs.org/dist/; } \
     | egrep -o $family'\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
 }
 
 nave_latest () {
-  get -s http://nodejs.org/dist/ \
+  get -s https://iojs.org/dist/ \
     | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
