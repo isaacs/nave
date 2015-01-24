@@ -650,6 +650,10 @@ add_named_env () {
   ensure_dir "$NAVE_ROOT/$name/share/man"
 
   ln -sf -- "$NAVE_ROOT/$version/bin/node" "$NAVE_ROOT/$name/bin/node"
+  if [ -e "$NAVE_ROOT/$version/bin/iojs" ]; then
+    ln -sf -- "$NAVE_ROOT/$version/bin/iojs" "$NAVE_ROOT/$name/bin/iojs"
+  fi
+
   ln -sf -- "$NAVE_ROOT/$version/bin/npm"  "$NAVE_ROOT/$name/bin/npm"
   ln -sf -- "$NAVE_ROOT/$version/bin/node-waf" "$NAVE_ROOT/$name/bin/node-waf"
 }
