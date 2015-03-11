@@ -372,7 +372,10 @@ nave_ls () {
 
 nave_ls_remote () {
   get -s http://nodejs.org/dist/ \
-    | version_list "remote" \
+    | version_list "node remote" \
+    || return 1
+  get -s https://iojs.org/dist/ \
+    | version_list "io.js remote" \
     || return 1
 }
 
