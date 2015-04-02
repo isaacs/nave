@@ -311,7 +311,7 @@ nave_usemain () {
     fail "Can't usemain inside a nave subshell. Exit to main shell."
   fi
   local version=$(ver "$1")
-  local current=$(node -v || true)
+  local current=$(command -v node >/dev/null 2>&1 && node -v)
   local wn=$(which node || true)
   local prefix="/usr/local"
   if [ "x$wn" != "x" ]; then
