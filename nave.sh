@@ -418,7 +418,7 @@ nave_version_family () {
 }
 
 nave_latest () {
-  get -s https://iojs.org/dist/ \
+  get -s http://nodejs.org/dist/ \
     | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
