@@ -81,7 +81,7 @@ main () {
               )/$(basename -- "$SYM")
   done
 
-  if ! [ -z "${NAVE_DIR+defined}" ]; then
+  if ! [ "$NAVE_DIR" ]; then
     if [ -d "$HOME" ]; then
       NAVE_DIR="$HOME"/.nave
     else
