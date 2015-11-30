@@ -34,6 +34,7 @@ shell=`basename "$SHELL"`
 case "$shell" in
   bash) ;;
   zsh) ;;
+  fish) ;;
   *)
     echo "Nave only supports zsh and bash shells." >&2
     exit 1
@@ -547,6 +548,7 @@ nave_run () {
   local args=()
   local isLogin
 
+  local runShell=$SHELL
   if [ "$exec" == "exec" ]; then
     isLogin=""
     # source the nave env file, then run the command.
@@ -555,6 +557,12 @@ nave_run () {
     isLogin="1"
     # no need to set rcfile, since ZDOTDIR is set.
     args=()
+  elif [ "$shell" == "fish" ]; then
+    isLogin="1"
+    # use bash so we can source the rcfile we've prepared but then tell bash to
+    # run 'fish' so we get the user's preferred shell
+    runShell="bash"
+    args=("-c" ". $NAVE_DIR/.zshenv && $SHELL")
   else
     isLogin="1"
     # bash, use --rcfile argument
@@ -579,7 +587,7 @@ nave_run () {
   NAVE_LOGIN="$isLogin" \
   NAVE_DIR="$NAVE_DIR" \
   ZDOTDIR="$NAVE_DIR" \
-    "$SHELL" "${args[@]}"
+    "$runShell" "${args[@]}"
 
   exit_code=$?
   hash -r
