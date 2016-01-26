@@ -215,10 +215,10 @@ nave_fetch () {
 
   local url
   local urls=(
-    "https://iojs.org/dist/v$version/iojs-v$version.tar.gz"
     "http://nodejs.org/dist/v$version/node-v$version.tar.gz"
     "http://nodejs.org/dist/node-v$version.tar.gz"
     "http://nodejs.org/dist/node-$version.tar.gz"
+    "https://iojs.org/dist/v$version/iojs-v$version.tar.gz"
   )
   for url in "${urls[@]}"; do
     get -#Lf "$url" > "$src".tgz
@@ -257,8 +257,8 @@ build () {
     if [ $binavail -eq 1 ]; then
       local t="$version-$os-$arch"
       local tgz="$NAVE_SRC/$t.tgz"
-      for url in "https://iojs.org/dist/v$version/iojs-v${t}.tar.gz" \
-                "http://nodejs.org/dist/v$version/node-v${t}.tar.gz"; do
+      for url in "https://nodejs.org/dist/v$version/node-v${t}.tar.gz" \
+                "http://iojs.org/dist/v$version/iojs-v${t}.tar.gz"; do
         get -#Lf "$url" > "$tgz"
         if [ $? -ne 0 ]; then
           # binary download failed.  oh well.  cleanup, and proceed.
