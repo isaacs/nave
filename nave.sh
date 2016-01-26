@@ -205,7 +205,6 @@ fail () {
 nave_fetch () {
   local version=$(ver "$1")
   if nave_has "$version"; then
-    echo "already fetched $version" >&2
     return 0
   fi
 
@@ -322,7 +321,6 @@ nave_usemain () {
   fi
   current="${current/v/}"
   if [ "$current" == "$version" ]; then
-    echo "$version already installed" >&2
     return 0
   fi
 
@@ -335,7 +333,6 @@ nave_install () {
     fail "Must supply a version ('stable', 'latest' or numeric)"
   fi
   if nave_installed "$version"; then
-    echo "Already installed: $version" >&2
     return 0
   fi
   local install="$NAVE_ROOT/$version"
@@ -490,7 +487,6 @@ nave_use () {
   fi
 
   if [ "$version" == "$NAVENAME" ]; then
-    echo "already using $version" >&2
     if [ $# -gt 1 ]; then
       shift
       "$@"
@@ -501,7 +497,6 @@ nave_use () {
   nave_install "$version" || fail "failed to install $version"
   local prefix="$NAVE_ROOT/$version"
   local lvl=$[ ${NAVELVL-0} + 1 ]
-  echo "using $version" >&2
   if [ $# -gt 1 ]; then
     shift
     nave_exec "$lvl" "$version" "$version" "$prefix" "$@"
@@ -598,7 +593,6 @@ nave_named () {
   add_named_env "$name" "$version" || fail "failed to create $name env"
 
   if [ "$name" == "$NAVENAME" ] && [ "$version" == "$NAVEVERSION" ]; then
-    echo "already using $name" >&2
     if [ $# -gt 0 ]; then
       "$@"
     fi
