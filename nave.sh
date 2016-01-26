@@ -398,6 +398,8 @@ ver () {
   version="${version/v/}"
   case $version in
     latest | stable) nave_$version ;;
+    +([0-9])) nave_version_family "$version\."'[0-9]+' ;;
+    +([0-9])\.) nave_version_family "$version"'[0-9]+' ;;
     +([0-9])\.+([0-9])) nave_version_family "$version" ;;
     +([0-9])\.+([0-9])\.+([0-9])) echo $version ;;
     *) [ "$nonames" = "" ] && echo $version ;;
