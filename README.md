@@ -8,6 +8,23 @@ If you want a global `nave` command, you could install this thing with npm.
 But that's not really necessary.  You can run the `nave.sh` shell script
 from here, or symlink it wherever you want.
 
+### with [basher](https://github.com/basherpm/basher)
+
+```
+basher install isaacs/nave
+```
+
+### with [npm](http://npm.im)
+
+If you have npm, presumably you already have Node, so it's a tiny bit
+silly, but maybe you like installing the top-level Node some other
+way, and install your subshell version switcher with npm.  Why is a
+bash program in npm anyway?  It's fine.  Bits don't judge.
+
+```
+npm install -g nave
+```
+
 ## Usage
 
     Usage: nave <cmd>
