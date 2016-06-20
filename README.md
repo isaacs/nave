@@ -83,8 +83,10 @@ Prior to version 0.2, nave would run programs as `node <program>`.
 However, this is somewhat more limiting, so was dropped.  If you prefer the
 old style, just prefix your command with `node`.
 
-Nave requires bash.  It will probably never work on Windows, or other systems
-lack a native Bourne Again Shell.  Sorry.
+Nave requires bash.  It hasn't been tested on Windows new
+[Bash on Ubuntu on Windows](https://msdn.microsoft.com/en-us/commandline/wsl/about),
+and it will definitely never work on other systems that lack a native Bourne
+Again Shell.  Sorry.
 
 Nave logins work with bash and zsh.  If your shell doesn't set the
 `BASH` environment variable, then nave assumes you're using zsh.  As
