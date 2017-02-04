@@ -151,9 +151,6 @@ RC
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-#    use)
-#      cmd="nave_named"
-#      ;;
     install | fetch | use | clean | test | named | \
     ls |  uninstall | usemain | latest | stable | has | installed )
       cmd="nave_$cmd"
@@ -164,12 +161,10 @@ RC
   esac
   $cmd "$@"
   local ret=$?
-  if [ $ret -eq 0 ]; then
-    exit 0
-  else
+  if ! [ $ret -eq 0 ]; then
     echo "failed with code=$ret" >&2
-    exit $ret
   fi
+  exit $ret
 }
 
 function enquote_all () {
@@ -489,14 +484,16 @@ nave_use () {
   fi
 
   if [ "$version" == "$NAVENAME" ]; then
+    # no need to install
     if [ $# -gt 1 ]; then
       shift
       "$@"
+      return $?
     fi
-    return $?
+  else
+    nave_install "$version" || fail "failed to install $version"
   fi
 
-  nave_install "$version" || fail "failed to install $version"
   local prefix="$NAVE_ROOT/$version"
   local lvl=$[ ${NAVELVL-0} + 1 ]
   if [ $# -gt 1 ]; then
@@ -563,6 +560,13 @@ nave_run () {
     nave="$name"-"$version"
   fi
 
+  # use exec to take over this shell process with whatever we're
+  # executing, whether that's a login or a command.  otherwise there
+  # are actually TWO subshells, rather than one.  Technically, since
+  # this is an exec command, the bit after the generated command never
+  # runs, but if the command fails in some horrible way it's good to see
+  args=(exec "$SHELL" "${args[@]}")
+
   NAVELVL=$lvl \
   NAVEPATH="$bin" \
   NAVEVERSION="$version" \
@@ -576,7 +580,7 @@ nave_run () {
   NAVE_LOGIN="$isLogin" \
   NAVE_DIR="$NAVE_DIR" \
   ZDOTDIR="$NAVE_DIR" \
-    "$SHELL" "${args[@]}"
+    "${args[@]}"
 
   exit_code=$?
   hash -r
