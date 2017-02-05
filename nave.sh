@@ -93,7 +93,7 @@ main () {
       NAVE_DIR=$prefix/lib/nave
     fi
   fi
-  if ! [ -d "$NAVE_DIR" ] && ! mkdir -p -- "$NAVE_DIR"; then
+  if ! [ -d "$NAVE_DIR" ] && ! ensure_dir "$NAVE_DIR"; then
     NAVE_DIR="$(dirname -- "$SELF_PATH")"
   fi
 
@@ -156,7 +156,7 @@ RC
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    install | fetch | use | clean | test | named | \
+    cache | install | fetch | use | clean | test | named | \
     ls |  uninstall | usemain | latest | stable | has | installed )
       cmd="nave_$cmd"
       ;;
@@ -165,11 +165,7 @@ RC
       ;;
   esac
   $cmd "$@"
-  local ret=$?
-  if ! [ $ret -eq 0 ]; then
-    echo "failed with code=$ret" >&2
-  fi
-  exit $ret
+  exit $?
 }
 
 function enquote_all () {
@@ -274,8 +270,8 @@ get_html () {
   fi
 
   local cache="$NAVE_DIR/cache/$dir"
-  mkdir -p "$cache"
-  local tsfile="$cache/${base}-ts"
+  ensure_dir "$cache"
+  local tsfile="$cache/${base}-timestamp"
 
   if [ -f "$tsfile" ] && \
      [ -f "$cache/$base" ] && \
@@ -360,6 +356,31 @@ build () {
     make install || fail "Failed to install $version"
   ) || fail "fail"
   return $?
+}
+
+nave_cache () {
+  local cache="$NAVE_DIR/cache"
+  local subcmd="$1"
+  shift
+  ensure_dir "$cache"
+  case "$subcmd" in
+    clear|empty|clean)
+      rm -rf "$cache"
+      ;;
+    ls)
+      find "$cache" "$@"
+      ;;
+    tree)
+      tree "$cache" "$@"
+      ;;
+    *)
+      cat >&2 <<USAGE
+usage: nave cache [clear|ls|tree]
+USAGE
+      return 1
+      ;;
+  esac
+
 }
 
 nave_usemain () {
@@ -745,6 +766,7 @@ ls                   List versions currently installed
 ls-remote            List remote node versions
 ls-all               List remote and local node versions
 latest               Show the most recent dist version
+cache                Clear or view the cache
 help                 Output help information
 
 <version> can be the string "latest" to get the latest distribution.
