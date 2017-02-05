@@ -43,6 +43,10 @@ esac
 # Use fancy pants globs
 shopt -s extglob
 
+NODEDIST=${NODEDIST:-https://nodejs.org/dist}
+NAVE_CACHE_DUR=${NAVE_CACHE_DUR:-86400}
+NAVEUA="nave/$(curl --version | head -n1)"
+
 # Try to figure out the os and arch for binary fetching
 uname="$(uname -a)"
 os=
@@ -208,22 +212,14 @@ nave_fetch () {
   remove_dir "$src"
   ensure_dir "$src"
 
-  local url
-  local urls=(
-    "http://nodejs.org/dist/v$version/node-v$version.tar.gz"
-    "http://nodejs.org/dist/node-v$version.tar.gz"
-    "http://nodejs.org/dist/node-$version.tar.gz"
-  )
-  for url in "${urls[@]}"; do
-    get -#Lf "$url" > "$src".tgz
+  get "/v$version/node-v$version.tar.gz" -#Lf > "$src".tgz
+  if [ $? -eq 0 ]; then
+    $tar xzf "$src".tgz -C "$src" --strip-components=1
     if [ $? -eq 0 ]; then
-      $tar xzf "$src".tgz -C "$src" --strip-components=1
-      if [ $? -eq 0 ]; then
-        echo "fetched from $url" >&2
-        return 0
-      fi
+      echo "fetched $version" >&2
+      return 0
     fi
-  done
+  fi
 
   rm "$src".tgz
   remove_dir "$src"
@@ -231,13 +227,91 @@ nave_fetch () {
   return 1
 }
 
+get_tgz () {
+  local dir="$1"
+  shift
+  local base="$1"
+  shift
+
+  local shasum=$(
+    get_html "$dir" "SHASUMS256.txt" | grep "$base" | awk '{print $1}'
+  )
+
+  local cache=$NAVE_DIR/cache
+  if [ -f "$cache/$dir/$shasum.tgz" ]; then
+    cat "$cache/$dir/$shasum.tgz"
+    return
+  fi
+  get_ "$NODEDIST/$dir/$base" "$@" > "$cache/$dir/$base"
+
+  local actualshasum=$(shasum -a 256 "$cache/$dir/$base" | awk '{print $1}')
+  if ! [ "$shasum" = "$actualshasum" ]; then
+    echo "shasum mismatch, expect $shasum, got $shasum" >&2
+    rm "$cache/$dir/$base"
+    return 1
+  fi
+
+  mv "$cache/$dir/$base" "$cache/$dir/$shasum.tgz"
+  cat "$cache/$dir/$shasum.tgz"
+}
+
+get_html () {
+  # echo "get_html dir=[$1] base=[$2]" >&2
+  local dir="$1"
+  shift
+  local base="$1"
+  shift
+
+  if [ "$dir" = "/" ]; then
+    dir=""
+  fi
+  if [ "$base" = "/" ]; then
+    base=""
+  fi
+  local url=$dir/$base
+  if [ "$base" = "" ]; then
+    base="index.html"
+  fi
+
+  local cache="$NAVE_DIR/cache/$dir"
+  mkdir -p "$cache"
+  local tsfile="$cache/${base}-ts"
+
+  if [ -f "$tsfile" ] && \
+     [ -f "$cache/$base" ] && \
+     [ $[ $(date '+%s') - $(cat $tsfile) ] -lt $NAVE_CACHE_DUR ]; then
+    cat "$cache/$base"
+  else
+    get_ -s "$NODEDIST/$url" "$@" | tee "$cache/$base" && \
+      date '+%s' > "$tsfile"
+  fi
+}
+
+get_ () {
+  # echo curl "$@" >&2
+  curl -H "user-agent:$NAVEUA" "$@"
+  return $?
+}
+
 get () {
-  curl -H "user-agent:nave/$(curl --version | head -n1)" "$@"
+  local base=$(basename "$1")
+  local dir=$(dirname "$1")
+  shift
+
+  case "$base" in
+    *.tar.gz)
+      get_tgz "$dir" "$base" "$@"
+      return $?
+      ;;
+  esac
+
+  get_html "$dir" "$base" "$@"
   return $?
 }
 
 build () {
   local version="$1"
+  local targetfolder="$2"
 
   # shortcut - try the binary if possible.
   if [ -n "$os" ]; then
@@ -250,25 +324,15 @@ build () {
     esac
     if [ $binavail -eq 1 ]; then
       local t="$version-$os-$arch"
-      local tgz="$NAVE_SRC/$t.tgz"
-      url="https://nodejs.org/dist/v$version/node-v${t}.tar.gz"
-      get -#Lf "$url" > "$tgz"
+      local url="/v$version/node-v${t}.tar.gz"
+      get "$url" -#Lf | \
+        $tar xz -C "$targetfolder" --strip-components 1
       if [ $? -ne 0 ]; then
-        # binary download failed.  oh well.  cleanup, and proceed.
-        rm "$tgz"
-      else
-        # unpack straight into the build target.
-        $tar xzf "$tgz" -C "$2" --strip-components 1
-        if [ $? -ne 0 ]; then
-          rm "$tgz"
-          nave_uninstall "$version"
-          echo "Binary unpack failed, trying source." >&2
-        fi
-        # it worked!
-        echo "installed from binary" >&2
-        return 0
+        nave_uninstall "$version"
+        echo "Binary install failed, trying source." >&2
       fi
-      echo "Binary download failed, trying source." >&2
+      # it worked!
+      return 0
     fi
   fi
 
@@ -321,6 +385,7 @@ nave_usemain () {
 }
 
 nave_install () {
+  # echo "nave_install $@" >&2
   local version=$(ver "$1")
   if [ -z "$version" ]; then
     fail "Must supply a version ('stable', 'latest' or numeric)"
@@ -361,7 +426,7 @@ nave_ls () {
 }
 
 nave_ls_remote () {
-  get -s http://nodejs.org/dist/ \
+  get / \
     | version_list "node remote" \
     || return 1
 }
@@ -399,21 +464,21 @@ ver () {
 nave_version_family () {
   local family="$1"
   family="${family/v/}"
-  get -s http://nodejs.org/dist/ \
+  get / \
     | egrep -o $family'\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
 }
 
 nave_latest () {
-  get -s http://nodejs.org/dist/ \
+  get / \
     | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
 }
 
 nave_stable () {
-  get -s http://nodejs.org/dist/ \
+  get / \
     | egrep -o '[0-9]+\.[0-9]*[02468]\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
@@ -522,6 +587,7 @@ nave_run () {
   shift
   local prefix="$1"
   shift
+  #echo "nave_run exec=$exec lvl=$lvl name=$name version=$version prefix=$prefix" >&2
 
   local bin="$prefix/bin"
   local lib="$prefix/lib/node"
