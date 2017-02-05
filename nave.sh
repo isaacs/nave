@@ -85,7 +85,8 @@ main () {
     if [ -d "$HOME" ]; then
       NAVE_DIR="$HOME"/.nave
     else
-      NAVE_DIR=/usr/local/lib/nave
+      local prefix=${PREFIX:-/usr/local}
+      NAVE_DIR=$prefix/lib/nave
     fi
   fi
   if ! [ -d "$NAVE_DIR" ] && ! mkdir -p -- "$NAVE_DIR"; then
@@ -307,11 +308,11 @@ nave_usemain () {
   local version=$(ver "$1")
   local current=$(command -v node >/dev/null 2>&1 && node -v)
   local wn=$(which node || true)
-  local prefix="/usr/local"
+  local prefix=${PREFIX:-/usr/local}
   if [ "x$wn" != "x" ]; then
     prefix="${wn/\/bin\/node/}"
     if [ "x$prefix" == "x" ]; then
-      prefix="/usr/local"
+      prefix=${PREFIX:-/usr/local}
     fi
   fi
   current="${current/v/}"
