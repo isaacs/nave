@@ -2,6 +2,8 @@
 
 Virtual Environments for Node
 
+Works great with bash, fish, and zsh shells.
+
 ## Installation
 
 If you want a global `nave` command, you could install this thing with
