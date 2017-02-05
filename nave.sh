@@ -156,7 +156,7 @@ RC
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    cache | install | fetch | use | clean | test | named | \
+    cache | exit | install | fetch | use | clean | test | named | \
     ls |  uninstall | usemain | latest | stable | has | installed )
       cmd="nave_$cmd"
       ;;
@@ -164,6 +164,7 @@ RC
       cmd="nave_help"
       ;;
   esac
+  # echo "nave_$cmd = [$cmd] @=[$@]" >&2
   $cmd "$@"
   exit $?
 }
@@ -224,13 +225,13 @@ nave_fetch () {
 }
 
 get_tgz () {
-  local dir="$1"
-  shift
-  local base="$1"
+  local path=$1
+  local base=$(basename "$path")
+  local dir=$(dirname "$path")
   shift
 
   local shasum=$(
-    get_html "$dir" "SHASUMS256.txt" | grep "$base" | awk '{print $1}'
+    get_html "$dir/SHASUMS256.txt" | grep "$base" | awk '{print $1}'
   )
 
   local cache=$NAVE_DIR/cache
@@ -238,7 +239,8 @@ get_tgz () {
     cat "$cache/$dir/$shasum.tgz"
     return
   fi
-  get_ "$NODEDIST/$dir/$base" "$@" > "$cache/$dir/$base"
+  # echo "1 get_ '$NODEDIST/$path' '$@'" >&2
+  get_ "$NODEDIST/$path" "$@" > "$cache/$dir/$base"
 
   local actualshasum=$(shasum -a 256 "$cache/$dir/$base" | awk '{print $1}')
   if ! [ "$shasum" = "$actualshasum" ]; then
@@ -252,11 +254,12 @@ get_tgz () {
 }
 
 get_html () {
+  local path=$1
+  local base=$(basename "$path")
+  local dir=$(dirname "$path")
+  shift
+
   # echo "get_html dir=[$1] base=[$2]" >&2
-  local dir="$1"
-  shift
-  local base="$1"
-  shift
 
   if [ "$dir" = "/" ]; then
     dir=""
@@ -264,7 +267,6 @@ get_html () {
   if [ "$base" = "/" ]; then
     base=""
   fi
-  local url=$dir/$base
   if [ "$base" = "" ]; then
     base="index.html"
   fi
@@ -278,7 +280,8 @@ get_html () {
      [ $[ $(date '+%s') - $(cat $tsfile) ] -lt $NAVE_CACHE_DUR ]; then
     cat "$cache/$base"
   else
-    get_ -s "$NODEDIST/$url" "$@" | tee "$cache/$base" && \
+    # echo "2 get_ -s '$NODEDIST/$path' '$@'" >&2
+    get_ -s "$NODEDIST/$path" "$@" | tee "$cache/$base" && \
       date '+%s' > "$tsfile"
   fi
 }
@@ -290,18 +293,19 @@ get_ () {
 }
 
 get () {
-  local base=$(basename "$1")
-  local dir=$(dirname "$1")
+  local path=$1
+  local base=$(basename "$path")
+  local dir=$(dirname "$path")
   shift
 
   case "$base" in
     *.tar.gz)
-      get_tgz "$dir" "$base" "$@"
+      get_tgz "$path" "$@"
       return $?
       ;;
   esac
 
-  get_html "$dir" "$base" "$@"
+  get_html "$path" "$@"
   return $?
 }
 
@@ -409,7 +413,7 @@ nave_install () {
   # echo "nave_install $@" >&2
   local version=$(ver "$1")
   if [ -z "$version" ]; then
-    fail "Must supply a version ('stable', 'latest' or numeric)"
+    fail "Must supply a version ('lts', 'stable', 'latest' or numeric)"
   fi
   if nave_installed "$version"; then
     return 0
@@ -423,6 +427,29 @@ nave_install () {
     remove_dir "$install"
     return $ret
   fi
+}
+
+nave_exit () {
+  export PATH=${PATH:${#NAVEPATH}+1}
+  unset NAVEDEBUG
+  unset NAVE_JOBS
+  unset NAVELVL
+  unset NAVEPATH
+  unset NAVEVERSION
+  unset NAVENAME
+  unset NAVE
+  unset NAVE_SRC
+  unset NAVE_CONFIG
+  unset NAVE_ROOT
+  unset NODE_PATH
+  unset NAVE_LOGIN
+  unset NAVE_DIR
+  unset ZDOTDIR
+  unset npm_config_binroot
+  unset npm_config_root
+  unset npm_config_manroot
+  unset npm_config_prefix
+  exec $SHELL
 }
 
 nave_test () {
@@ -473,7 +500,8 @@ ver () {
   local nonames="$2"
   version="${version/v/}"
   case $version in
-    latest | stable) nave_$version ;;
+    lts-* | lts/*) nave_lts $version ;;
+    lts | latest | stable) nave_$version ;;
     +([0-9])) nave_version_family "$version\."'[0-9]+' ;;
     +([0-9])\.) nave_version_family "$version"'[0-9]+' ;;
     +([0-9])\.+([0-9])) nave_version_family "$version" ;;
@@ -499,10 +527,30 @@ nave_latest () {
 }
 
 nave_stable () {
-  get / \
-    | egrep -o '[0-9]+\.[0-9]*[02468]\.[0-9]+' \
-    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
-    | tail -n1
+  nave_lts "$@"
+}
+
+nave_lts () {
+  # echo "nave_lts $@" >&2
+  local lts="$1"
+  case $lts in
+    "" | "lts/*")
+      lts="$(get / \
+        | egrep -o 'latest-[^v][^/]+' \
+        | sort | uniq | tail -n1)"
+      lts=${lts/latest-/}
+      ;;
+    lts/*)
+      lts=$(basename "$lts")
+      ;;
+    latest-*)
+      lts=${lts/latest-/}
+      # echo "nave_lts lts latest [$lts]" >&2
+      ;;
+  esac
+  # echo "nave_lts lts=[$lts]" >&2
+
+  get /latest-$lts/ | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' | head -n1
 }
 
 version_list_named () {
@@ -548,7 +596,7 @@ nave_installed () {
 }
 
 nave_use () {
-  local version=$(ver "$1")
+  local version=$(ver "$@")
 
   # if it's not a version number, then treat as a name.
   case "$version" in
@@ -716,7 +764,7 @@ add_named_env () {
 
   if [ "$version" = "" ]; then
     echo "What version of node?"
-    read -p "stable, latest, x.y, or x.y.z > " version
+    read -p "lts, lts/<name>, latest, x.y, or x.y.z > " version
     version=$(ver "$version")
   fi
 
@@ -768,9 +816,24 @@ ls-all               List remote and local node versions
 latest               Show the most recent dist version
 cache                Clear or view the cache
 help                 Output help information
+exit                 Unset all the NAVE environs (use with 'exec')
 
-<version> can be the string "latest" to get the latest distribution.
-<version> can be the string "stable" to get the latest stable version.
+Version Strings:
+Any command that calls for a version can be provided any of the
+following "version-ish" identifies:
+
+- x.y.z       A specific SemVer tuple
+- x.y         Major and minor version number
+- x           Just a major version number
+- lts         The most recent LTS (long-term support) node version
+- lts/<name>  The latest in a named LTS set. (argon, boron, etc.)
+- lts/*       Same as just "lts"
+- latest      The most recent (non-LTS) version
+- stable      Backwards-compatible alias for "lts".
+
+To exit a nave subshell, type 'exit' or press ^D.
+To run nave *without* a subshell, do 'exec nave use <version>'.
+To clear the settings from a nave env, use 'exec nave exit'
 
 EOF
 }

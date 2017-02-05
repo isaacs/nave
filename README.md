@@ -4,9 +4,9 @@ Virtual Environments for Node
 
 ## Installation
 
-If you want a global `nave` command, you could install this thing with npm.
-But that's not really necessary.  You can run the `nave.sh` shell script
-from here, or symlink it wherever you want.
+If you want a global `nave` command, you could install this thing with
+npm.  But that's not really necessary.  You can run the `nave.sh`
+shell script from here, or symlink it wherever you want.
 
 ### with [basher](https://github.com/basherpm/basher)
 
@@ -27,40 +27,70 @@ npm install -g nave
 
 ## Usage
 
-    Usage: nave <cmd>
+```
+Usage: nave <cmd>
 
-    Commands:
+Commands:
 
-    install <version>    Install the version passed (ex: 0.1.103)
-    use <version>        Enter a subshell where <version> is being used
-    use <ver> <program>  Enter a subshell, and run "<program>", then exit
-    use <name> <ver>     Create a named env, using the specified version.
-                         If the name already exists, but the version differs,
-                         then it will update the link.
-    usemain <version>    Install in /usr/local/bin (ie, use as your main nodejs)
-    clean <version>      Delete the source code for <version>
-    uninstall <version>  Delete the install for <version>
-    ls                   List versions currently installed
-    ls-remote            List remote node versions
-    ls-all               List remote and local node versions
-    latest               Show the most recent dist version
-    help                 Output help information
+install <version>    Install the version passed (ex: 0.1.103)
+use <version>        Enter a subshell where <version> is being used
+use <ver> <program>  Enter a subshell, and run "<program>", then exit
+use <name> <ver>     Create a named env, using the specified version.
+                     If the name already exists, but the version differs,
+                     then it will update the link.
+usemain <version>    Install in /usr/local/bin (ie, use as your main nodejs)
+clean <version>      Delete the source code for <version>
+uninstall <version>  Delete the install for <version>
+ls                   List versions currently installed
+ls-remote            List remote node versions
+ls-all               List remote and local node versions
+latest               Show the most recent dist version
+cache                Clear or view the cache
+help                 Output help information
+exit                 Unset all the NAVE environs (use with 'exec')
 
-    <version> can be the string "latest" to get the latest distribution.
-    <version> can be the string "stable" to get the latest stable version.
+Version Strings:
+Any command that calls for a version can be provided any of the
+following "version-ish" identifies:
 
-That's about it.  Enjoy.
+- x.y.z       A specific SemVer tuple
+- x.y         Major and minor version number
+- x           Just a major version number
+- lts         The most recent LTS (long-term support) node version
+- lts/<name>  The latest in a named LTS set. (argon, boron, etc.)
+- lts/*       Same as just "lts"
+- latest      The most recent (non-LTS) version
+- stable      Backwards-compatible alias for "lts".
 
-When you're done using a specific version of node, just exit the shell to return
-to where you were before using nave.
+To exit a nave subshell, type 'exit' or press ^D.
+To run nave *without* a subshell, do 'exec nave use <version>'.
+To clear the settings from a nave env, use 'exec nave exit'
+```
+
+## Subshell-free operation
+
+If you prefer to not enter a subshell, just run nave with `exec`
+
+```bash
+exec nave use lts/argon
+```
+
+You could even add something like this to your `.bashrc` file to save
+on typing:
+
+```bash
+n () {
+  exec nave "$@"
+}
+```
 
 ## env vars
 
 * `$NAVE` The current shell.  Either a version, or a name and version.
-* `$NAVENAME` The name of the current shell.  Equal to `$NAVEVERSION` in
-  unnammed environments.
-* `$NAVEVERSION` The version of node that the current shell is pointing
-  to.  (This should comply with `node -v`.)
+* `$NAVENAME` The name of the current shell.  Equal to `$NAVEVERSION`
+  in unnammed environments.
+* `$NAVEVERSION` The version of node that the current shell is
+  pointing to.  (This should comply with `node -v`.)
 * `$NAVELVL` The level of nesting in the subshell.
 * `$NAVE_DEBUG` Set to 1 to run nave in `bash -x` style.
 * `$NAVE_DIR` Set to the location where you'd like nave to do its
@@ -73,24 +103,23 @@ to where you were before using nave.
   can be set in the `~/.naverc` file, or in your normal
   `~/.bash{rc,_profile}` files.
 * `$NAVE_JOBS` If set, this will be the number of jobs to run when
-  building node.  If this isn't set, it'll use the `$JOBS` env, then try
-  to guess a reasonable value based on the number of CPUs, then fall
-  back on 2 if `sysctl -n hw.ncpu` fails.
+  building node.  If this isn't set, it'll use the `$JOBS` env, then
+  try to guess a reasonable value based on the number of CPUs, then
+  fall back on 2 if `sysctl -n hw.ncpu` fails.
 
 ## Compatibility
 
 Prior to version 0.2, nave would run programs as `node <program>`.
-However, this is somewhat more limiting, so was dropped.  If you prefer the
-old style, just prefix your command with `node`.
+However, this is somewhat more limiting, so was dropped.  If you
+prefer the old style, just prefix your command with `node`.
 
-Nave requires bash.  It will probably never work on Windows, or other systems
-lack a native Bourne Again Shell.  Sorry.
+Nave requires bash.  It will probably never work on Windows, or other
+systems lack a native Bourne Again Shell.  Sorry.
 
 Nave logins work with bash and zsh.  If your shell doesn't set the
 `BASH` environment variable, then nave assumes you're using zsh.  As
-such, strange archaic shells like sh, csh, tcsh, ksh, and the like will not
-work.
-
+such, strange archaic shells like sh, csh, tcsh, ksh, and the like
+will not work.
 
 ## Configuration
 
@@ -109,11 +138,11 @@ then it will exit with an error.
 
 ## Credits
 
-nave borrows concepts, inspiration, and code from Tim Caswell's "nvm" and Kris
-Kowal's "sea" programs.
+nave borrows concepts, inspiration, and code from Tim Caswell's "nvm"
+and Kris Kowal's "sea" programs.
 
-Sea is really nice, but is very tied to Narwhal.  Also, it's a require.paths
-manager, which nave is not.
+Sea is really nice, but is very tied to Narwhal.  Also, it's a
+require.paths manager, which nave is not.
 
 Nvm is also really nice, but has to be sourced rather than being run, and
 thus is a little bit wonky for some use cases.  But it doesn't involve
