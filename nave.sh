@@ -213,7 +213,6 @@ nave_fetch () {
     "http://nodejs.org/dist/v$version/node-v$version.tar.gz"
     "http://nodejs.org/dist/node-v$version.tar.gz"
     "http://nodejs.org/dist/node-$version.tar.gz"
-    "https://iojs.org/dist/v$version/iojs-v$version.tar.gz"
   )
   for url in "${urls[@]}"; do
     get -#Lf "$url" > "$src".tgz
@@ -252,25 +251,23 @@ build () {
     if [ $binavail -eq 1 ]; then
       local t="$version-$os-$arch"
       local tgz="$NAVE_SRC/$t.tgz"
-      for url in "https://nodejs.org/dist/v$version/node-v${t}.tar.gz" \
-                "http://iojs.org/dist/v$version/iojs-v${t}.tar.gz"; do
-        get -#Lf "$url" > "$tgz"
+      url="https://nodejs.org/dist/v$version/node-v${t}.tar.gz"
+      get -#Lf "$url" > "$tgz"
+      if [ $? -ne 0 ]; then
+        # binary download failed.  oh well.  cleanup, and proceed.
+        rm "$tgz"
+      else
+        # unpack straight into the build target.
+        $tar xzf "$tgz" -C "$2" --strip-components 1
         if [ $? -ne 0 ]; then
-          # binary download failed.  oh well.  cleanup, and proceed.
           rm "$tgz"
-        else
-          # unpack straight into the build target.
-          $tar xzf "$tgz" -C "$2" --strip-components 1
-          if [ $? -ne 0 ]; then
-            rm "$tgz"
-            nave_uninstall "$version"
-            echo "Binary unpack failed, trying source." >&2
-          fi
-          # it worked!
-          echo "installed from binary" >&2
-          return 0
+          nave_uninstall "$version"
+          echo "Binary unpack failed, trying source." >&2
         fi
-      done
+        # it worked!
+        echo "installed from binary" >&2
+        return 0
+      fi
       echo "Binary download failed, trying source." >&2
     fi
   fi
@@ -367,9 +364,6 @@ nave_ls_remote () {
   get -s http://nodejs.org/dist/ \
     | version_list "node remote" \
     || return 1
-  get -s https://iojs.org/dist/ \
-    | version_list "io.js remote" \
-    || return 1
 }
 
 nave_ls_named () {
@@ -405,8 +399,7 @@ ver () {
 nave_version_family () {
   local family="$1"
   family="${family/v/}"
-  { get -s http://nodejs.org/dist/;
-    get -s https://iojs.org/dist/; } \
+  get -s http://nodejs.org/dist/ \
     | egrep -o $family'\.[0-9]+' \
     | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
     | tail -n1
