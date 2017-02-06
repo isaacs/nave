@@ -34,6 +34,26 @@ basher install isaacs/nave
 
 ## Usage
 
+To use a version of node, you do this:
+
+```
+nave use <some version>
+```
+
+If you want to name a virtual env, you can do this:
+
+```
+nave use <some name>
+```
+
+If that virtual env doesn't already exist, it'll prompt you to choose
+a version.
+
+Both of these commands drop you into a subshell.  Exit the shell with
+`exit` or `^D` to go back from whence you came.
+
+Here's the full usage statement:
+
 ```
 Usage: nave <cmd>
 
@@ -54,6 +74,7 @@ ls-all               List remote and local node versions
 latest               Show the most recent dist version
 cache                Clear or view the cache
 help                 Output help information
+auto                 Find a .naverc and then be in that env
 exit                 Unset all the NAVE environs (use with 'exec')
 
 Version Strings:
@@ -90,6 +111,44 @@ n () {
   exec nave "$@"
 }
 ```
+
+## AUTOMAGICAL!
+
+You can put a `.naverc` file in the root of your project (or
+anywhere).  This file should contain the version that you want to use.
+It can be something like `lts/boron` or `6.8` or `latest`
+
+```
+echo lts/boron > ~/projects/my-project/.naverc
+```
+
+Then you can run `nave auto` to load the appropriate environment.
+
+### BUT THAT'S NOT NEARLY MAGICAL OR AUTO ENOUGH FOR ME THOUGH
+
+If you want to get even more absurd/automated, put this in your bash
+settings (like `~/.bashrc` or whatever)
+
+```
+alias cd='exec nave auto'
+```
+
+and then every time you `cd` into a different folder, it'll
+automatically load the correct nave settings, or exit nave-land if no
+automatic stuff could be found.
+
+Note that doing this will also cause it to *exit* the nave environment
+when you cd to a directory that doesn't have a nave setting, so it can
+interfere with "normal" nave operation.
+
+Also, aliasing `cd` is a very all-consuming type of change to make to
+one's system.  You might wish to give it some other name, so that you
+can switch directories without affecting environment variables as a
+potentially surprising side effect, or even just run `exec nave auto`
+as an explicit action whenever you want this behavior to happen.
+
+Bottom line, it's your shell, and I hope that this helps you enjoy it
+more :)
 
 ## env vars
 

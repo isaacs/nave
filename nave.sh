@@ -157,7 +157,7 @@ RC
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    cache | exit | install | fetch | use | clean | test | named | \
+    auto | cache | exit | install | fetch | use | clean | test | named | \
     ls |  uninstall | usemain | latest | stable | has | installed )
       cmd="nave_$cmd"
       ;;
@@ -386,6 +386,29 @@ USAGE
       ;;
   esac
 
+}
+
+# Run this on cd'ing into new directories to automatically enter that
+# nave setting in that directory.
+nave_auto () {
+  if [ $# -eq 1 ]; then
+    if ! cd $1; then
+      exec $SHELL
+    fi
+  fi
+  local dir=$(pwd)
+  while ! [ "$dir" = "/" ]; do
+    if [ -f "$dir"/.naverc ]; then
+      local args=($(cat "$dir"/.naverc))
+      exec nave use "${args[@]}"
+      break
+    elif [ -d "$dir"/.git ]; then
+      break
+    else
+      dir=$(dirname -- "$dir")
+    fi
+  done
+  exec nave exit
 }
 
 nave_usemain () {
@@ -824,6 +847,7 @@ ls-all               List remote and local node versions
 latest               Show the most recent dist version
 cache                Clear or view the cache
 help                 Output help information
+auto                 Find a .naverc and then be in that env
 exit                 Unset all the NAVE environs (use with 'exec')
 
 Version Strings:
