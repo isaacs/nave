@@ -276,9 +276,14 @@ get_html () {
   ensure_dir "$cache"
   local tsfile="$cache/${base}-timestamp"
 
+  local dur=$NAVE_CACHE_DUR
+  if ! [ "$cache/$base" = "$cache/index.html" ]; then
+    dur=$[ $dur * 365 ]
+  fi
+
   if [ -f "$tsfile" ] && \
      [ -f "$cache/$base" ] && \
-     [ $[ $(date '+%s') - $(cat $tsfile) ] -lt $NAVE_CACHE_DUR ]; then
+     [ $[ $(date '+%s') - $(cat $tsfile) ] -lt $dur ]; then
     cat "$cache/$base"
   else
     # echo "2 get_ -s '$NODEDIST/$path' '$@'" >&2
