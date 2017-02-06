@@ -1,6 +1,11 @@
 # nave
 
-Virtual Environments for Node
+Virtual Environments for Node.
+
+Switch out your node version and global npm install space in one
+command.  Supports named environments. Uses subshells by default so
+that you can `^D` or `exit` out of an environment quickly.  No need to
+edit `.bashrc` or `.profile`, just install and go.
 
 Works great with bash, fish, and zsh shells.
 
@@ -9,12 +14,6 @@ Works great with bash, fish, and zsh shells.
 If you want a global `nave` command, you could install this thing with
 npm.  But that's not really necessary.  You can run the `nave.sh`
 shell script from here, or symlink it wherever you want.
-
-### with [basher](https://github.com/basherpm/basher)
-
-```
-basher install isaacs/nave
-```
 
 ### with [npm](http://npm.im)
 
@@ -25,6 +24,12 @@ bash program in npm anyway?  It's fine.  Bits don't judge.
 
 ```
 npm install -g nave
+```
+
+### with [basher](https://github.com/basherpm/basher)
+
+```
+basher install isaacs/nave
 ```
 
 ## Usage
