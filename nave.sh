@@ -289,6 +289,12 @@ get_html () {
     # echo "2 get_ -s '$NODEDIST/$path' '$@'" >&2
     get_ -s "$NODEDIST/$path" "$@" | tee "$cache/$base" && \
       date '+%s' > "$tsfile"
+    local ret=$?
+    if [ $? -ne 0 ] && [ -f "$cache/$base" ]; then
+      cat "$cache/$base"
+      local ret=$?
+    fi
+    return $ret
   fi
 }
 
