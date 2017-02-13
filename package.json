@@ -7,5 +7,10 @@
   "bin": {
     "nave": "./nave.sh"
   },
-  "LICENSE": "BSD"
+  "LICENSE": "BSD",
+  "scripts": {
+    "preversion": "npm test",
+    "postversion": "npm publish",
+    "postpublish": "git push origin --all; git push origin --tags"
+  }
 }
