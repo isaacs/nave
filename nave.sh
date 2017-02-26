@@ -58,8 +58,8 @@ case "$uname" in
   SunOS\ *) os=sunos ;;
 esac
 case "$uname" in
-  *i[3456]86*) arch=x86 ;;
   *x86_64*) arch=x64 ;;
+  *i[3456]86*) arch=x86 ;;
   *raspberrypi*) arch=arm-pi ;;
 esac
 
