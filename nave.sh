@@ -210,7 +210,7 @@ nave_fetch () {
   remove_dir "$src"
   ensure_dir "$src"
 
-  get "/v$version/node-v$version.tar.gz" -#Lf > "$src".tgz
+  get "v$version/node-v$version.tar.gz" -#Lf > "$src".tgz
   if [ $? -eq 0 ]; then
     $tar xzf "$src".tgz -C "$src" --strip-components=1
     if [ $? -eq 0 ]; then
@@ -336,7 +336,7 @@ build () {
     esac
     if [ $binavail -eq 1 ]; then
       local t="$version-$os-$arch"
-      local url="/v$version/node-v${t}.tar.gz"
+      local url="v$version/node-v${t}.tar.gz"
       get "$url" -#Lf | \
         $tar xz -C "$targetfolder" --strip-components 1
       if [ $? -ne 0 ]; then
@@ -599,7 +599,7 @@ nave_lts () {
   esac
   # echo "nave_lts lts=[$lts]" >&2
 
-  get /latest-$lts/ | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' | head -n1
+  get latest-$lts/ | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' | head -n1
 }
 
 version_list_named () {
