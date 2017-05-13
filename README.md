@@ -187,6 +187,15 @@ Nave logins work with bash and zsh.  If your shell doesn't set the
 such, strange archaic shells like sh, csh, tcsh, ksh, and the like
 will not work.
 
+## Alternate Installation
+
+You can also add this to your `~/.bashrc` or wherever you keep your
+aliases to always use the latest copy from github:
+
+```
+nave() { sudo sh -c "$(curl -s 'https://raw.github.com/isaacs/nave/master/nave.sh') $*"; }
+```
+
 ## Configuration
 
 Nave will source `~/.naverc` on initialization of a new subshell, if it
