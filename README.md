@@ -75,6 +75,7 @@ latest               Show the most recent dist version
 cache                Clear or view the cache
 help                 Output help information
 auto                 Find a .naverc and then be in that env
+auto <program>       Find a .naverc, enter a subshell for that env, run "<program>", then exit
 exit                 Unset all the NAVE environs (use with 'exec')
 
 Version Strings:

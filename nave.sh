@@ -403,16 +403,28 @@ USAGE
 # nave setting in that directory.
 nave_auto () {
   if [ $# -eq 1 ]; then
-    if ! cd $1; then
-      exec $SHELL
+    if [ -d $1 ]; then
+      if ! cd $1; then
+        exec $SHELL
+      fi
     fi
   fi
   local dir=$(pwd)
   while ! [ "$dir" = "/" ]; do
     if [ -f "$dir"/.naverc ]; then
       local args=($(cat "$dir"/.naverc))
-      exec nave use "${args[@]}"
-      break
+      if [ -d $1 ]; then
+        if [ $# -gt 1 ]; then
+          exec nave use "${args[@]}" "${@:2}"
+          break
+        else
+          exec nave use "${args[@]}"
+          break
+        fi
+      else
+        exec nave use "${args[@]}" "$@"
+        break
+      fi
     elif [ -d "$dir"/.git ]; then
       break
     else
@@ -861,6 +873,7 @@ latest               Show the most recent dist version
 cache                Clear or view the cache
 help                 Output help information
 auto                 Find a .naverc and then be in that env
+auto <program>       Find a .naverc, enter a subshell for that env, run "<program>", then exit
 exit                 Unset all the NAVE environs (use with 'exec')
 
 Version Strings:
