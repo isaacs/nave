@@ -112,6 +112,14 @@ n () {
 }
 ```
 
+## Running shell script with specific version of Node.js
+
+If there is need to run a shell script with version of node.js provided by nave following snippet can be inserted into script:
+```bash
+[ "${IN_SUBSHELL}" != "$0" ] && exec env IN_SUBSHELL="$0" nave use 5.0.0 bash "$0" "$@" || :
+```
+
+
 ## AUTOMAGICAL!
 
 You can put a `.naverc` file in the root of your project (or
