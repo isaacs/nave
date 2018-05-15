@@ -362,7 +362,7 @@ build () {
 
   ( cd -- "$src"
     [ -f ~/.naverc ] && . ~/.naverc || true
-    if [ "$NAVE_CONFIG" == "" ]; then
+    if [ "$NAVE_CONFIG" = "" ]; then
       NAVE_CONFIG=()
     fi
     JOBS=$jobs ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
@@ -432,12 +432,12 @@ nave_usemain () {
   local prefix=${PREFIX:-/usr/local}
   if [ "x$wn" != "x" ]; then
     prefix="${wn/\/bin\/node/}"
-    if [ "x$prefix" == "x" ]; then
+    if [ "x$prefix" = "x" ]; then
       prefix=${PREFIX:-/usr/local}
     fi
   fi
   current="${current/v/}"
-  if [ "$current" == "$version" ]; then
+  if [ "$current" = "$version" ]; then
     return 0
   fi
 
@@ -493,7 +493,7 @@ nave_test () {
   local src="$NAVE_SRC/$version"
   ( cd -- "$src"
     [ -f ~/.naverc ] && . ~/.naverc || true
-    if [ "$NAVE_CONFIG" == "" ]; then
+    if [ "$NAVE_CONFIG" = "" ]; then
       NAVE_CONFIG=()
     fi
     ./configure "${NAVE_CONFIG[@]}" || fail "failed to ./configure"
@@ -646,7 +646,7 @@ nave_use () {
     fail "Must supply a version"
   fi
 
-  if [ "$version" == "$NAVENAME" ]; then
+  if [ "$version" = "$NAVENAME" ]; then
     # no need to install
     if [ $# -gt 1 ]; then
       shift
@@ -706,15 +706,15 @@ nave_run () {
   local isLogin
 
   local runShell=$SHELL
-  if [ "$exec" == "exec" ]; then
+  if [ "$exec" = "exec" ]; then
     isLogin=""
     # source the nave env file, then run the command.
     args=("-c" ". $(enquote_all $NAVE_DIR/.zshenv); $(enquote_all "$@")")
-  elif [ "$shell" == "zsh" ]; then
+  elif [ "$shell" = "zsh" ]; then
     isLogin="1"
     # no need to set rcfile, since ZDOTDIR is set.
     args=()
-  elif [ "$shell" == "fish" ]; then
+  elif [ "$shell" = "fish" ]; then
     isLogin="1"
     # use bash so we can source the rcfile we've prepared but then tell bash to
     # run 'fish' so we get the user's preferred shell
@@ -769,7 +769,7 @@ nave_named () {
 
   add_named_env "$name" "$version" || fail "failed to create $name env"
 
-  if [ "$name" == "$NAVENAME" ] && [ "$version" == "$NAVEVERSION" ]; then
+  if [ "$name" = "$NAVENAME" ] && [ "$version" = "$NAVEVERSION" ]; then
     if [ $# -gt 0 ]; then
       "$@"
     fi
