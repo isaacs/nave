@@ -31,15 +31,6 @@ MSG
 fi
 
 shell=`basename "$SHELL"`
-case "$shell" in
-  bash) ;;
-  zsh) ;;
-  fish) ;;
-  *)
-    echo "Nave only supports fish, zsh, bash shells." >&2
-    exit 1
-    ;;
-esac
 
 # Use fancy pants globs
 shopt -s extglob
@@ -710,20 +701,26 @@ nave_run () {
     isLogin=""
     # source the nave env file, then run the command.
     args=("-c" ". $(enquote_all $NAVE_DIR/.zshenv); $(enquote_all "$@")")
-  elif [ "$shell" == "zsh" ]; then
-    isLogin="1"
-    # no need to set rcfile, since ZDOTDIR is set.
-    args=()
-  elif [ "$shell" == "fish" ]; then
-    isLogin="1"
-    # use bash so we can source the rcfile we've prepared but then tell bash to
-    # run 'fish' so we get the user's preferred shell
-    runShell="bash"
-    args=("-c" ". $NAVE_DIR/.zshenv && $SHELL")
   else
-    isLogin="1"
-    # bash, use --rcfile argument
-    args=("--rcfile" "$NAVE_DIR/.zshenv")
+    case "$shell" in
+      zsh)
+        isLogin="1"
+        # no need to set rcfile, since ZDOTDIR is set.
+        args=()
+        ;;
+      bash)
+        isLogin="1"
+        # bash, use --rcfile argument
+        args=("--rcfile" "$NAVE_DIR/.zshenv")
+        ;;
+      *)
+        isLogin="1"
+        # use bash so we can source the rcfile we've prepared but then tell
+        # bash to run the user's preferred shell
+        runShell="bash"
+        args=("-c" ". $NAVE_DIR/.zshenv && $SHELL")
+        ;;
+    esac
   fi
 
   local nave="$version"
