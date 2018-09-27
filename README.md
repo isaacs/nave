@@ -7,8 +7,6 @@ command.  Supports named environments. Uses subshells by default so
 that you can `^D` or `exit` out of an environment quickly.  No need to
 edit `.bashrc` or `.profile`, just install and go.
 
-Works great with bash, fish, and zsh shells.
-
 ## Installation
 
 If you want a global `nave` command, you could install this thing with
