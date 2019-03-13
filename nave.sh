@@ -465,7 +465,9 @@ nave_install () {
 }
 
 nave_exit () {
-  export PATH=${PATH:${#NAVEPATH}+1}
+  if [ -n "$NAVEPATH" ]; then
+    export PATH=${PATH:${#NAVEPATH}+1}
+  fi
   unset NAVEDEBUG
   unset NAVE_JOBS
   unset NAVELVL
