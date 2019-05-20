@@ -233,12 +233,16 @@ get_tgz () {
   fi
   # echo "1 get_ '$NODEDIST/$path' '$@'" >&2
   get_ "$NODEDIST/$path" "$@" > "$cache/$dir/$base"
+  if [ $? -ne 0 ]; then
+    rm "$cache/$dir/$base"
+    return 2
+  fi
 
   local actualshasum=$(shasum -a 256 "$cache/$dir/$base" | awk '{print $1}')
   if ! [ "$shasum" = "$actualshasum" ]; then
     echo "shasum mismatch, expect $shasum, got $shasum" >&2
     rm "$cache/$dir/$base"
-    return 1
+    return 2
   fi
 
   mv "$cache/$dir/$base" "$cache/$dir/$shasum.tgz"
@@ -281,9 +285,12 @@ get_html () {
     get_ -s "$NODEDIST/$path" "$@" | tee "$cache/$base" && \
       date '+%s' > "$tsfile"
     local ret=$?
-    if [ $? -ne 0 ] && [ -f "$cache/$base" ]; then
-      cat "$cache/$base"
-      local ret=$?
+    if [ "$ret" -ne 0 ]; then
+      ret=2
+      if [ -f "$cache/$base" ]; then
+        cat "$cache/$base"
+        ret=$?
+      fi
     fi
     return $ret
   fi
@@ -330,12 +337,13 @@ build () {
       local url="v$version/node-v${t}.tar.gz"
       get "$url" -#Lf | \
         $tar xz -C "$targetfolder" --strip-components 1
-      if [ $? -ne 0 ]; then
+      if [ $? -eq 2 ]; then
         nave_uninstall "$version"
         echo "Binary install failed, trying source." >&2
+      else
+        # it worked!
+        return 0
       fi
-      # it worked!
-      return 0
     fi
   fi
 
