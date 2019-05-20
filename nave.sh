@@ -326,12 +326,17 @@ build () {
   # shortcut - try the binary if possible.
   if [ -n "$os" ]; then
     local binavail
-    # binaries started with node 0.8.6
-    case "$version" in
-      0.8.[012345]) binavail=0 ;;
-      0.[1234567].*) binavail=0 ;;
-      *) binavail=1 ;;
-    esac
+    if [ "$NAVE_SRC_ONLY" = "1" ]; then
+      binavail=0
+    else
+      # binaries started with node 0.8.6
+      case "$version" in
+        0.8.[012345]) binavail=0 ;;
+        0.[1234567].*) binavail=0 ;;
+        *) binavail=1 ;;
+      esac
+    fi
+
     if [ $binavail -eq 1 ]; then
       local t="$version-$os-$arch"
       local url="v$version/node-v${t}.tar.gz"

@@ -179,6 +179,8 @@ more :)
   building node.  If this isn't set, it'll use the `$JOBS` env, then
   try to guess a reasonable value based on the number of CPUs, then
   fall back on 2 if `sysctl -n hw.ncpu` fails.
+* `$NAVE_SRC_ONLY` Set to `"1"` to only build from source, rather than
+  fetching binaries.
 
 ## Compatibility
 
