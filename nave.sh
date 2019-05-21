@@ -249,6 +249,16 @@ get_tgz () {
   cat "$cache/$dir/$shasum.tgz"
 }
 
+get_timestamp () {
+  local file=$1
+  local n=$(cat $file)
+  if [ -n "$n" ]; then
+    echo $n
+  else
+    echo 0
+  fi
+}
+
 get_html () {
   local path=$1
   local base=$(basename "$path")
@@ -278,7 +288,7 @@ get_html () {
 
   if [ -f "$tsfile" ] && \
      [ -f "$cache/$base" ] && \
-     [ $[ $(date '+%s') - $(cat $tsfile) ] -lt $dur ]; then
+     [ $[ $(date '+%s') - $(get_timestamp $tsfile) ] -lt $dur ]; then
     cat "$cache/$base"
   else
     # echo "2 get_ -s '$NODEDIST/$path' '$@'" >&2
