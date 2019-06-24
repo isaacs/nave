@@ -201,8 +201,10 @@ nave_fetch () {
   remove_dir "$src"
   ensure_dir "$src"
 
-  get "v$version/node-v$version.tar.gz" -#Lf > "$src".tgz
+  local tarfile
+  tarfile="$(get "v$version/node-v$version.tar.gz" -#Lf)"
   if [ $? -eq 0 ]; then
+    cp "$tarfile" "$src".tgz
     $tar xzf "$src".tgz -C "$src" --strip-components=1
     if [ $? -eq 0 ]; then
       echo "fetched $version" >&2
@@ -227,11 +229,23 @@ get_tgz () {
   )
 
   local cache=$NAVE_DIR/cache
+  if [ "$shasum" == "" ]; then
+    # this should not happen, blow away cache and try 1 more time
+    rm -- "$cache/$dir/SHASUMS256.txt"* || true
+    shasum=$(
+      get_html "$dir/SHASUMS256.txt" | grep "$base" | awk '{print $1}'
+    )
+  fi
+
+  if [ "$shasum" == "" ]; then
+    echo "shasum not found for $base. aborting download." >&2
+    return 2
+  fi
+
   if [ -f "$cache/$dir/$shasum.tgz" ]; then
-    cat "$cache/$dir/$shasum.tgz"
+    echo "$cache/$dir/$shasum.tgz"
     return
   fi
-  # echo "1 get_ '$NODEDIST/$path' '$@'" >&2
   get_ "$NODEDIST/$path" "$@" > "$cache/$dir/$base"
   if [ $? -ne 0 ]; then
     rm "$cache/$dir/$base"
@@ -240,13 +254,13 @@ get_tgz () {
 
   local actualshasum=$(shasum -a 256 "$cache/$dir/$base" | awk '{print $1}')
   if ! [ "$shasum" = "$actualshasum" ]; then
-    echo "shasum mismatch, expect $shasum, got $shasum" >&2
+    echo "shasum mismatch, expect $shasum, got $actualshasum" >&2
     rm "$cache/$dir/$base"
     return 2
   fi
 
   mv "$cache/$dir/$base" "$cache/$dir/$shasum.tgz"
-  cat "$cache/$dir/$shasum.tgz"
+  echo "$cache/$dir/$shasum.tgz"
 }
 
 get_timestamp () {
@@ -264,8 +278,6 @@ get_html () {
   local base=$(basename "$path")
   local dir=$(dirname "$path")
   shift
-
-  # echo "get_html dir=[$1] base=[$2]" >&2
 
   if [ "$dir" = "/" ]; then
     dir=""
@@ -291,7 +303,6 @@ get_html () {
      [ $[ $(date '+%s') - $(get_timestamp $tsfile) ] -lt $dur ]; then
     cat "$cache/$base"
   else
-    # echo "2 get_ -s '$NODEDIST/$path' '$@'" >&2
     get_ -s "$NODEDIST/$path" "$@" | tee "$cache/$base" && \
       date '+%s' > "$tsfile"
     local ret=$?
@@ -342,7 +353,7 @@ build () {
       # binaries started with node 0.8.6
       case "$version" in
         0.8.[012345]) binavail=0 ;;
-        0.[1234567].*) binavail=0 ;;
+        0.[01234567].*) binavail=0 ;;
         *) binavail=1 ;;
       esac
     fi
@@ -350,14 +361,17 @@ build () {
     if [ $binavail -eq 1 ]; then
       local t="$version-$os-$arch"
       local url="v$version/node-v${t}.tar.gz"
-      get "$url" -#Lf | \
-        $tar xz -C "$targetfolder" --strip-components 1
-      if [ $? -eq 2 ]; then
+      # have to do in 2 commands or else the "local" returns 0!
+      local tarfile
+      tarfile=$(get "$url" -#Lf)
+      local ret=$?
+      if [ $ret -ne 0 ]; then
         nave_uninstall "$version"
         echo "Binary install failed, trying source." >&2
       else
         # it worked!
-        return 0
+        cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components 1
+        return $?
       fi
     fi
   fi
