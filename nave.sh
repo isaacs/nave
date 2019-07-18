@@ -87,7 +87,7 @@ main () {
       NAVE_DIR=$prefix/lib/nave
     fi
   fi
-  if ! [ -d "$NAVE_DIR" ] && ! ensure_dir "$NAVE_DIR"; then
+  if ! [ -d "$NAVE_DIR" ] && ! mkdirp "$NAVE_DIR"; then
     NAVE_DIR="$(dirname -- "$SELF_PATH")"
   fi
 
@@ -141,8 +141,8 @@ RC
   export NAVE_DIR
   export NAVE_SRC="$NAVE_DIR/src"
   export NAVE_ROOT="$NAVE_DIR/installed"
-  ensure_dir "$NAVE_SRC"
-  ensure_dir "$NAVE_ROOT"
+  mkdirp "$NAVE_SRC"
+  mkdirp "$NAVE_ROOT"
 
   local cmd="$1"
   shift
@@ -163,29 +163,25 @@ RC
   exit $?
 }
 
-function enquote_all () {
+enquote_all () {
   local ARG ARGS
-  ARGS=""
+  ARGS=()
   for ARG in "$@"; do
-    [ -n "$ARGS" ] && ARGS="$ARGS "
-    ARGS="$ARGS'""$( echo " $ARG" \
-                   | cut -c 2- \
-                   | sed 's/'"'"'/'"'"'"'"'"'"'"'"'/g' \
-                   )""'"
+    # start each arg with a ', then replace all ' with '"'"', then end quote
+    # so "o'brien" becomes 'o'"'"'brien'
+    # it's a bit line noisey, but it works reliably.
+    local newArg="$(echo "$ARG" | sed 's/'"'"'/'"'"'"'"'"'"'"'"'/g')"
+    ARGS+=("'$newArg'")
   done
-  echo "$ARGS"
+  echo "${ARGS[@]}"
 }
 
-ensure_dir () {
-  if ! [ -d "$1" ]; then
-    mkdir -p -- "$1" || fail "couldn't create $1"
-  fi
+mkdirp () {
+  mkdir -p -- "$1" || fail "couldn't create $1"
 }
 
-remove_dir () {
-  if [ -d "$1" ]; then
-    rm -rf -- "$1" || fail "Could not remove $1"
-  fi
+rimraf () {
+  rm -rf -- "$1" || fail "Could not remove $1"
 }
 
 fail () {
@@ -200,8 +196,8 @@ nave_fetch () {
   fi
 
   local src="$NAVE_SRC/$version"
-  remove_dir "$src"
-  ensure_dir "$src"
+  rimraf "$src"
+  mkdirp "$src"
 
   local tarfile
   tarfile="$(get "v$version/node-v$version.tar.gz" -#Lf)"
@@ -215,7 +211,7 @@ nave_fetch () {
   fi
 
   rm "$src".tgz
-  remove_dir "$src"
+  rimraf "$src"
   echo "Couldn't fetch $version" >&2
   return 1
 }
@@ -292,7 +288,7 @@ get_html () {
   fi
 
   local cache="$NAVE_DIR/cache/$dir"
-  ensure_dir "$cache"
+  mkdirp "$cache"
   local tsfile="$cache/${base}-timestamp"
 
   local dur=$NAVE_CACHE_DUR
@@ -408,7 +404,7 @@ nave_cache () {
   local cache="$NAVE_DIR/cache"
   local subcmd="$1"
   shift
-  ensure_dir "$cache"
+  mkdirp "$cache"
   case "$subcmd" in
     clear|empty|clean)
       rm -rf "$cache"
@@ -496,12 +492,12 @@ nave_install () {
     return 0
   fi
   local install="$NAVE_ROOT/$version"
-  ensure_dir "$install"
+  mkdirp "$install"
 
   build "$version" "$install"
   local ret=$?
   if [ $ret -ne 0 ]; then
-    remove_dir "$install"
+    rimraf "$install"
     return $ret
   fi
 }
@@ -740,9 +736,9 @@ nave_run () {
   local bin="$prefix/bin"
   local lib="$prefix/lib/node"
   local man="$prefix/share/man"
-  ensure_dir "$bin"
-  ensure_dir "$lib"
-  ensure_dir "$man"
+  mkdirp "$bin"
+  mkdirp "$lib"
+  mkdirp "$man"
 
   # now $@ is the command to run, or empty if it's not an exec.
   local exit_code
@@ -868,10 +864,10 @@ add_named_env () {
   echo "Creating new env named '$name' using node $version" >&2
 
   nave_install "$version" || fail "failed to install $version"
-  ensure_dir "$NAVE_ROOT/$name/bin"
-  ensure_dir "$NAVE_ROOT/$name/lib/node"
-  ensure_dir "$NAVE_ROOT/$name/lib/node_modules"
-  ensure_dir "$NAVE_ROOT/$name/share/man"
+  mkdirp "$NAVE_ROOT/$name/bin"
+  mkdirp "$NAVE_ROOT/$name/lib/node"
+  mkdirp "$NAVE_ROOT/$name/lib/node_modules"
+  mkdirp "$NAVE_ROOT/$name/share/man"
 
   ln -sf -- "$NAVE_ROOT/$version/bin/node" "$NAVE_ROOT/$name/bin/node"
   ln -sf -- "$NAVE_ROOT/$version/bin/npm"  "$NAVE_ROOT/$name/bin/npm"
@@ -883,7 +879,7 @@ nave_clean () {
 }
 
 nave_uninstall () {
-  remove_dir "$NAVE_ROOT/$(ver "$1")"
+  rimraf "$NAVE_ROOT/$(ver "$1")"
 }
 
 nave_help () {
@@ -932,4 +928,6 @@ To clear the settings from a nave env, use 'exec nave exit'
 EOF
 }
 
-main "$@"
+if [ -z $_TESTING_NAVE_NO_MAIN ]; then
+  main "$@"
+fi

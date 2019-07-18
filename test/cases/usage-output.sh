@@ -1,0 +1,1 @@
+bash nave.sh

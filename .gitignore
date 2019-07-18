@@ -1,2 +1,5 @@
-installed
-src
+/installed
+/src
+/tmp
+/coverage
+/node_modules

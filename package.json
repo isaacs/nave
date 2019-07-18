@@ -8,9 +8,19 @@
     "nave": "./nave.sh"
   },
   "scripts": {
+    "test": "bash test/run.sh | tap -",
+    "precov": "rm -rf ./coverage",
+    "cov": "COV=1 bash test/run.sh | tap -",
+    "snap": "SNAPSHOT=1 bash test/run.sh | tap -",
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "git push origin --all; git push origin --tags"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "tap": "^14.4.2"
+  },
+  "tap": {
+    "coverage": false
+  }
 }
