@@ -57,6 +57,10 @@ main () {
   else
     echo "# failed $fails of $n tests"
   fi
+  if [ -n "$COV" ]; then
+    kcov --merge coverage coverage
+    open coverage/kcov-merged/index.html
+  fi
 }
 
 main "$@"
