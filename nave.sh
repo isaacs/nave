@@ -78,7 +78,9 @@ main () {
   done
 
   if [ -z "${NAVE_DIR+defined}" ]; then
-    if [ -d "$HOME" ]; then
+    if [ -d "$XDG_CONFIG_HOME" ] && ! [ -d "$HOME/.nave" ]; then
+      NAVE_DIR="$XDG_CONFIG_HOME"/nave
+    elif [ -d "$HOME" ]; then
       NAVE_DIR="$HOME"/.nave
     else
       local prefix=${PREFIX:-/usr/local}
