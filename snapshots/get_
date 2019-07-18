@@ -1,0 +1,4 @@
+curl asdf -H user-agent:nave/curl --version
+
+---
+code=0

@@ -1,0 +1,5 @@
+mock mkdir -p -- /please/no/make/me
+could not make NAVE_DIR (/please/no/make/me)
+
+---
+code=1

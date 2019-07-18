@@ -1,0 +1,6 @@
+mkdir -p -- $PWD/test/cases/xdg-config-home/nave
+mkdir -p -- $PWD/test/cases/xdg-config-home/nave/src
+mkdir -p -- $PWD/test/cases/xdg-config-home/nave/installed
+
+---
+code=0

@@ -1,0 +1,6 @@
+nave.sh: line #: $PWD/test/cases/rcfile-silent-fail/nave/.zshenv: Permission denied
+Failed writing rc files to $PWD/test/cases/rcfile-silent-fail/nave
+cleanup
+
+---
+code=0

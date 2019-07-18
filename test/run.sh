@@ -9,7 +9,6 @@ runTest () {
 
   # prefix stderr with err> and stdout with out>
   # then filter out some machine-specific things
-  #local output=$(( bash $testcase 2> >(sed -e 's/^/err> /')) 2>&1)
   if [ -n "$COV" ]; then
     kcov --include-path=nave.sh coverage "$testcase" >tmp/$testname.raw 2>&1
   else
@@ -18,14 +17,16 @@ runTest () {
   local code=$?
   echo $'\n---\ncode='$code >> tmp/$testname.raw
   # filter out some machine-specific things
-  cat tmp/$testname.raw | sed -e "s#$PWD#\$PWD#g" > tmp/$testname
+  cat tmp/$testname.raw | \
+    sed -e "s#$PWD#\$PWD#g" | \
+    sed -Ee "s|nave.sh: line [0-9]+|nave.sh: line #|g" > tmp/$testname
   mkdir -p snapshots
   local snapfile=snapshots/$testname
   if [ -n "${SNAPSHOT}" ] || ! [ -f "$snapfile" ]; then
     cp tmp/$testname $snapfile
     echo "ok $n - $testname"
   else
-    cmp --silent tmp/$testname $snapfile
+    cmp tmp/$testname $snapfile
     local cmpres=$?
     if [ $cmpres -ne 0 ]; then
       echo "not ok $n - $testname"
@@ -59,7 +60,6 @@ main () {
   fi
   if [ -n "$COV" ]; then
     kcov --merge coverage coverage
-    open coverage/kcov-merged/index.html
   fi
 }
 

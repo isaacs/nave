@@ -68,9 +68,7 @@ main () {
     fi
   fi
 
-  if ! [ -d "$NAVE_DIR" ] && ! mkdirp "$NAVE_DIR"; then
-    fail "could not make NAVE_DIR ($NAVE_DIR)"
-  fi
+  mkdirp "$NAVE_DIR" "could not make NAVE_DIR ($NAVE_DIR)"
 
   # set up the naverc init file.
   # For zsh compatibility, we name this file ".zshenv" instead of
@@ -116,7 +114,7 @@ RC
 
   # couldn't write file
   if ! [ -f "$rcfile" ] || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
-    fail "Nave dir $NAVE_DIR is not writable."
+    fail "Failed writing rc files to $NAVE_DIR"
   fi
 
   export NAVE_DIR
@@ -131,8 +129,7 @@ RC
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    auto | cache | exit | install | fetch | use | clean | test | named | \
-    ls |  uninstall | usemain | latest | stable | has | installed )
+    auto|cache|exit|install|fetch|use|clean|test|named|ls|uninstall|usemain|latest|stable|lts|has|installed)
       cmd="nave_$cmd"
       ;;
     * )
@@ -141,7 +138,7 @@ RC
   esac
   # echo "nave_$cmd = [$cmd] @=[$@]" >&2
   $cmd "$@"
-  exit $?
+  return $?
 }
 
 enquote_all () {
@@ -158,7 +155,9 @@ enquote_all () {
 }
 
 mkdirp () {
-  mkdir -p -- "$1" || fail "couldn't create $1"
+  local defaultMsg="couldn't create $1"
+  msg=${2:-$defaultMsg}
+  mkdir -p -- "$1" || fail "$msg"
 }
 
 rimraf () {
@@ -167,7 +166,7 @@ rimraf () {
 
 fail () {
   echo "$@" >&2
-  exit 1
+  [ -z $_TESTING_NAVE_NO_EXIT ] && exit 1
 }
 
 nave_fetch () {
@@ -244,8 +243,9 @@ get_tgz () {
 
 get_timestamp () {
   local file=$1
-  local n=$(cat $file)
-  if [ -n "$n" ]; then
+  local n=$(cat $file 2>/dev/null)
+  local numre='^[0-9]+$'
+  if [ -n "$n" ] && [[ $n =~ $numre ]]; then
     echo $n
   else
     echo 0
@@ -282,24 +282,23 @@ get_html () {
      [ $[ $(date '+%s') - $(get_timestamp $tsfile) ] -lt $dur ]; then
     cat "$cache/$base"
   else
-    get_ -s "$NODEDIST/$path" "$@" | tee "$cache/$base" && \
-      date '+%s' > "$tsfile"
+    get_ "$NODEDIST/$path" -s "$@" | tee "$cache/$base"
     local ret=$?
     if [ "$ret" -ne 0 ]; then
       ret=2
       if [ -f "$cache/$base" ]; then
         cat "$cache/$base"
-        ret=$?
+        ret=$cacheret
       fi
+    else
+      date '+%s' > "$tsfile"
     fi
     return $ret
   fi
 }
 
 get_ () {
-  # echo curl "$@" >&2
-  curl -H "user-agent:$NAVEUA" "$@"
-  return $?
+  curl "$@" -H "user-agent:$NAVEUA"
 }
 
 get () {
@@ -309,7 +308,7 @@ get () {
   shift
 
   case "$base" in
-    *.tar.gz)
+    *.tar.gz|*.tgz)
       get_tgz "$path" "$@"
       return $?
       ;;
@@ -403,7 +402,6 @@ USAGE
       return 1
       ;;
   esac
-
 }
 
 # Run this on cd'ing into new directories to automatically enter that
@@ -525,14 +523,11 @@ nave_test () {
 nave_ls () {
   ls -- $NAVE_SRC | version_list "src" \
     && ls -- $NAVE_ROOT | version_list "installed" \
-    && nave_ls_named \
-    || return 1
+    && nave_ls_named
 }
 
 nave_ls_remote () {
-  get / \
-    | version_list "node remote" \
-    || return 1
+  get / | version_list "node remote"
 }
 
 nave_ls_named () {
@@ -546,15 +541,13 @@ nave_ls_named () {
 }
 
 nave_ls_all () {
-  nave_ls \
-    && (echo ""; nave_ls_remote) \
-    || return 1
+  nave_ls && (echo ""; nave_ls_remote)
 }
 
 ver () {
   local version="$1"
   local nonames="$2"
-  version="${version/v/}"
+  version="${version#v}"
   case $version in
     lts-* | lts/*) nave_lts $version ;;
     lts | latest | stable) nave_$version ;;
@@ -568,17 +561,18 @@ ver () {
 
 nave_version_family () {
   local family="$1"
-  family="${family/v/}"
-  get / \
-    | egrep -o $family'\.[0-9]+' \
-    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
-    | tail -n1
+  family="${family#v}"
+  get / | egrep -o $family'\.[0-9]+' | semver_sort | tail -n1
+}
+
+semver_sort () {
+  sort -u -k 1,1n -k 2,2n -k 3,3n -t .
 }
 
 nave_latest () {
   get / \
     | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
-    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
+    | semver_sort \
     | tail -n1
 }
 
@@ -591,9 +585,7 @@ nave_lts () {
   local lts="$1"
   case $lts in
     "" | "lts/*")
-      lts="$(get / \
-        | egrep -o 'latest-[^v][^/]+' \
-        | sort | uniq | tail -n1)"
+      lts="$(get / | egrep -o 'latest-[^v][^/]+' | sort | uniq | tail -n1)"
       lts=${lts/latest-/}
       ;;
     lts/*)
@@ -609,19 +601,11 @@ nave_lts () {
   get latest-$lts/ | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' | head -n1
 }
 
-version_list_named () {
-  egrep -v '[0-9]+\.[0-9]+\.[0-9]+' \
-    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
-    | organize_version_list \
-    || return 1
-}
-
 version_list () {
   echo "$1:"
   egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
-    | sort -u -k 1,1n -k 2,2n -k 3,3n -t . \
-    | organize_version_list \
-    || return 1
+    | semver_sort \
+    | organize_version_list
 }
 
 organize_version_list () {
@@ -643,12 +627,12 @@ organize_version_list () {
 
 nave_has () {
   local version=$(ver "$1")
-  [ -x "$NAVE_SRC/$version/configure" ] || return 1
+  [ -x "$NAVE_SRC/$version/configure" ]
 }
 
 nave_installed () {
   local version=$(ver "$1")
-  [ -x "$NAVE_ROOT/$version/bin/node" ] || return 1
+  [ -x "$NAVE_ROOT/$version/bin/node" ]
 }
 
 nave_use () {
@@ -864,7 +848,7 @@ nave_uninstall () {
 }
 
 nave_help () {
-  cat <<EOF
+  [ -z $_TESTING_NAVE_NO_HELP ] && cat <<EOF
 
 Usage: nave <cmd>
 

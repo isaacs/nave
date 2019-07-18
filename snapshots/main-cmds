@@ -1,0 +1,22 @@
+nave_ls_remote 1 2 3
+nave_ls_remote 1 2 3
+nave_auto 1 2 3
+nave_cache 1 2 3
+nave_exit 1 2 3
+nave_install 1 2 3
+nave_fetch 1 2 3
+nave_use 1 2 3
+nave_clean 1 2 3
+nave_test 1 2 3
+nave_named 1 2 3
+nave_ls 1 2 3
+nave_uninstall 1 2 3
+nave_usemain 1 2 3
+nave_latest 1 2 3
+nave_stable 1 2 3
+nave_has 1 2 3
+nave_installed 1 2 3
+nave_help 1 2 3
+
+---
+code=0

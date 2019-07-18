@@ -1,0 +1,6 @@
+mkdir -p -- $PWD/test/cases/prefix-no-home-no-xdg/lib/nave
+mkdir -p -- $PWD/test/cases/prefix-no-home-no-xdg/lib/nave/src
+mkdir -p -- $PWD/test/cases/prefix-no-home-no-xdg/lib/nave/installed
+
+---
+code=0
