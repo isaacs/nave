@@ -57,26 +57,6 @@ esac
 tar=${TAR-tar}
 
 main () {
-  local SELF_PATH DIR SYM
-  # get the absolute path of the executable
-  SELF_PATH="$0"
-  if [ "${SELF_PATH:0:1}" != "." ] && [ "${SELF_PATH:0:1}" != "/" ]; then
-    SELF_PATH=./"$SELF_PATH"
-  fi
-  SELF_PATH=$( cd -P -- "$(dirname -- "$SELF_PATH")" \
-            && pwd -P \
-            ) && SELF_PATH=$SELF_PATH/$(basename -- "$0")
-
-  # resolve symlinks
-  while [ -h "$SELF_PATH" ]; do
-    DIR=$(dirname -- "$SELF_PATH")
-    SYM=$(readlink -- "$SELF_PATH")
-    SELF_PATH=$( cd -- "$DIR" \
-              && cd -- $(dirname -- "$SYM") \
-              && pwd \
-              )/$(basename -- "$SYM")
-  done
-
   if [ -z "${NAVE_DIR+defined}" ]; then
     if [ -d "$XDG_CONFIG_HOME" ] && ! [ -d "$HOME/.nave" ]; then
       NAVE_DIR="$XDG_CONFIG_HOME"/nave
@@ -87,8 +67,9 @@ main () {
       NAVE_DIR=$prefix/lib/nave
     fi
   fi
+
   if ! [ -d "$NAVE_DIR" ] && ! mkdirp "$NAVE_DIR"; then
-    NAVE_DIR="$(dirname -- "$SELF_PATH")"
+    fail "could not make NAVE_DIR ($NAVE_DIR)"
   fi
 
   # set up the naverc init file.
