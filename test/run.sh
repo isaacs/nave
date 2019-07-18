@@ -23,25 +23,15 @@ runTest () {
   local snapfile=snapshots/$testname
   if [ -n "${SNAPSHOT}" ] || ! [ -f "$snapfile" ]; then
     cp tmp/$testname $snapfile
-    echo "ok $n - $testname {"
-    echo "    1..1"
-    echo "    ok - wrote snapshot"
-    echo "}"
+    echo "ok $n - $testname"
   else
     cmp --silent tmp/$testname $snapfile
     local cmpres=$?
     if [ $cmpres -ne 0 ]; then
-      echo "not ok $n - $testname {"
-      echo "    1..1"
-      echo "    not ok - should match snapshot"
-      echo "}"
+      echo "not ok $n - $testname"
       let 'fails++'
     else
-      #echo "ok $n - $testname"
-      echo "ok $n - $testname {"
-      echo "    1..1"
-      echo "    ok - matches snapshot"
-      echo "}"
+      echo "ok $n - $testname"
     fi
   fi
 }
