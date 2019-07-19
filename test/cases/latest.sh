@@ -1,4 +1,4 @@
-. test/mock-curl.sh
+. test/mocks/curl.sh
 testdir=test/cases/latest
 mkdir -p $testdir
 realmkdir=$(which mkdir)

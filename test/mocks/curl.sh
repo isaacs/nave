@@ -3,7 +3,7 @@ _curl=$(which curl)
 fixtures=test/fixtures
 curl () {
   if [ "$1" = "--version" ]; then
-    echo "i am just a mock curl"
+    echo "mock curl"
     return 0
   fi
 

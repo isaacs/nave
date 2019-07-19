@@ -1,5 +1,5 @@
 testdir=test/cases/family
-. test/mock-curl.sh
+. test/mocks/curl.sh
 
 mkdir -p $testdir
 XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)

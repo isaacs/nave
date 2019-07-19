@@ -1,4 +1,4 @@
-. test/mock-curl.sh
+. test/mocks/curl.sh
 testdir=test/cases/ls-all/
 mkdir -p $testdir
 # make some named ones
