@@ -57,28 +57,19 @@ esac
 tar=${TAR-tar}
 
 main () {
-  if [ -z "${NAVE_DIR+defined}" ]; then
-    if [ -d "$XDG_CONFIG_HOME" ] && ! [ -d "$HOME/.nave" ]; then
-      NAVE_DIR="$XDG_CONFIG_HOME"/nave
-    elif [ -d "$HOME" ]; then
-      NAVE_DIR="$HOME"/.nave
-    else
-      local prefix=${PREFIX:-/usr/local}
-      NAVE_DIR=$prefix/lib/nave
-    fi
-  fi
-
+  get_nave_dir
   mkdirp "$NAVE_DIR" "could not make NAVE_DIR ($NAVE_DIR)"
 
   # set up the naverc init file.
   # For zsh compatibility, we name this file ".zshenv" instead of
   # the more reasonable "naverc" name.
   # Important! Update this number any time the init content is changed.
-  local rcversion="#3"
+  local rcversion="#4"
   local rcfile="$NAVE_DIR/.zshenv"
   if ! [ -f "$rcfile" ] \
       || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
 
+    homercfile=$(naverc_filename)
     cat > "$rcfile" <<RC
 $rcversion
 [ "\$NAVE_DEBUG" != "" ] && set -x || true
@@ -103,7 +94,7 @@ else
 fi
 unset ZDOTDIR
 export PATH=\$NAVEPATH:\$PATH
-[ -f ~/.naverc ] && . ~/.naverc || true
+[ -f ${homercfile} ] && . ${homercfile} || true
 RC
 
     cat > "$NAVE_DIR/.zlogout" <<RC
@@ -136,9 +127,22 @@ RC
       cmd="nave_help"
       ;;
   esac
-  # echo "nave_$cmd = [$cmd] @=[$@]" >&2
+  # err "nave_$cmd = [$cmd] @=[$@]"
   $cmd "$@"
   return $?
+}
+
+get_nave_dir () {
+  if [ -z "${NAVE_DIR+defined}" ]; then
+    if [ -d "$XDG_CONFIG_HOME" ] && ! [ -d "$HOME/.nave" ]; then
+      NAVE_DIR="$XDG_CONFIG_HOME"/nave
+    elif [ -d "$HOME" ]; then
+      NAVE_DIR="$HOME"/.nave
+    else
+      local prefix=${PREFIX:-/usr/local}
+      NAVE_DIR=$prefix/lib/nave
+    fi
+  fi
 }
 
 enquote_all () {
@@ -164,8 +168,12 @@ rimraf () {
   rm -rf -- "$1" || fail "Could not remove $1"
 }
 
-fail () {
+err () {
   echo "$@" >&2
+}
+
+fail () {
+  err "$@"
   [ -z $_TESTING_NAVE_NO_EXIT ] && exit 1
 }
 
@@ -185,14 +193,14 @@ nave_fetch () {
     cp "$tarfile" "$src".tgz
     $tar xzf "$src".tgz -C "$src" --strip-components=1
     if [ $? -eq 0 ]; then
-      echo "fetched $version" >&2
+      err "fetched $version"
       return 0
     fi
   fi
 
   rm "$src".tgz
   rimraf "$src"
-  echo "Couldn't fetch $version" >&2
+  err "Couldn't fetch $version"
   return 1
 }
 
@@ -216,7 +224,7 @@ get_tgz () {
   fi
 
   if [ "$shasum" == "" ]; then
-    echo "shasum not found for $base. aborting download." >&2
+    err "shasum not found for $base. aborting download."
     return 2
   fi
 
@@ -232,7 +240,7 @@ get_tgz () {
 
   local actualshasum=$(shasum -a 256 "$cache/$dir/$base" | awk '{print $1}')
   if ! [ "$shasum" = "$actualshasum" ]; then
-    echo "shasum mismatch, expect $shasum, got $actualshasum" >&2
+    err "shasum mismatch, expect $shasum, got $actualshasum"
     rm "$cache/$dir/$base"
     return 2
   fi
@@ -345,7 +353,7 @@ build () {
       local ret=$?
       if [ $ret -ne 0 ]; then
         nave_uninstall "$version"
-        echo "Binary install failed, trying source." >&2
+        err "Binary install failed, trying source."
       else
         # it worked!
         cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components 1
@@ -367,16 +375,23 @@ build () {
   jobs=${jobs:-2}
 
   ( cd -- "$src"
-    [ -f ~/.naverc ] && . ~/.naverc || true
+    source_naverc
     if [ "$NAVE_CONFIG" == "" ]; then
       NAVE_CONFIG=()
     fi
-    JOBS=$jobs ./configure "${NAVE_CONFIG[@]}" --prefix="$2" \
-      || fail "Failed to configure $version"
-    JOBS=$jobs make -j$jobs \
-      || fail "Failed to make $version"
-    make install || fail "Failed to install $version"
-  ) || fail "fail"
+    if ! JOBS=$jobs ./configure "${NAVE_CONFIG[@]}" --prefix="$2"; then
+      err "Failed to configure $version"
+      return 1
+    fi
+    if ! JOBS=$jobs make -j$jobs; then
+      err "Failed to make $version"
+      return 1
+    fi
+    if !make install; then
+      err "Failed to install $version"
+      return 1
+    fi
+  )
   return $?
 }
 
@@ -462,7 +477,7 @@ nave_usemain () {
 }
 
 nave_install () {
-  # echo "nave_install $@" >&2
+  # err "nave_install $@"
   local version=$(ver "$1")
   if [ -z "$version" ]; then
     fail "Must supply a version ('lts', 'stable', 'latest' or numeric)"
@@ -506,18 +521,35 @@ nave_exit () {
   exec $SHELL
 }
 
+naverc_filename () {
+  get_nave_dir
+  echo $(cd -- $NAVE_DIR/.. &>/dev/null; pwd)/.naverc
+}
+
+source_naverc () {
+  local naverc=$(naverc_filename)
+  if [ -f "$naverc" ]; then
+    . "$rcfile"
+  fi
+}
+
 nave_test () {
   local version=$(ver "$1")
   nave_fetch "$version"
   local src="$NAVE_SRC/$version"
   ( cd -- "$src"
-    [ -f ~/.naverc ] && . ~/.naverc || true
+    source_naverc
     if [ "$NAVE_CONFIG" == "" ]; then
       NAVE_CONFIG=()
     fi
-    ./configure "${NAVE_CONFIG[@]}" || fail "failed to ./configure"
-    make test-all || fail "Failed tests"
-  ) || fail "failed"
+    if ! ./configure "${NAVE_CONFIG[@]}"; then
+      err "failed ./configure"
+      return 1
+    else
+      make test-all
+      return $?
+    fi
+  )
 }
 
 nave_ls () {
@@ -581,7 +613,7 @@ nave_stable () {
 }
 
 nave_lts () {
-  # echo "nave_lts $@" >&2
+  # err "nave_lts $@"
   local lts="$1"
   case $lts in
     "" | "lts/*")
@@ -593,10 +625,10 @@ nave_lts () {
       ;;
     latest-*)
       lts=${lts/latest-/}
-      # echo "nave_lts lts latest [$lts]" >&2
+      # err "nave_lts lts latest [$lts]"
       ;;
   esac
-  # echo "nave_lts lts=[$lts]" >&2
+  # err "nave_lts lts=[$lts]"
 
   get latest-$lts/ | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' | head -n1
 }
@@ -696,7 +728,7 @@ nave_run () {
   shift
   local prefix="$1"
   shift
-  #echo "nave_run exec=$exec lvl=$lvl name=$name version=$version prefix=$prefix" >&2
+  #err "nave_run exec=$exec lvl=$lvl name=$name version=$version prefix=$prefix"
 
   local bin="$prefix/bin"
   local lib="$prefix/lib/node"
@@ -826,7 +858,7 @@ add_named_env () {
     return 0
   fi
 
-  echo "Creating new env named '$name' using node $version" >&2
+  err "Creating new env named '$name' using node $version"
 
   nave_install "$version" || fail "failed to install $version"
   mkdirp "$NAVE_ROOT/$name/bin"
