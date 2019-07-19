@@ -2,6 +2,7 @@ testdir=test/cases/xdg-config-home/
 mkdir -p $testdir
 realmkdir=$(which mkdir)
 XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
+HOME=
 mkdir () {
   echo "mkdir $@"
   $realmkdir "$@"
