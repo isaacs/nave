@@ -61,6 +61,7 @@ main () {
   done
   if [ $fails -eq 0 ]; then
     echo '# all tests passing'
+    rm -rf tmp
   else
     echo "# failed $fails of $n tests"
   fi
