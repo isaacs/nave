@@ -290,23 +290,26 @@ get_html () {
      [ $[ $(date '+%s') - $(get_timestamp $tsfile) ] -lt $dur ]; then
     cat "$cache/$base"
   else
-    get_ "$NODEDIST/$path" -s "$@" | tee "$cache/$base"
+    get_ "$NODEDIST/$path" -s "$@" > "$cache/${base}.tmp"
     local ret=$?
     if [ "$ret" -ne 0 ]; then
+      rm "$cache/${base}.tmp"
       ret=2
       if [ -f "$cache/$base" ]; then
         cat "$cache/$base"
         ret=$cacheret
       fi
     else
+      mv "$cache/${base}.tmp" "$cache/$base"
       date '+%s' > "$tsfile"
+      cat "$cache/$base"
     fi
     return $ret
   fi
 }
 
 get_ () {
-  curl "$@" -H "user-agent:$NAVEUA"
+  curl "$@" -H "user-agent:$NAVEUA" || return 2
 }
 
 get () {
