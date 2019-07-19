@@ -1,0 +1,10 @@
+.naverc
+configure
+MOCK MAKE test-all
+ cwd: $PWD/test/cases/nave-test/nave/src/12.6.0
+.naverc
+configure fail
+failed ./configure
+
+---
+code=0
