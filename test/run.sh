@@ -15,6 +15,12 @@ runTest () {
     bash "$testcase" >tmp/$testname.raw 2>&1
   fi
   local code=$?
+  if [ $code -eq 99 ]; then
+    echo "Bailout! $testcase failed in a bad way"
+    echo >&2
+    cat tmp/$testname.raw | sed -e 's|^|# |g' >&2
+    echo >&2
+  fi
   echo $'\n---\ncode='$code >> tmp/$testname.raw
   # filter out some machine-specific things
   cat tmp/$testname.raw | \
