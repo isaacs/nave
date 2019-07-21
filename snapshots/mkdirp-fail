@@ -1,4 +1,5 @@
-couldn't create test/cases/mkdirp-fail
+STDOUT
 
----
-code=1
+STDERR
+couldn't create test/cases/mkdirp-fail
+CODE 1

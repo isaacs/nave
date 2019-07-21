@@ -1,6 +1,7 @@
+STDOUT
 get_html a/b/c
 get_tgz a/b/c.tar.gz
 get_tgz a/b/c.tgz
+STDERR
 
----
-code=0
+CODE 0

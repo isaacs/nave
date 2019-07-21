@@ -1,4 +1,5 @@
-Could not remove test/cases/rimraf-fail
+STDOUT
 
----
-code=1
+STDERR
+Could not remove test/cases/rimraf-fail
+CODE 1

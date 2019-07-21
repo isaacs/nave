@@ -1,4 +1,5 @@
+STDOUT
 nave/hello this is curl
+STDERR
 
----
-code=0
+CODE 0

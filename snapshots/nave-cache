@@ -1,4 +1,4 @@
-usage: nave cache [clear|ls|tree]
+STDOUT
 test/cases/nave-cache/cache
 ├── a
 │   ├── b
@@ -16,6 +16,6 @@ test/cases/nave-cache/cache/a/b
 test/cases/nave-cache/cache/a/b/d
 test/cases/nave-cache/cache/foo
 test/cases/nave-cache/cache
-
----
-code=0
+STDERR
+usage: nave cache [clear|ls|tree]
+CODE 0

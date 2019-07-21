@@ -1,6 +1,7 @@
+STDOUT
 mkdir -p -- $PWD/test/cases/home-no-xdg/.nave
 mkdir -p -- $PWD/test/cases/home-no-xdg/.nave/src
 mkdir -p -- $PWD/test/cases/home-no-xdg/.nave/installed
+STDERR
 
----
-code=0
+CODE 0

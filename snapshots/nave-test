@@ -1,3 +1,6 @@
+STDOUT
+
+STDERR
 .naverc
 configure
 MOCK MAKE test-all
@@ -5,6 +8,4 @@ MOCK MAKE test-all
 .naverc
 configure fail
 failed ./configure
-
----
-code=0
+CODE 0

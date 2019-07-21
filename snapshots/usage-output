@@ -1,3 +1,4 @@
+STDOUT
 
 Usage: nave <cmd>
 
@@ -38,7 +39,6 @@ following "version-ish" identifies:
 To exit a nave subshell, type 'exit' or press ^D.
 To run nave *without* a subshell, do 'exec nave use <version>'.
 To clear the settings from a nave env, use 'exec nave exit'
+STDERR
 
-
----
-code=0
+CODE 0

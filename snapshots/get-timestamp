@@ -1,7 +1,8 @@
+STDOUT
 0
 1
 0
 0
+STDERR
 
----
-code=0
+CODE 0

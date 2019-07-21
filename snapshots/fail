@@ -1,4 +1,5 @@
-this is to be expected
+STDOUT
 
----
-code=1
+STDERR
+this is to be expected
+CODE 1

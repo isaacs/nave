@@ -1,6 +1,7 @@
+STDOUT
 mkdir -p -- $PWD/test/cases/prefix-no-home-no-xdg/lib/nave
 mkdir -p -- $PWD/test/cases/prefix-no-home-no-xdg/lib/nave/src
 mkdir -p -- $PWD/test/cases/prefix-no-home-no-xdg/lib/nave/installed
+STDERR
 
----
-code=0
+CODE 0

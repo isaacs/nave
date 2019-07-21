@@ -1,5 +1,6 @@
+STDOUT
 no has
 has it
+STDERR
 
----
-code=0
+CODE 0
