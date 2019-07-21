@@ -204,23 +204,25 @@ nave_fetch () {
   return 1
 }
 
+get_shasum () {
+  local dir=$1
+  local base=$2
+  get_html "$dir/SHASUMS256.txt" | grep "$base" | awk '{print $1}'
+}
+
 get_tgz () {
   local path=$1
   local base=$(basename "$path")
   local dir=$(dirname "$path")
   shift
 
-  local shasum=$(
-    get_html "$dir/SHASUMS256.txt" | grep "$base" | awk '{print $1}'
-  )
+  local shasum=$(get_shasum "$dir" "$base")
 
   local cache=$NAVE_DIR/cache
   if [ "$shasum" == "" ]; then
     # this should not happen, blow away cache and try 1 more time
     rm -- "$cache/$dir/SHASUMS256.txt"* || true
-    shasum=$(
-      get_html "$dir/SHASUMS256.txt" | grep "$base" | awk '{print $1}'
-    )
+    shasum=$(get_shasum "$dir" "$base")
   fi
 
   if [ "$shasum" == "" ]; then
@@ -232,6 +234,7 @@ get_tgz () {
     echo "$cache/$dir/$shasum.tgz"
     return
   fi
+
   get_ "$NODEDIST/$path" "$@" > "$cache/$dir/$base"
   if [ $? -ne 0 ]; then
     rm "$cache/$dir/$base"
