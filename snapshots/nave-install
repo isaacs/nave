@@ -1,0 +1,10 @@
+STDOUT
+
+STDERR
+Must supply a version ('lts', 'stable', 'latest' or numeric)
+install exit 0
+mock build pass 12.6.0 $PWD/test/cases/nave-install/nave/installed/12.6.0
+install exit 0
+mock build fail 12.6.0 $PWD/test/cases/nave-install/nave/installed/12.6.0
+install exit 1
+CODE 0

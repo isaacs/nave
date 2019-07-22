@@ -9,10 +9,13 @@ get_nave_dir
 os= build_binary 12.6.0 $testdir/no-os
 echo "no os $?"
 
-. test/mocks/tar-fail.sh
-build_binary 12.6.0 $testdir/failure
-echo "tar fail $?"
-
 . test/mocks/tar-noop.sh
 build_binary 12.6.0 $testdir/success
 echo "successwin $?"
+
+get () {
+  return 1
+}
+. test/mocks/tar-fail.sh
+build_binary 12.6.0 $testdir/failure
+echo "get fail $?"

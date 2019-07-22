@@ -109,8 +109,6 @@ RC
   fi
 
   export NAVE_DIR
-  export NAVE_SRC="$NAVE_DIR/src"
-  export NAVE_ROOT="$NAVE_DIR/installed"
   mkdirp "$NAVE_SRC"
   mkdirp "$NAVE_ROOT"
 
@@ -143,6 +141,8 @@ get_nave_dir () {
       NAVE_DIR=$prefix/lib/nave
     fi
   fi
+  export NAVE_SRC="$NAVE_DIR/src"
+  export NAVE_ROOT="$NAVE_DIR/installed"
 }
 
 enquote_all () {
@@ -498,10 +498,10 @@ nave_usemain () {
 }
 
 nave_install () {
-  # err "nave_install $@"
-  local version=$(ver "$1")
+  local version=$(ver "$1" "NONAMES")
   if [ -z "$version" ]; then
-    fail "Must supply a version ('lts', 'stable', 'latest' or numeric)"
+    err "Must supply a version ('lts', 'stable', 'latest' or numeric)"
+    return 1
   fi
   if nave_installed "$version"; then
     return 0
@@ -871,7 +871,11 @@ add_named_env () {
   if [ "$version" = "" ]; then
     echo "What version of node?"
     read -p "lts, lts/<name>, latest, x.y, or x.y.z > " version
-    version=$(ver "$version")
+    version=$(ver "$version" "NONAMES")
+    if [ "$version" = "" ]; then
+      err "Invalid version specifier"
+      return 1
+    fi
   fi
 
   # if that version is already there, then nothing to do.
