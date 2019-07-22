@@ -1,0 +1,7 @@
+STDOUT
+no os 1
+tar fail 69
+successwin 0
+STDERR
+no-op mock: tar xz -C test/cases/build-binary/success --strip-components 1
+CODE 0

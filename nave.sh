@@ -332,39 +332,54 @@ get () {
   return $?
 }
 
+bin_available () {
+  local version="$1"
+  if [ "$NAVE_SRC_ONLY" = "1" ]; then
+    return 1
+  elif [ -n "$os" ]; then
+    # binaries started with node 0.8.6
+    case "$version" in
+      0.8.[012345]) return 1 ;;
+      0.[01234567].*) return 1 ;;
+      *) return 0 ;;
+    esac
+  else
+    return 1
+  fi
+}
+
+build_binary () {
+  local version="$1"
+  if ! bin_available "$version"; then
+    return 1
+  fi
+  local targetfolder="$2"
+  local t="$version-$os-$arch"
+  local url="v$version/node-v${t}.tar.gz"
+  # have to do in 2 commands or else the "local" returns 0!
+  local tarfile
+  tarfile=$(get "$url" -#Lf)
+  local ret=$?
+  if [ $ret -eq 0 ]; then
+    # it worked!
+    cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components 1
+    return $?
+  else
+    return $ret
+  fi
+}
+
 build () {
   local version="$1"
   local targetfolder="$2"
 
   # shortcut - try the binary if possible.
-  if [ -n "$os" ]; then
-    local binavail
-    if [ "$NAVE_SRC_ONLY" = "1" ]; then
-      binavail=0
+  if bin_available $version; then
+    if build_binary "$version" "$targetfolder"; then
+      return 0
     else
-      # binaries started with node 0.8.6
-      case "$version" in
-        0.8.[012345]) binavail=0 ;;
-        0.[01234567].*) binavail=0 ;;
-        *) binavail=1 ;;
-      esac
-    fi
-
-    if [ $binavail -eq 1 ]; then
-      local t="$version-$os-$arch"
-      local url="v$version/node-v${t}.tar.gz"
-      # have to do in 2 commands or else the "local" returns 0!
-      local tarfile
-      tarfile=$(get "$url" -#Lf)
-      local ret=$?
-      if [ $ret -ne 0 ]; then
-        nave_uninstall "$version"
-        err "Binary install failed, trying source."
-      else
-        # it worked!
-        cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components 1
-        return $?
-      fi
+      nave_uninstall "$version"
+      err "Binary install failed, trying source."
     fi
   fi
 
