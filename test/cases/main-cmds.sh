@@ -1,3 +1,4 @@
+. test/common.sh
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 nave_ls_remote () {
   echo "nave_ls_remote $@"

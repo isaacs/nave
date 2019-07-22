@@ -1,4 +1,4 @@
-testdir=test/cases/nave-test
+. test/common.sh
 mkdir -p $testdir/nave/src/12.6.0
 cat > $testdir/nave/src/12.6.0/configure <<EOF
 #!$SHELL
@@ -18,4 +18,3 @@ echo configure fail >&2
 exit 1
 EOF
 . nave.sh test v12.6.0
-rm -rf $testdir

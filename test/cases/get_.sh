@@ -1,3 +1,4 @@
+. test/common.sh
 curl () {
   echo "curl $@"
 }

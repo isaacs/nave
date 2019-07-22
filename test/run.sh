@@ -48,20 +48,20 @@ runTest () {
   local n=$2
   local testname=$(basename "$testcase" .sh)
   local snapfile=snapshots/$testname
-  local s
   if ! [ -f $snapfile ]; then
-    s=1
-  else
-    s=$SNAPSHOT
+    SNAPSHOT=1
   fi
 
-  # prefix stderr with err> and stdout with out>
-  # then filter out some machine-specific things
+  local cmd
   if [ -n "$COV" ]; then
-    SNAPSHOT=$s kcov --include-path=nave.sh coverage "$testcase" >tmp/$testname.stdout 2>tmp/$testname.stderr
+    cmd=(kcov --include-path=nave.sh coverage "$testcase")
   else
-    SNAPSHOT=$s bash "$testcase" >tmp/$testname.stdout 2>tmp/$testname.stderr
+    cmd=(bash "$testcase")
   fi
+  local out="tmp/$testname.stdout"
+  local err="tmp/$testname.stderr"
+
+  SNAPSHOT=$SNAPSHOT "${cmd[@]}" >"$out" 2>"$err"
   afterTest $n $testname $?
 }
 

@@ -1,3 +1,4 @@
+. test/common.sh
 unames=(
   "Darwin x86_64"
   "SunOS i486"

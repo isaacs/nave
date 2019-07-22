@@ -8,4 +8,4 @@ MOCK MAKE test-all
 .naverc
 configure fail
 failed ./configure
-CODE 0
+CODE 1

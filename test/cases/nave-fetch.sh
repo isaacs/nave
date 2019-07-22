@@ -1,5 +1,4 @@
-testdir=test/cases/nave-fetch/
-mkdir -p $testdir
+. test/common.sh
 XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
 . test/mocks/curl.sh
 . test/mocks/tar-noop.sh
@@ -26,4 +25,3 @@ fi
 . test/mocks/curl.sh
 . test/mocks/tar-fail.sh
 . nave.sh fetch v12.5.0
-rm -rf $testdir

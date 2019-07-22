@@ -1,3 +1,4 @@
+. test/common.sh
 mkdir () {
   return 1
 }

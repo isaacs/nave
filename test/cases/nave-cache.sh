@@ -1,5 +1,4 @@
-testdir=test/cases/nave-cache
-mkdir -p $testdir
+. test/common.sh
 NAVE_DIR=$testdir
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 nave_cache asdf
@@ -9,4 +8,3 @@ nave_cache tree
 nave_cache ls
 nave_cache clear
 nave_cache ls
-rm -rf $testdir

@@ -1,3 +1,4 @@
+. test/common.sh
 rm () {
   return 1
 }
