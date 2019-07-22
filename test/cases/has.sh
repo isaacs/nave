@@ -1,6 +1,6 @@
 . test/common.sh
 . test/mocks/curl.sh
-XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
+xdg
 . nave.sh has 1.2.3 && echo 'has it' || echo 'no has'
 mkdir -p $testdir/nave/src/1.2.3
 touch $testdir/nave/src/1.2.3/configure

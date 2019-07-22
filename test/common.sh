@@ -6,3 +6,7 @@ __nave_test_cleanup () {
   rm -rf "$testdir"
 }
 trap __nave_test_cleanup EXIT
+
+xdg () {
+  export XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
+}

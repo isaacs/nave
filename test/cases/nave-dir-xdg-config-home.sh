@@ -1,6 +1,6 @@
 . test/common.sh
 realmkdir=$(which mkdir)
-XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
+xdg
 HOME=
 mkdir () {
   echo "mkdir $@"

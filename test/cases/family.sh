@@ -1,7 +1,7 @@
 . test/common.sh
 . test/mocks/curl.sh
 
-XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
+xdg
 NAVE_DIR=$testdir/nave
 
 _TESTING_NAVE_NO_MAIN=1 . nave.sh

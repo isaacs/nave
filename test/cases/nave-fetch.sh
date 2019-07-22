@@ -1,5 +1,5 @@
 . test/common.sh
-XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
+xdg
 . test/mocks/curl.sh
 . test/mocks/tar-noop.sh
 . nave.sh fetch v12.6.0
