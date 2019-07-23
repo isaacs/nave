@@ -694,37 +694,36 @@ nave_installed () {
 }
 
 nave_use () {
-  local version=$(ver "$@")
+  if [ -z "$1" ]; then
+    err "Must supply a version"
+    return 1
+  fi
+
+  local version=$(ver "$1" NONAMES)
 
   # if it's not a version number, then treat as a name.
-  case "$version" in
-    +([0-9])\.+([0-9])\.+([0-9])) ;;
-    *)
-      nave_named "$@"
-      return $?
-      ;;
-  esac
-
-  if [ -z "$version" ]; then
-    fail "Must supply a version"
+  if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    nave_named "$@"
+    return $?
   fi
 
   if [ "$version" == "$NAVENAME" ]; then
-    # no need to install
+    # we're already here
     if [ $# -gt 1 ]; then
       shift
-      "$@"
-      return $?
-    fi
-  else
-    nave_install "$version"
-    local ret=$?
-    if [ $ret -ne 0 ]; then
-      err "failed to install $version"
-      return $ret
+      exec "$@"
+    else
+      return 0
     fi
   fi
 
+  nave_install "$version"
+  local ret=$?
+  if [ $ret -ne 0 ]; then
+    err "failed to install $version"
+    return $ret
+  fi
+  write_rcfile
   local prefix="$NAVE_ROOT/$version"
   local lvl=$[ ${NAVELVL-0} + 1 ]
   if [ $# -gt 1 ]; then
@@ -765,7 +764,6 @@ nave_run () {
   mkdirp "$man"
 
   # now $@ is the command to run, or empty if it's not an exec.
-  local exit_code
   local args=()
   local isLogin
 
@@ -803,10 +801,7 @@ nave_run () {
 
   # use exec to take over this shell process with whatever we're
   # executing, whether that's a login or a command.  otherwise there
-  # are actually TWO subshells, rather than one.  Technically, since
-  # this is an exec command, the bit after the generated command never
-  # runs, but if the command fails in some horrible way it's good to see
-  args=(exec "$runShell" "${args[@]}")
+  # are actually TWO subshells, rather than one.
 
   NAVELVL=$lvl \
   NAVEPATH="$bin" \
@@ -821,11 +816,7 @@ nave_run () {
   NAVE_LOGIN="$isLogin" \
   NAVE_DIR="$NAVE_DIR" \
   ZDOTDIR="$NAVE_DIR" \
-    "${args[@]}"
-
-  exit_code=$?
-  hash -r
-  return $exit_code
+    exec "$runShell" "${args[@]}"
 }
 
 nave_named () {
@@ -896,7 +887,13 @@ add_named_env () {
 
   err "Creating new env named '$name' using node $version"
 
-  nave_install "$version" || fail "failed to install $version"
+  nave_install "$version"
+  local ret=$?
+  if [ $ret -ne 0 ]; then
+    err "failed to install $version"
+    return $ret
+  fi
+
   mkdirp "$NAVE_ROOT/$name/bin"
   mkdirp "$NAVE_ROOT/$name/lib/node"
   mkdirp "$NAVE_ROOT/$name/lib/node_modules"
