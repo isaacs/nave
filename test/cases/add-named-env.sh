@@ -30,3 +30,9 @@ echo "exit=$?"
 echo "no name"
 add_named_env ""
 echo "exit=$?"
+
+nave_install () {
+  return 1
+}
+add_named_env install-fail 12.6.0
+echo "exit=$?"

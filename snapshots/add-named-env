@@ -9,6 +9,7 @@ What version of node?
 exit=1
 no name
 exit=1
+exit=1
 STDERR
 Creating new env named 'success' using node 12.6.0
 unpacking mock: tar xz -C $PWD/test/cases/add-named-env/nave/installed/12.6.0 --strip-components 1
@@ -25,4 +26,6 @@ x bin/node
 Creating new env named 'foo' using node 12.6.0
 Invalid version specifier
 Must provide a name
+Creating new env named 'install-fail' using node 12.6.0
+failed to install 12.6.0
 CODE 0
