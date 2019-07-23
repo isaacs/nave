@@ -26,3 +26,7 @@ readlink $testdir/nave/installed/foo/bin/node
 
 echo not a valid version | add_named_env invalid
 echo "exit=$?"
+
+echo "no name"
+add_named_env ""
+echo "exit=$?"

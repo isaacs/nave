@@ -717,7 +717,12 @@ nave_use () {
       return $?
     fi
   else
-    nave_install "$version" || fail "failed to install $version"
+    nave_install "$version"
+    local ret=$?
+    if [ $ret -ne 0 ]; then
+      err "failed to install $version"
+      return $ret
+    fi
   fi
 
   local prefix="$NAVE_ROOT/$version"
@@ -862,6 +867,11 @@ add_named_env () {
   local name="$1"
   local version="$2"
   local cur="$(ver "$($NAVE_ROOT/$name/bin/node -v 2>/dev/null)" "NONAMES")"
+
+  if [ "$name" == "" ]; then
+    err "Must provide a name"
+    return 1
+  fi
 
   if [ "$version" != "" ]; then
     version="$(ver "$version" "NONAMES")"
