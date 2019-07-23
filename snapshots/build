@@ -1,0 +1,43 @@
+STDOUT
+mock configure --prefix=test/cases/build/bin-build-fail
+mock make all
+mock make install
+mock configure --prefix=test/cases/build/make-install-fail
+mock make all
+mock configure --prefix=test/cases/build/make-fail
+STDERR
+unpacking mock: tar xz -C test/cases/build/success --strip-components 1
+x bin/
+x configure
+x Makefile
+x bin/node
+successwin 0
+test build binary failure
+Binary install failed, trying source.
+unpacking mock: tar xzf $PWD/test/cases/build/nave/src/12.6.0.tgz -C $PWD/test/cases/build/nave/src/12.6.0 --strip-components=1
+x bin/
+x configure
+x Makefile
+x bin/node
+fetched 12.6.0
+bin build fail 0
+test build binary failure
+Binary install failed, trying source.
+mock make install failure
+Failed to install 12.6.0
+make install fail 1
+test build binary failure
+Binary install failed, trying source.
+make fail
+Failed to make 12.6.0
+make fail 1
+test build binary failure
+Binary install failed, trying source.
+mock failure to configure
+Failed to configure 12.6.0
+configure fail 1
+test build binary failure
+Binary install failed, trying source.
+nave_fetch mock fail
+fetch fail 1
+CODE 0
