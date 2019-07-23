@@ -62,55 +62,7 @@ tar=${TAR-tar}
 
 main () {
   get_nave_dir
-  mkdirp "$NAVE_DIR" "could not make NAVE_DIR ($NAVE_DIR)"
-
-  # set up the naverc init file.
-  # For zsh compatibility, we name this file ".zshenv" instead of
-  # the more reasonable "naverc" name.
-  # Important! Update this number any time the init content is changed.
-  local rcversion="#4"
-  local rcfile="$NAVE_DIR/.zshenv"
-  if ! [ -f "$rcfile" ] \
-      || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
-
-    homercfile=$(naverc_filename)
-    cat > "$rcfile" <<RC
-$rcversion
-[ "\$NAVE_DEBUG" != "" ] && set -x || true
-if [ "\$BASH" != "" ]; then
-  if [ "\$NAVE_LOGIN" != "" ]; then
-    [ -f ~/.bash_profile ] && . ~/.bash_profile || true
-    [ -f ~/.bash_login ] && .  ~/.bash_login || true
-    [ -f ~/.profile ] && . ~/.profile || true
-  else
-    [ -f ~/.bashrc ] && . ~/.bashrc || true
-  fi
-else
-  [ -f ~/.zshenv ] && . ~/.zshenv || true
-  export DISABLE_AUTO_UPDATE=true
-  if [ "\$NAVE_LOGIN" != "" ]; then
-    [ -f ~/.zprofile ] && . ~/.zprofile || true
-    [ -f ~/.zshrc ] && . ~/.zshrc || true
-    [ -f ~/.zlogin ] && . ~/.zlogin || true
-  else
-    [ -f ~/.zshrc ] && . ~/.zshrc || true
-  fi
-fi
-unset ZDOTDIR
-export PATH=\$NAVEPATH:\$PATH
-[ -f ${homercfile} ] && . ${homercfile} || true
-RC
-
-    cat > "$NAVE_DIR/.zlogout" <<RC
-[ -f ~/.zlogout ] && . ~/.zlogout || true
-RC
-
-  fi
-
-  # couldn't write file
-  if ! [ -f "$rcfile" ] || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
-    fail "Failed writing rc files to $NAVE_DIR"
-  fi
+  write_rcfile
 
   export NAVE_DIR
   mkdirp "$NAVE_SRC"
@@ -131,7 +83,6 @@ RC
   esac
   # err "nave_$cmd = [$cmd] @=[$@]"
   $cmd "$@"
-  return $?
 }
 
 get_nave_dir () {
@@ -149,8 +100,8 @@ get_nave_dir () {
       NAVE_DIR=$prefix/lib/nave
     fi
   fi
-  export NAVE_SRC="$NAVE_DIR/src"
-  export NAVE_ROOT="$NAVE_DIR/installed"
+  NAVE_SRC="$NAVE_DIR/src"
+  NAVE_ROOT="$NAVE_DIR/installed"
 }
 
 enquote_all () {
@@ -332,12 +283,11 @@ get () {
   case "$base" in
     *.tar.gz|*.tgz)
       get_tgz "$path" "$@"
-      return $?
+      ;;
+    *)
+      get_html "$path" "$@"
       ;;
   esac
-
-  get_html "$path" "$@"
-  return $?
 }
 
 bin_available () {
@@ -371,7 +321,6 @@ build_binary () {
   if [ $ret -eq 0 ]; then
     # it worked!
     cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components 1
-    return $?
   else
     return $ret
   fi
@@ -420,7 +369,6 @@ build () {
       return 1
     fi
   )
-  return $?
 }
 
 nave_cache () {
@@ -556,7 +504,59 @@ naverc_filename () {
 source_naverc () {
   local naverc=$(naverc_filename)
   if [ -f "$naverc" ]; then
-    . "$rcfile"
+    . "$naverc"
+  fi
+}
+
+write_rcfile () {
+  mkdirp "$NAVE_DIR" "could not make NAVE_DIR ($NAVE_DIR)"
+
+  # set up the naverc init file.
+  # For zsh compatibility, we name this file ".zshenv" instead of
+  # the more reasonable "naverc" name.
+  # Important! Update this number any time the init content is changed.
+  local rcversion="#4"
+  local rcfile="$NAVE_DIR/.zshenv"
+  if ! [ -f "$rcfile" ] \
+      || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
+
+    local homercfile=$(naverc_filename)
+    cat > "$rcfile" <<RC
+$rcversion
+[ "\$NAVE_DEBUG" != "" ] && set -x || true
+if [ "\$BASH" != "" ]; then
+  if [ "\$NAVE_LOGIN" != "" ]; then
+    [ -f ~/.bash_profile ] && . ~/.bash_profile || true
+    [ -f ~/.bash_login ] && .  ~/.bash_login || true
+    [ -f ~/.profile ] && . ~/.profile || true
+  else
+    [ -f ~/.bashrc ] && . ~/.bashrc || true
+  fi
+else
+  [ -f ~/.zshenv ] && . ~/.zshenv || true
+  export DISABLE_AUTO_UPDATE=true
+  if [ "\$NAVE_LOGIN" != "" ]; then
+    [ -f ~/.zprofile ] && . ~/.zprofile || true
+    [ -f ~/.zshrc ] && . ~/.zshrc || true
+    [ -f ~/.zlogin ] && . ~/.zlogin || true
+  else
+    [ -f ~/.zshrc ] && . ~/.zshrc || true
+  fi
+fi
+unset ZDOTDIR
+export PATH=\$NAVEPATH:\$PATH
+[ -f ${homercfile} ] && . ${homercfile} || true
+RC
+
+    cat > "$NAVE_DIR/.zlogout" <<RC
+[ -f ~/.zlogout ] && . ~/.zlogout || true
+RC
+
+  fi
+
+  # couldn't write file
+  if ! [ -f "$rcfile" ] || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
+    fail "Failed writing rc files to $NAVE_DIR"
   fi
 }
 
@@ -574,7 +574,6 @@ nave_test () {
       return 1
     else
       make test-all
-      return $?
     fi
   )
 }
@@ -726,22 +725,18 @@ nave_use () {
   if [ $# -gt 1 ]; then
     shift
     nave_exec "$lvl" "$version" "$version" "$prefix" "$@"
-    return $?
   else
     nave_login "$lvl" "$version" "$version" "$prefix"
-    return $?
   fi
 }
 
 # internal
 nave_exec () {
   nave_run "exec" "$@"
-  return $?
 }
 
 nave_login () {
   nave_run "login" "$@"
-  return $?
 }
 
 nave_run () {
@@ -829,6 +824,7 @@ nave_run () {
 }
 
 nave_named () {
+  write_rcfile
   local name="$1"
   shift
 
@@ -841,9 +837,10 @@ nave_named () {
 
   if [ "$name" == "$NAVENAME" ] && [ "$version" == "$NAVEVERSION" ]; then
     if [ $# -gt 0 ]; then
-      "$@"
+      exec "$@"
+    else
+      return 0
     fi
-    return $?
   fi
 
   if [ "$version" = "" ]; then
@@ -856,10 +853,8 @@ nave_named () {
   # get the version
   if [ $# -gt 0 ]; then
     nave_exec "$lvl" "$name" "$version" "$prefix" "$@"
-    return $?
   else
     nave_login "$lvl" "$name" "$version" "$prefix"
-    return $?
   fi
 }
 
