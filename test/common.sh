@@ -3,7 +3,9 @@ testname=$(basename "$testcase" .sh)
 testdir=test/cases/$testname
 mkdir -p "$testdir"
 __nave_test_cleanup () {
-  rm -rf "$testdir"
+  if [ "$NO_CLEANUP" != "1" ]; then
+    rm -rf "$testdir"
+  fi
 }
 trap __nave_test_cleanup EXIT
 

@@ -383,8 +383,7 @@ build () {
     fi
   fi
 
-  nave_fetch "$version"
-  if [ $? != 0 ]; then
+  if ! nave_fetch "$version"; then
     # fetch failed, don't continue and try to build it.
     return 1
   fi
@@ -395,7 +394,7 @@ build () {
   jobs=${jobs:-$(sysctl -n hw.ncpu)}
   jobs=${jobs:-2}
 
-  ( cd -- "$src"
+  ( cd -- "$src" &>/dev/null
     source_naverc
     if [ "$NAVE_CONFIG" == "" ]; then
       NAVE_CONFIG=()
@@ -408,7 +407,7 @@ build () {
       err "Failed to make $version"
       return 1
     fi
-    if !make install; then
+    if ! make install; then
       err "Failed to install $version"
       return 1
     fi
