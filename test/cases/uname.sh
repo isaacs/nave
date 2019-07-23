@@ -9,5 +9,5 @@ for u in "${unames[@]}"; do
     echo $u
   }
   _TESTING_NAVE_NO_MAIN=1 . nave.sh
-  echo "$u: os=$os arch=$arch"
+  echo "$u: $(osarch)"
 done

@@ -1,6 +1,6 @@
 STDOUT
-no os 1
 successwin 0
+no os 1
 get fail 1
 STDERR
 no-op mock: tar xz -C test/cases/build-binary/success --strip-components 1

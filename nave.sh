@@ -30,29 +30,33 @@ MSG
   exit 1
 fi
 
-shell=`basename "$SHELL"`
-
 # Use fancy pants globs
 shopt -s extglob
 
-NODEDIST=${NODEDIST:-https://nodejs.org/dist}
-NAVE_CACHE_DUR=${NAVE_CACHE_DUR:-86400}
-NAVEUA="nave/$(curl --version | head -n1)"
-
 # Try to figure out the os and arch for binary fetching
-uname="$(uname -a)"
-os=
-arch=
-case "$uname" in
-  Linux\ *) os=linux ;;
-  Darwin\ *) os=darwin ;;
-  SunOS\ *) os=sunos ;;
-esac
-case "$uname" in
-  *x86_64*) arch=x64 ;;
-  *i[3456]86*) arch=x86 ;;
-  *raspberrypi*) arch=arm-pi ;;
-esac
+osarch () {
+  local uname=$(uname -a)
+  local os=
+  local arch=
+  case "$uname" in
+    Linux\ *) os=linux ;;
+    Darwin\ *) os=darwin ;;
+    SunOS\ *) os=sunos ;;
+  esac
+  case "$uname" in
+    *x86_64*) arch=x64 ;;
+    *i[3456]86*) arch=x86 ;;
+    *raspberrypi*) arch=arm-pi ;;
+  esac
+  # memoize
+  if [ "$os" != "" ] && [ "$arch" != "" ]; then
+    eval 'osarch () { echo "'$os-$arch'"; };'
+    echo "$os-$arch"
+  else
+    eval 'osarch () { return 1; };'
+    return 1
+  fi
+}
 
 tar=${TAR-tar}
 
@@ -131,6 +135,10 @@ RC
 }
 
 get_nave_dir () {
+  NODEDIST=${NODEDIST:-https://nodejs.org/dist}
+  NAVE_CACHE_DUR=${NAVE_CACHE_DUR:-86400}
+  NAVEUA="nave/$(curl --version | head -n1)"
+
   if [ -z "${NAVE_DIR+defined}" ]; then
     if [ -d "$XDG_CONFIG_HOME" ] && ! [ -d "$HOME/.nave" ]; then
       NAVE_DIR="$XDG_CONFIG_HOME"/nave
@@ -336,7 +344,7 @@ bin_available () {
   local version="$1"
   if [ "$NAVE_SRC_ONLY" = "1" ]; then
     return 1
-  elif [ -n "$os" ]; then
+  elif osarch >/dev/null; then
     # binaries started with node 0.8.6
     case "$version" in
       0.8.[012345]) return 1 ;;
@@ -354,7 +362,7 @@ build_binary () {
     return 1
   fi
   local targetfolder="$2"
-  local t="$version-$os-$arch"
+  local t="$version-$(osarch)"
   local url="v$version/node-v${t}.tar.gz"
   # have to do in 2 commands or else the "local" returns 0!
   local tarfile
@@ -542,7 +550,6 @@ nave_exit () {
 }
 
 naverc_filename () {
-  get_nave_dir
   echo $(cd -- $NAVE_DIR/.. &>/dev/null; pwd)/.naverc
 }
 
@@ -768,7 +775,7 @@ nave_run () {
     # source the nave env file, then run the command.
     args=("-c" ". $(enquote_all $NAVE_DIR/.zshenv); $(enquote_all "$@")")
   else
-    case "$shell" in
+    case "$(basename $SHELL)" in
       zsh)
         isLogin="1"
         # no need to set rcfile, since ZDOTDIR is set.

@@ -1,7 +1,7 @@
 STDOUT
-Darwin x86_64: os=darwin arch=x64
-SunOS i486: os=sunos arch=x86
-Linux i am a raspberrypie so delicious: os=linux arch=arm-pi
+Darwin x86_64: darwin-x64
+SunOS i486: sunos-x86
+Linux i am a raspberrypie so delicious: linux-arm-pi
 STDERR
 
 CODE 0

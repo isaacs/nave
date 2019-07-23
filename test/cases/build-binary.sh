@@ -4,13 +4,21 @@
 xdg
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 
-os= build_binary 12.6.0 $testdir/no-os
-echo "no os $?"
-
 . test/mocks/tar-noop.sh
 build_binary 12.6.0 $testdir/success
 echo "successwin $?"
 
+uname () {
+  echo 'nope'
+}
+# un-memoize osarch
+_TESTING_NAVE_NO_MAIN=1 . nave.sh
+build_binary 12.6.0 $testdir/no-os
+echo "no os $?"
+
+. test/mocks/uname.sh
+# un-memoize osarch
+_TESTING_NAVE_NO_MAIN=1 . nave.sh
 get () {
   return 1
 }
