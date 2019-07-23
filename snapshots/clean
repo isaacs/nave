@@ -1,0 +1,5 @@
+STDOUT
+
+STDERR
+mock rm -rf $PWD/test/cases/clean/nave/src/1.2.3 $PWD/test/cases/clean/nave/src/1.2.3.tgz $PWD/test/cases/clean/nave/src/1.2.3-*.tgz
+CODE 0
