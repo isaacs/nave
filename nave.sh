@@ -411,14 +411,14 @@ nave_auto () {
       local args=($(cat "$dir"/.naverc))
       if [ -d $1 ]; then
         if [ $# -gt 1 ]; then
-          exec nave use "${args[@]}" "${@:2}"
+          exec nave_use "${args[@]}" "${@:2}"
           break
         else
-          exec nave use "${args[@]}"
+          exec nave_use "${args[@]}"
           break
         fi
       else
-        exec nave use "${args[@]}" "$@"
+        exec nave_use "${args[@]}" "$@"
         break
       fi
     elif [ -d "$dir"/.git ]; then
@@ -723,7 +723,6 @@ nave_use () {
     err "failed to install $version"
     return $ret
   fi
-  write_rcfile
   local prefix="$NAVE_ROOT/$version"
   local lvl=$[ ${NAVELVL-0} + 1 ]
   if [ $# -gt 1 ]; then
@@ -744,6 +743,7 @@ nave_login () {
 }
 
 nave_run () {
+  write_rcfile
   local exec="$1"
   shift
   local lvl="$1"
@@ -820,7 +820,6 @@ nave_run () {
 }
 
 nave_named () {
-  write_rcfile
   local name="$1"
   shift
 
