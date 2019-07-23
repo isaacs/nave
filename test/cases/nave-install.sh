@@ -4,7 +4,7 @@
 . test/mocks/tar-noop.sh
 xdg
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
-get_nave_dir
+
 nave_install deadbeef
 mkdir -p $testdir/nave/installed/1.2.3/bin
 touch $testdir/nave/installed/1.2.3/bin/node

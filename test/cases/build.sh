@@ -5,8 +5,6 @@
 xdg
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 
-get_nave_dir
-
 # infer jobs from sysctl -n hw.ncpu
 JOBS=
 sysctl () {

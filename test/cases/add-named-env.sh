@@ -4,7 +4,6 @@
 . test/mocks/tar-unpack.sh
 xdg
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
-get_nave_dir
 add_named_env success 12.6.0
 readlink $testdir/nave/installed/success/bin/node
 

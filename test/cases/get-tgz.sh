@@ -2,7 +2,7 @@
 xdg
 . test/mocks/curl.sh
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
-get_nave_dir
+
 # test that an invalid cache will be blown away and we'll still
 # get the correct shasum
 mkdir -p $testdir/nave/cache/v12.6.0

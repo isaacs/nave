@@ -951,4 +951,6 @@ EOF
 
 if [ -z $_TESTING_NAVE_NO_MAIN ]; then
   main "$@"
+else
+  get_nave_dir
 fi
