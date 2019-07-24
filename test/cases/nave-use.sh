@@ -33,7 +33,7 @@ END
 
   here-exec)
     NAVENAME=12.6.0 NAVEVERSION=12.6.0 nave_use 12.6.0 \
-      bash -c 'env | grep NAVE | sort'
+      exec bash -c 'env | grep NAVE | sort'
     ;;
 
   here-noop)

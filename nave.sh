@@ -398,50 +398,46 @@ USAGE
 # Run this on cd'ing into new directories to automatically enter that
 # nave setting in that directory.
 nave_auto () {
-  if [ $# -eq 1 ]; then
-    if [ -d $1 ]; then
-      if ! cd $1; then
-        exec $SHELL
-      fi
+  if [ $# -gt 0 ]; then
+    cd $1
+    if [ $? -ne 0 ]; then
+      return 1
     fi
+    shift
   fi
+
   local dir=$(pwd)
   while ! [ "$dir" = "/" ]; do
     if [ -f "$dir"/.naverc ]; then
       local args=($(cat "$dir"/.naverc))
-      if [ -d $1 ]; then
-        if [ $# -gt 1 ]; then
-          exec nave_use "${args[@]}" "${@:2}"
-          break
-        else
-          exec nave_use "${args[@]}"
-          break
-        fi
+      if [ "$#" -eq 0 ]; then
+        nave_use "${args[@]}" exec $SHELL
       else
-        exec nave_use "${args[@]}" "$@"
-        break
+        nave_use "${args[@]}" "$@"
       fi
+      return $?
     elif [ -d "$dir"/.git ]; then
       break
     else
       dir=$(dirname -- "$dir")
     fi
   done
-  exec nave exit
+  nave_exit
 }
 
 nave_usemain () {
   if [ ${NAVELVL-0} -gt 0 ]; then
-    fail "Can't usemain inside a nave subshell. Exit to main shell."
+    err "Can't usemain inside a nave subshell. Exit to main shell."
+    return 1
   fi
   local version=$(ver "$1")
-  local current=$(command -v node >/dev/null 2>&1 && node -v)
-  local wn=$(which node || true)
+  local current=$(node -v 2>/dev/null)
+  local wn=$(which node)
   local prefix=${PREFIX:-/usr/local}
-  if [ "x$wn" != "x" ]; then
-    prefix="${wn/\/bin\/node/}"
-    if [ "x$prefix" == "x" ]; then
-      prefix=${PREFIX:-/usr/local}
+  if [ -x "$wn" ] && [[ "$current" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+    local p="${wn/\/bin\/node/}"
+    if [ "$p" != "" ] && [ -d "$prefix" ]; then
+      prefix=$p
     fi
   fi
   current="${current/v/}"
@@ -711,6 +707,9 @@ nave_use () {
     # we're already here
     if [ $# -gt 1 ]; then
       shift
+      if [ "$1" == "exec" ]; then
+        shift
+      fi
       exec "$@"
     else
       return 0
@@ -832,6 +831,9 @@ nave_named () {
 
   if [ "$name" == "$NAVENAME" ] && [ "$version" == "$NAVEVERSION" ]; then
     if [ $# -gt 0 ]; then
+      if [ "$1" == "exec" ]; then
+        shift
+      fi
       exec "$@"
     else
       return 0
@@ -918,24 +920,26 @@ Usage: nave <cmd>
 
 Commands:
 
-install <version>    Install the version passed (ex: 0.1.103)
-use <version>        Enter a subshell where <version> is being used
-use <ver> <program>  Enter a subshell, and run "<program>", then exit
-use <name> <ver>     Create a named env, using the specified version.
-                     If the name already exists, but the version differs,
-                     then it will update the link.
-usemain <version>    Install in /usr/local/bin (ie, use as your main nodejs)
-clean <version>      Delete the source code for <version>
-uninstall <version>  Delete the install for <version>
-ls                   List versions currently installed
-ls-remote            List remote node versions
-ls-all               List remote and local node versions
-latest               Show the most recent dist version
-cache                Clear or view the cache
-help                 Output help information
-auto                 Find a .naverc and then be in that env
-auto <program>       Find a .naverc, enter a subshell for that env, run "<program>", then exit
-exit                 Unset all the NAVE environs (use with 'exec')
+install <version>     Install the version passed (ex: 0.1.103)
+use <version>         Enter a subshell where <version> is being used
+use <ver> <program>   Enter a subshell, and run "<program>", then exit
+use <name> <ver>      Create a named env, using the specified version.
+                      If the name already exists, but the version differs,
+                      then it will update the link.
+usemain <version>     Install in /usr/local/bin (ie, use as your main nodejs)
+clean <version>       Delete the source code for <version>
+uninstall <version>   Delete the install for <version>
+ls                    List versions currently installed
+ls-remote             List remote node versions
+ls-all                List remote and local node versions
+latest                Show the most recent dist version
+cache                 Clear or view the cache
+help                  Output help information
+auto                  Find a .naverc and then be in that env
+auto <dir>            cd into <dir>, then find a .naverc, and be in that env
+auto <dir> <cmd>      cd into <dir>, then find a .naverc, and run a command
+                      in that env
+exit                  Unset all the NAVE environs (use with 'exec')
 
 Version Strings:
 Any command that calls for a version can be provided any of the

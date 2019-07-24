@@ -18,7 +18,7 @@ END
 
   here-exec)
     NAVENAME=success NAVEVERSION=12.6.0 nave_named success 12.6.0 \
-      bash -c 'env | grep NAVE | sort'
+      exec bash -c 'env | grep NAVE | sort'
     ;;
 
   here-noop)
