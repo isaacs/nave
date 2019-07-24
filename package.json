@@ -11,11 +11,11 @@
     "test": "bash test/run.sh",
     "precov": "rm -rf ./coverage",
     "cov": "COV=1 bash test/run.sh",
-    "postcov": "open coverage/index.html",
+    "postcov": "open coverage/kcov-merged/nave.sh.*.html",
     "snap": "SNAPSHOT=1 bash test/run.sh",
     "preversion": "npm test",
     "postversion": "npm publish",
-    "postpublish": "git push origin --all; git push origin --tags"
+    "postpublish": "git push origin --follow-tags"
   },
   "license": "ISC"
 }
