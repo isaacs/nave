@@ -31,10 +31,13 @@ EOF
     cp tmp/$testname $snapfile
     echo "ok $n - $testname"
   else
-    cmp tmp/$testname $snapfile
+    cmp tmp/$testname $snapfile &>/dev/null
     local cmpres=$?
     if [ $cmpres -ne 0 ]; then
       echo "not ok $n - $testname"
+      git diff --no-index --color $snapfile tmp/$testname | \
+        sed -Ee 's|^|# |g'
+      echo ""
       return 1
     else
       echo "ok $n - $testname"
@@ -85,14 +88,16 @@ main () {
       let 'fails++'
     fi
   done
-  if [ $fails -eq 0 ]; then
-    echo '# all tests passing'
-    rm -rf tmp
-  else
-    echo "# failed $fails of $n tests"
-  fi
   if [ -n "$COV" ]; then
     kcov --merge coverage coverage
+  fi
+  if [ $fails -eq 0 ]; then
+    echo -e '\u001b[37m\u001b[42m# all tests passing\u001b[49m\u001b[39m'
+    rm -rf tmp
+  else
+    echo -e "\u001b[31m\u001b[40m# failed $fails of $n tests\u001b[49m\u001b[39m"
+    echo ""
+    return 1
   fi
 }
 
