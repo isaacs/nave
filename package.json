@@ -17,5 +17,8 @@
     "postversion": "npm publish",
     "postpublish": "git push origin --follow-tags"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "files": [
+    "nave.sh"
+  ]
 }
