@@ -191,10 +191,9 @@ prefer the old style, just prefix your command with `node`.
 Nave requires bash.  It will probably never work on Windows, or other
 systems lack a native Bourne Again Shell.  Sorry.
 
-Nave logins work with bash and zsh.  If your shell doesn't set the
-`BASH` environment variable, then nave assumes you're using zsh.  As
-such, strange archaic shells like sh, csh, tcsh, ksh, and the like
-will not work.
+Nave logins work with any shell, but executing a command in the nave
+environment (ie, `nave use 12 node program.js`) requires that your shell
+support the `-c` argument.  (Bash, sh, zsh, and fish all work fine.)
 
 ## Configuration
 
