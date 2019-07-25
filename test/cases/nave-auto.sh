@@ -14,11 +14,6 @@ nave_exit () {
   echo "mock nave exit"
 }
 
-#exec () {
-#  echo "mock exec $@"
-#  exit
-#}
-
 setup () {
   mkdir -p $testdir/a/b/c/d/e/f
   mkdir -p $testdir/a/b/c/.git
@@ -42,6 +37,12 @@ case $1 in
       err mock cd fail
       return 1
     }
+
+    exec () {
+      echo "mock exec $@"
+      exit
+    }
+
     nave_auto $testdir/a/b/c
     ;;
 
