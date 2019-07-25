@@ -401,7 +401,7 @@ nave_auto () {
   if [ $# -gt 0 ]; then
     cd $1
     if [ $? -ne 0 ]; then
-      return 1
+      exec $SHELL
     fi
     shift
   fi
@@ -413,7 +413,7 @@ nave_auto () {
       if [ "$#" -eq 0 ]; then
         nave_use "${args[@]}" exec $SHELL
       else
-        nave_use "${args[@]}" "$@"
+        nave_use "${args[@]}" $SHELL -c "$(enquote_all "$@")"
       fi
       return $?
     elif [ -d "$dir"/.git ]; then
