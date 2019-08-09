@@ -2,7 +2,7 @@
   "name": "nave",
   "author": "Isaac Z. Schlueter <i@izs.me>",
   "description": "Virtual Environments for Node",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "preferGlobal": true,
   "bin": {
     "nave": "./nave.sh"
