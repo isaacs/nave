@@ -449,6 +449,11 @@ nave_usemain () {
 }
 
 nave_install () {
+  if [ $# -eq 2 ]; then
+    add_named_env "$1" "$2"
+    return $?
+  fi
+
   local version=$(ver "$1" "NONAMES")
   if [ -z "$version" ]; then
     err "Must supply a version ('lts', 'stable', 'latest' or numeric)"
@@ -920,7 +925,8 @@ Usage: nave <cmd>
 
 Commands:
 
-install <version>     Install the version passed (ex: 0.1.103)
+install <version>     Install the version specified (ex: 12.8.0)
+install <name> <ver>  Install the version as a named env
 use <version>         Enter a subshell where <version> is being used
 use <ver> <program>   Enter a subshell, and run "<program>", then exit
 use <name> <ver>      Create a named env, using the specified version.

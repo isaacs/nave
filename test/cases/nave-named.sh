@@ -16,6 +16,10 @@ END
     nave_named success bash -c 'env | grep NAVE | sort'
     ;;
 
+  install-only)
+    nave_install foo 12.6.0
+    ;;
+
   here-exec)
     NAVENAME=success NAVEVERSION=12.6.0 nave_named success 12.6.0 \
       exec bash -c 'env | grep NAVE | sort'
@@ -26,7 +30,7 @@ END
     ;;
 
   *)
-    cases=(enter-login enter-exec here-noop here-exec)
+    cases=(enter-login enter-exec here-noop here-exec install-only)
     for i in "${cases[@]}"; do
       echo $i
       NO_CLEANUP=1 $BASH $0 $i
