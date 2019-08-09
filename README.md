@@ -57,24 +57,28 @@ Usage: nave <cmd>
 
 Commands:
 
-install <version>    Install the version passed (ex: 0.1.103)
-use <version>        Enter a subshell where <version> is being used
-use <ver> <program>  Enter a subshell, and run "<program>", then exit
-use <name> <ver>     Create a named env, using the specified version.
-                     If the name already exists, but the version differs,
-                     then it will update the link.
-usemain <version>    Install in /usr/local/bin (ie, use as your main nodejs)
-clean <version>      Delete the source code for <version>
-uninstall <version>  Delete the install for <version>
-ls                   List versions currently installed
-ls-remote            List remote node versions
-ls-all               List remote and local node versions
-latest               Show the most recent dist version
-cache                Clear or view the cache
-help                 Output help information
-auto                 Find a .naverc and then be in that env
-auto <program>       Find a .naverc, enter a subshell for that env, run "<program>", then exit
-exit                 Unset all the NAVE environs (use with 'exec')
+install <version>     Install the version specified (ex: 12.8.0)
+install <name> <ver>  Install the version as a named env
+use <version>         Enter a subshell where <version> is being used
+use <ver> <program>   Enter a subshell, and run "<program>", then exit
+use <name> <ver>      Create a named env, using the specified version.
+                      If the name already exists, but the version differs,
+                      then it will update the link.
+usemain <version>     Install in /usr/local/bin (ie, use as your main nodejs)
+clean <version>       Delete the source code for <version>
+uninstall <version>   Delete the install for <version>
+ls                    List versions currently installed
+ls-remote             List remote node versions
+ls-all                List remote and local node versions
+latest                Show the most recent dist version
+cache                 Clear or view the cache
+help                  Output help information
+auto                  Find a .naverc and then be in that env
+auto <dir>            cd into <dir>, then find a .naverc, and be in that env
+auto <dir> <cmd>      cd into <dir>, then find a .naverc, and run a command
+                      in that env
+get <variable>        Print out various nave config values.
+exit                  Unset all the NAVE environs (use with 'exec')
 
 Version Strings:
 Any command that calls for a version can be provided any of the

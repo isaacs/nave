@@ -1,0 +1,15 @@
+STDOUT
+$PWD/test/cases/nave-get/nave/installed
+$PWD/test/cases/nave-get/nave/cache
+$PWD/test/cases/nave-get/nave
+$PWD/test/cases/nave-get/nave/src
+86400
+nave/hello this is curl
+
+Usage:
+  nave get (root|cache|dir|src|cache-dur|ua|src-only)
+Usage:
+  nave get (root|cache|dir|src|cache-dur|ua|src-only)
+STDERR
+unknown setting: asdf
+CODE 0

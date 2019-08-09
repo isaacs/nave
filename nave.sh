@@ -74,7 +74,7 @@ main () {
     ls-remote | ls-all)
       cmd="nave_${cmd/-/_}"
       ;;
-    auto|cache|exit|install|fetch|use|clean|test|named|ls|uninstall|usemain|latest|stable|lts|has|installed)
+    auto|cache|exit|install|fetch|use|clean|test|named|ls|uninstall|usemain|latest|stable|lts|has|installed|get)
       cmd="nave_$cmd"
       ;;
     * )
@@ -102,6 +102,27 @@ get_nave_dir () {
   fi
   NAVE_SRC="$NAVE_DIR/src"
   NAVE_ROOT="$NAVE_DIR/installed"
+}
+
+nave_get () {
+  case "$1" in
+    root) echo $NAVE_ROOT ;;
+    cache) echo $NAVE_DIR/cache ;;
+    dir) echo $NAVE_DIR  ;;
+    src) echo $NAVE_SRC  ;;
+    cache-dur) echo $NAVE_CACHE_DUR ;;
+    ua) echo $NAVEUA ;;
+    src-only) echo $NAVE_SRC_ONLY ;;
+    *)
+      if [ "$1" != "" ]; then
+        err "unknown setting: $1"
+      fi
+      cat <<USAGE
+Usage:
+  nave get (root|cache|dir|src|cache-dur|ua|src-only)
+USAGE
+;;
+  esac
 }
 
 enquote_all () {
@@ -945,6 +966,7 @@ auto                  Find a .naverc and then be in that env
 auto <dir>            cd into <dir>, then find a .naverc, and be in that env
 auto <dir> <cmd>      cd into <dir>, then find a .naverc, and run a command
                       in that env
+get <variable>        Print out various nave config values.
 exit                  Unset all the NAVE environs (use with 'exec')
 
 Version Strings:

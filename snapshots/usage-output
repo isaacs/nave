@@ -24,6 +24,7 @@ auto                  Find a .naverc and then be in that env
 auto <dir>            cd into <dir>, then find a .naverc, and be in that env
 auto <dir> <cmd>      cd into <dir>, then find a .naverc, and run a command
                       in that env
+get <variable>        Print out various nave config values.
 exit                  Unset all the NAVE environs (use with 'exec')
 
 Version Strings:
