@@ -20,5 +20,8 @@
   "license": "ISC",
   "files": [
     "nave.sh"
-  ]
+  ],
+  "funding": {
+    "url": "https://github.com/sponsors/isaacs"
+  }
 }
