@@ -132,7 +132,7 @@ enquote_all () {
     # start each arg with a ', then replace all ' with '"'"', then end quote
     # so "o'brien" becomes 'o'"'"'brien'
     # it's a bit line noisey, but it works reliably.
-    local newArg="$(echo "$ARG" | sed 's/'"'"'/'"'"'"'"'"'"'"'"'/g')"
+    local newArg="$(sed 's/'"'"'/'"'"'"'"'"'"'"'"'/g' <<< "$ARG")"
     ARGS+=("'$newArg'")
   done
   echo "${ARGS[@]}"
