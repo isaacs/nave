@@ -47,6 +47,7 @@ osarch () {
     *x86_64*) arch=x64 ;;
     *i[3456]86*) arch=x86 ;;
     *raspberrypi*) arch=arm-pi ;;
+    *aarch64*) arch=arm64 ;;
   esac
   # memoize
   if [ "$os" != "" ] && [ "$arch" != "" ]; then
