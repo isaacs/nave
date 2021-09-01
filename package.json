@@ -7,6 +7,10 @@
   "bin": {
     "nave": "./nave.sh"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isaacs/nave.git"
+  },
   "scripts": {
     "test": "bash test/run.sh",
     "precov": "rm -rf ./coverage",
