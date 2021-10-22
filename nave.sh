@@ -498,7 +498,7 @@ nave_install () {
 
 nave_exit () {
   if [ -n "$NAVEPATH" ]; then
-    export PATH=${PATH:${#NAVEPATH}+1}
+    export PATH=${PATH//:$NAVEPATH/}
   fi
   unset NAVEDEBUG
   unset NAVE_JOBS
@@ -513,7 +513,6 @@ nave_exit () {
   unset NODE_PATH
   unset NAVE_LOGIN
   unset NAVE_DIR
-  unset ZDOTDIR
   unset npm_config_binroot
   unset npm_config_root
   unset npm_config_manroot
