@@ -1,6 +1,5 @@
 STDOUT
 curl asdf -H user-agent:nave/curl --version
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/get_
-NAVE use xdg dir: $PWD/test/cases/get_/nave
+
 CODE 0

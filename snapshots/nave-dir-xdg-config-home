@@ -3,6 +3,5 @@ mkdir -p -- $PWD/test/cases/nave-dir-xdg-config-home/nave
 mkdir -p -- $PWD/test/cases/nave-dir-xdg-config-home/nave/src
 mkdir -p -- $PWD/test/cases/nave-dir-xdg-config-home/nave/installed
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/nave-dir-xdg-config-home
-NAVE use xdg dir: $PWD/test/cases/nave-dir-xdg-config-home/nave
+
 CODE 1

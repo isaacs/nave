@@ -1,7 +1,5 @@
 STDOUT
 
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/fail
-NAVE use xdg dir: $PWD/test/cases/fail/nave
 this is to be expected
 CODE 1

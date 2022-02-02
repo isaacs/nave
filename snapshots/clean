@@ -1,7 +1,5 @@
 STDOUT
 
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/clean
-NAVE use xdg dir: $PWD/test/cases/clean/nave
 mock rm -rf $PWD/test/cases/clean/nave/src/1.2.3 $PWD/test/cases/clean/nave/src/1.2.3.tgz $PWD/test/cases/clean/nave/src/1.2.3-*.tgz
 CODE 0

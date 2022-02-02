@@ -18,25 +18,5 @@ mock nave exit
 cmd-a/b/c/d/e/f
 mock nave use 4.2.0 echo -c 'cmd' (pwd=$PWD/test/cases/nave-auto/a/b/c/d/e/f)
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
 mock cd fail
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-auto
-NAVE use xdg dir: $PWD/test/cases/nave-auto/nave
 CODE 0

@@ -2,6 +2,5 @@ STDOUT
 no has
 has it
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/has
-NAVE use xdg dir: $PWD/test/cases/has/nave
+
 CODE 0

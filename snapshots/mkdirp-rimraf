@@ -1,6 +1,5 @@
 STDOUT
 
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/mkdirp-rimraf
-NAVE use xdg dir: $PWD/test/cases/mkdirp-rimraf/nave
+
 CODE 0

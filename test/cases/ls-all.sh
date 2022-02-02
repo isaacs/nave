@@ -17,5 +17,4 @@ EOF
 mkdir -p $testdir/nave/{installed,src}/1.2.3
 mkdir -p $testdir/nave/installed/12.69.420
 chmod 0755 $testdir/nave/installed/{foo,bar,baz}/bin/node
-echo "XDG_CONFIG_HOME=$XDG_CONFIG_HOME"
 . nave.sh ls-all

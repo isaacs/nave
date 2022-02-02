@@ -1,6 +1,5 @@
 STDOUT
 nave/hello this is curl
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/naveua
-NAVE use xdg dir: $PWD/test/cases/naveua/nave
+
 CODE 0

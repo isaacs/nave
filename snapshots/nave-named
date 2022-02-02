@@ -26,23 +26,11 @@ exit=0
 install-only
 exit=0
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/nave-named
-NAVE use xdg dir: $PWD/test/cases/nave-named/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-named
-NAVE use xdg dir: $PWD/test/cases/nave-named/nave
 Creating new env named 'success' using node 12.6.0
 unpacking mock: tar xz -C $PWD/test/cases/nave-named/nave/installed/12.6.0 --strip-components 1
 x bin/
 x configure
 x Makefile
 x bin/node
-XDG_CONFIG_HOME=$PWD/test/cases/nave-named
-NAVE use xdg dir: $PWD/test/cases/nave-named/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-named
-NAVE use xdg dir: $PWD/test/cases/nave-named/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-named
-NAVE use xdg dir: $PWD/test/cases/nave-named/nave
-XDG_CONFIG_HOME=$PWD/test/cases/nave-named
-NAVE use xdg dir: $PWD/test/cases/nave-named/nave
 Creating new env named 'foo' using node 12.6.0
 CODE 0

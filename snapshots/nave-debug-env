@@ -1,6 +1,5 @@
 STDOUT
 -x
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/nave-debug-env
-NAVE use xdg dir: $PWD/test/cases/nave-debug-env/nave
+
 CODE 0

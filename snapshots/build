@@ -6,8 +6,6 @@ mock configure --prefix=test/cases/build/make-install-fail
 mock make all
 mock configure --prefix=test/cases/build/make-fail
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/build
-NAVE use xdg dir: $PWD/test/cases/build/nave
 unpacking mock: tar xz -C test/cases/build/success --strip-components 1
 x bin/
 x configure

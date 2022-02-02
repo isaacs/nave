@@ -5,6 +5,5 @@ STDOUT
 4.9.1
 6.17.1
 STDERR
-XDG_CONFIG_HOME=$PWD/test/cases/lts
-NAVE use xdg dir: $PWD/test/cases/lts/nave
+
 CODE 0
