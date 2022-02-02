@@ -24,6 +24,11 @@ NAVENAME=success
 NAVEVERSION=12.6.0
 exit=0
 install-only
+test/cases/nave-named/nave/installed/foo/bin
+test/cases/nave-named/nave/installed/foo/bin/node
+test/cases/nave-named/nave/installed/foo/bin/node-waf
+test/cases/nave-named/nave/installed/foo/bin/npm
+test/cases/nave-named/nave/installed/foo/bin/npx
 exit=0
 STDERR
 Creating new env named 'success' using node 12.6.0

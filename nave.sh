@@ -931,6 +931,7 @@ add_named_env () {
   ln -sf -- "$NAVE_ROOT/$version/bin/node" "$NAVE_ROOT/$name/bin/node"
   ln -sf -- "$NAVE_ROOT/$version/bin/npm"  "$NAVE_ROOT/$name/bin/npm"
   ln -sf -- "$NAVE_ROOT/$version/bin/node-waf" "$NAVE_ROOT/$name/bin/node-waf"
+  ln -sf -- "$NAVE_ROOT/$version/bin/npx"  "$NAVE_ROOT/$name/bin/npx"
 }
 
 nave_clean () {

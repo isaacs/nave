@@ -17,6 +17,7 @@ END
 
   install-only)
     nave_install foo 12.6.0
+    find $testdir/nave/installed/foo/bin | sort
     ;;
 
   here-exec)
