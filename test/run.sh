@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 fails=0
-export CDPATH=
-export NAVE_DIR=
-export NAVE=
-export NAVELVL=
-export NAVENAME=
-export NAVEPATH=
-export NAVEVERSION=
-export NAVE_DIR=
-export NAVE_LOGIN=
+unset CDPATH
+unset NAVE_DIR
+unset NAVE
+unset NAVELVL
+unset NAVENAME
+unset NAVEPATH
+unset NAVEVERSION
+unset NAVE_DIR
+unset NAVE_LOGIN
 
 # filter out machine-specific things
 filterTest () {
