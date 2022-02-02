@@ -2,4 +2,5 @@
 # care about the actual unpacked results.
 tar () {
   echo "no-op mock: tar $@" >&2
+  cat >/dev/null
 }
