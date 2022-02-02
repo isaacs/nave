@@ -2,6 +2,14 @@
 
 fails=0
 export CDPATH=
+export NAVE_DIR=
+export NAVE=
+export NAVELVL=
+export NAVENAME=
+export NAVEPATH=
+export NAVEVERSION=
+export NAVE_DIR=
+export NAVE_LOGIN=
 
 # filter out machine-specific things
 filterTest () {
