@@ -1,0 +1,47 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x, 17.x]
+        platform:
+        - os: ubuntu-latest
+        - os: macos-latest
+      fail-fast: false
+
+    runs-on: ${{ matrix.platform.os }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v1.1.0
+
+      # TODO: figure out why kcov doesn't work
+      # - name: install kcov (Ubuntu)
+      #   if: matrix.platform.os == 'ubuntu-latest'
+      #   run: sudo apt-get install kcov
+      #
+      # - name: install kcov (macOS)
+      #   if: matrix.platform.os == 'macos-latest'
+      #   run: brew install kcov
+
+      - name: Run Tests
+        # TODO: figure out why kcov doesn't work
+        # run: npm run cov:noopen
+        run: npm run test
+
+      # TODO: figure out why kcov doesn't work
+      # - name: Copy Coverage to Docs Folder
+      #   run: |
+      #     rm -rf public-coverage-report
+      #     mv coverage public-coverage-report
+      #
+      # - name: Deploy Coverage Report
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{secrets.GITHUB_TOKEN}}
+      #     publish_dir: ./public-coverage-report
+      #     user_name: 'nave-coverage-bot'
+      #     user_email: 'nave-coverage-bot@example.com'
