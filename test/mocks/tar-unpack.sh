@@ -11,5 +11,5 @@ tar () {
     shift
   fi
   $(which tar) xvf test/mocks/mock-node-tarball.tgz "$@" 2>&1 | \
-    sed -e 's#mock-node-v12.6.0/##g' >&2
+    sed -e 's#mock-node-v12.6.0/#-x #g' >&2
 }
