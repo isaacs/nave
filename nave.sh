@@ -37,7 +37,7 @@ shopt -s extglob
 osarch () {
   local uname=$(uname -a)
   local os=
-  local arch=$(uname -m)
+  local arch=
   case "$uname" in
     Linux\ *) os=linux ;;
     Darwin\ *) os=darwin ;;

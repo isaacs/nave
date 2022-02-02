@@ -82,6 +82,7 @@ runTest () {
 }
 
 main () {
+  rm -rf coverage/
   rm -rf tmp
   mkdir -p tmp
   mkdir -p snapshots
@@ -102,6 +103,7 @@ main () {
     fi
   done
   if [ -n "$COV" ]; then
+    sleep 1
     kcov --merge coverage coverage
   fi
   if [ $fails -eq 0 ]; then
