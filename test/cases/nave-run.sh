@@ -7,7 +7,7 @@ _TESTING_NAVE_NO_MAIN=1 . nave.sh
 
 exec () {
   echo "mock exec $@"
-  env | grep NAVE
+  env | grep NAVE | sort
   echo ""
 }
 
