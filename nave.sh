@@ -93,6 +93,7 @@ get_nave_dir () {
   NAVEUA="nave/$(curl --version | head -n1)"
 
   if [ -z "${NAVE_DIR+defined}" ]; then
+    echo "XDG_CONFIG_HOME=${XDG_CONFIG_HOME}" >&2
     if [ -d "$XDG_CONFIG_HOME" ] && ! [ -d "$HOME/.nave" ]; then
       NAVE_DIR="$XDG_CONFIG_HOME"/nave
       echo "NAVE use xdg dir: ${NAVE_DIR}" >&2
