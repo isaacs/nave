@@ -1,5 +1,5 @@
 . test/common.sh
-NAVE_DIR=$testdir
+export NAVE_DIR=$testdir
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 nave_cache asdf
 touch $testdir/cache/foo
