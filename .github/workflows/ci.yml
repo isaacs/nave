@@ -35,8 +35,8 @@ jobs:
         # TODO: figure out why kcov doesn't work
         # run: npm run cov:noopen
         run: |
-          bash -x test/cases/installed.sh #npm run test
-          bash -x test/cases/nave-fetch.sh #npm run test
+          # bash test/cases/installed.sh #npm run test
+          bash test/cases/nave-fetch.sh #npm run test
           cat snapshots/nave-fetch
 
       # TODO: figure out why kcov doesn't work
