@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         platform:
-          # - os: ubuntu-latest
+        - os: ubuntu-latest
         - os: macos-latest
       fail-fast: false
 
@@ -21,14 +21,14 @@ jobs:
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
           # TODO: figure out why kcov doesn't work
-          # sudo apt-get install kcov
+          sudo apt-get install kcov
           sudo apt-get install tree
 
       - name: install deps (macOS)
         if: matrix.platform.os == 'macos-latest'
         run: |
           # TODO: figure out why kcov doesn't work
-          # brew install kcov
+          brew install kcov
           brew install tree
 
       - name: Run Tests
@@ -37,7 +37,7 @@ jobs:
         run: |
           rm -rf ~/.nave
           bash --version
-          bash test/run.sh
+          COV=1 bash test/run.sh
           # bash test/cases/installed.sh #npm run test
           # bash test/cases/nave-fetch.sh #npm run test
           # cat snapshots/nave-fetch
