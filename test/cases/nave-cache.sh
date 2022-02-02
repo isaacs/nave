@@ -5,6 +5,6 @@ nave_cache asdf
 touch $testdir/cache/foo
 mkdir -p $testdir/cache/a/{b,c}/d
 nave_cache tree
-nave_cache ls
+nave_cache ls | sort
 nave_cache clear
 nave_cache ls
