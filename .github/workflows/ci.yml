@@ -18,19 +18,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v1.1.0
 
-      # TODO: figure out why kcov doesn't work
-      # - name: install kcov (Ubuntu)
-      #   if: matrix.platform.os == 'ubuntu-latest'
-      #   run: sudo apt-get install kcov
-      #
-      # - name: install kcov (macOS)
-      #   if: matrix.platform.os == 'macos-latest'
-      #   run: brew install kcov
+      - name: install deps (Ubuntu)
+        if: matrix.platform.os == 'ubuntu-latest'
+        run: |
+          # TODO: figure out why kcov doesn't work
+          # sudo apt-get install kcov
+          sudo apt-get install tree
+
+      - name: install deps (macOS)
+        if: matrix.platform.os == 'ubuntu-latest'
+        run: |
+          # TODO: figure out why kcov doesn't work
+          # brew install kcov
+          brew install tree
 
       - name: Run Tests
         # TODO: figure out why kcov doesn't work
         # run: npm run cov:noopen
-        run: npm run test
+        run: bash -x test/cases/installed.sh #npm run test
 
       # TODO: figure out why kcov doesn't work
       # - name: Copy Coverage to Docs Folder
