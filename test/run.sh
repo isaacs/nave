@@ -4,7 +4,9 @@ fails=0
 
 # filter out machine-specific things
 filterTest () {
-  sed -e "s#$PWD#\$PWD#g" | sed -Ee "s|nave.sh: line [0-9]+|nave.sh: line #|g"
+  sed -e "s#$PWD#\$PWD#g" | \
+    sed -Ee "s|nave.sh: line [0-9]+|nave.sh: line #|g" | \
+    sed -e "s#[a-zA-Z0-9/]*/echo#echo#g"
 }
 
 afterTest () {
