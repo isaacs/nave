@@ -4,5 +4,7 @@ mkdir -p -- $PWD/test/cases/nave-dir-home-no-xdg/.nave/src
 mkdir -p -- $PWD/test/cases/nave-dir-home-no-xdg/.nave/installed
 STDERR
 XDG_CONFIG_HOME=
+-d xdg no
+ls: : No such file or directory
 NAVE use home dir: $PWD/test/cases/nave-dir-home-no-xdg/.nave
 CODE 1

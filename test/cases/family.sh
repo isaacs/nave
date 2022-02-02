@@ -1,7 +1,6 @@
 . test/common.sh
 . test/mocks/curl.sh
 
-xdg
 NAVE_DIR=$testdir/nave
 
 _TESTING_NAVE_NO_MAIN=1 . nave.sh

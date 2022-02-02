@@ -5,6 +5,6 @@ Linux i am a raspberrypie so delicious: linux-arm-pi
 Darwin moxy.lan 21.2.0 Darwin Kernel Version 21.2.0: Sun Nov 28 20:28:41 PST 2021; root:xnu-8019.61.5~1/RELEASE_ARM64_T6000 arm64: darwin-arm64
 Linux aarch64: linux-arm64
 STDERR
-XDG_CONFIG_HOME=/Users/isaacs/.config
-NAVE use xdg dir: /Users/isaacs/.config/nave
+XDG_CONFIG_HOME=$PWD/test/cases/uname
+NAVE use xdg dir: $PWD/test/cases/uname/nave
 CODE 0

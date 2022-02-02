@@ -5,6 +5,6 @@ STDOUT
 no os, 12.6.0 no
 NAVE_SRC_ONLY=1 12.6.0 no
 STDERR
-XDG_CONFIG_HOME=/Users/isaacs/.config
-NAVE use xdg dir: /Users/isaacs/.config/nave
+XDG_CONFIG_HOME=$PWD/test/cases/bin-avail
+NAVE use xdg dir: $PWD/test/cases/bin-avail/nave
 CODE 0

@@ -2,7 +2,6 @@
 . test/mocks/uname.sh
 . test/mocks/curl.sh
 . test/mocks/tar-unpack.sh
-xdg
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 
 # pretend we have an old version already

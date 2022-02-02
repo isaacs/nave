@@ -99,6 +99,12 @@ get_nave_dir () {
       echo "NAVE use xdg dir: ${NAVE_DIR}" >&2
     elif [ -d "$HOME" ]; then
       NAVE_DIR="$HOME"/.nave
+      if [ -d "$XDG_CONFIG_HOME" ]; then
+        echo "-d xdg yes" >&2
+      else
+        echo "-d xdg no" >&2
+      fi
+      ls -laF "$XDG_CONFIG_HOME" >&2
       echo "NAVE use home dir: ${NAVE_DIR}" >&2
     else
       local prefix=${PREFIX:-/usr/local}

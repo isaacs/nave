@@ -4,6 +4,6 @@ STDOUT
 ''"'"''"'"''"'"''"'"''"'"''
 '-e' '-n' 'foo'
 STDERR
-XDG_CONFIG_HOME=/Users/isaacs/.config
-NAVE use xdg dir: /Users/isaacs/.config/nave
+XDG_CONFIG_HOME=$PWD/test/cases/enquote-all
+NAVE use xdg dir: $PWD/test/cases/enquote-all/nave
 CODE 0

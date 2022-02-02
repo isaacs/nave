@@ -1,5 +1,4 @@
 . test/common.sh
-xdg
 curl () {
   echo "hello this is curl"
 }

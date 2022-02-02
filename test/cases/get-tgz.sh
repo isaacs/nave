@@ -1,5 +1,4 @@
 . test/common.sh
-xdg
 . test/mocks/curl.sh
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 

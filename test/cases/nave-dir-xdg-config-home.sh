@@ -1,6 +1,5 @@
 . test/common.sh
 realmkdir=$(which mkdir)
-xdg
 HOME=
 mkdir () {
   echo "mkdir $@"

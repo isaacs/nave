@@ -1,7 +1,6 @@
 . test/common.sh
 . test/mocks/uname.sh
 . test/mocks/curl.sh
-xdg
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 
 . test/mocks/tar-noop.sh

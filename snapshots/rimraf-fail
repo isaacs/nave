@@ -1,7 +1,7 @@
 STDOUT
 
 STDERR
-XDG_CONFIG_HOME=/Users/isaacs/.config
-NAVE use xdg dir: /Users/isaacs/.config/nave
+XDG_CONFIG_HOME=$PWD/test/cases/rimraf-fail
+NAVE use xdg dir: $PWD/test/cases/rimraf-fail/nave
 Could not remove test/cases/rimraf-fail
 CODE 1
