@@ -1,4 +1,5 @@
 STDOUT
+XDG_CONFIG_HOME=$PWD/test/cases/ls-all
 src:
 1.2.3	
 
