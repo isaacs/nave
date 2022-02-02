@@ -37,13 +37,14 @@ shopt -s extglob
 osarch () {
   local uname=$(uname -a)
   local os=
-  local arch=
+  local arch=$(uname -m)
   case "$uname" in
     Linux\ *) os=linux ;;
     Darwin\ *) os=darwin ;;
     SunOS\ *) os=sunos ;;
   esac
   case "$uname" in
+    *arm64*) arch=arm64 ;;
     *x86_64*) arch=x64 ;;
     *i[3456]86*) arch=x86 ;;
     *raspberrypi*) arch=arm-pi ;;
