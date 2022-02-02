@@ -1,6 +1,7 @@
 STDOUT
 
 STDERR
+XDG_CONFIG_HOME=$PWD/test/cases/nave-install
 NAVE use xdg dir: $PWD/test/cases/nave-install/nave
 Must supply a version ('lts', 'stable', 'latest' or numeric)
 install exit 0

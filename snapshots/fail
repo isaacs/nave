@@ -1,6 +1,7 @@
 STDOUT
 
 STDERR
+XDG_CONFIG_HOME=/Users/isaacs/.config
 NAVE use xdg dir: /Users/isaacs/.config/nave
 this is to be expected
 CODE 1

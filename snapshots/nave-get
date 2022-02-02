@@ -11,6 +11,7 @@ Usage:
 Usage:
   nave get (root|cache|dir|src|cache-dur|ua|src-only)
 STDERR
+XDG_CONFIG_HOME=$PWD/test/cases/nave-get
 NAVE use xdg dir: $PWD/test/cases/nave-get/nave
 unknown setting: asdf
 CODE 0

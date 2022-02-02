@@ -1,6 +1,7 @@
 STDOUT
 
 STDERR
+XDG_CONFIG_HOME=$PWD/test/cases/nave-fetch
 NAVE use xdg dir: $PWD/test/cases/nave-fetch/nave
 no-op mock: tar xzf $PWD/test/cases/nave-fetch/nave/src/12.6.0.tgz -C $PWD/test/cases/nave-fetch/nave/src/12.6.0 --strip-components=1
 fetched 12.6.0

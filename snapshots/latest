@@ -1,5 +1,6 @@
 STDOUT
 12.6.0
 STDERR
+XDG_CONFIG_HOME=$PWD/test/cases/latest
 NAVE use xdg dir: $PWD/test/cases/latest/nave
 CODE 0

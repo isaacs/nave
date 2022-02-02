@@ -55,5 +55,6 @@ node remote:
 11.14.0	11.15.0	12.0.0	12.1.0	12.2.0	12.3.0	12.3.1	12.4.0	12.5.0
 12.6.0	
 STDERR
+XDG_CONFIG_HOME=$PWD/test/cases/ls-remote
 NAVE use xdg dir: $PWD/test/cases/ls-remote/nave
 CODE 0

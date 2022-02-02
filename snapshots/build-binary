@@ -3,6 +3,7 @@ successwin 0
 no os 1
 get fail 1
 STDERR
+XDG_CONFIG_HOME=$PWD/test/cases/build-binary
 NAVE use xdg dir: $PWD/test/cases/build-binary/nave
 no-op mock: tar xz -C test/cases/build-binary/success --strip-components 1
 CODE 0

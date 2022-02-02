@@ -26,6 +26,7 @@ test/cases/nave-usemain/nave/cache/v12.6.0/004b7992a2621eb35a47c94d258510ca5744b
 test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt
 test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
 STDERR
+XDG_CONFIG_HOME=$PWD/test/cases/nave-usemain
 NAVE use xdg dir: $PWD/test/cases/nave-usemain/nave
 Can't usemain inside a nave subshell. Exit to main shell.
 unpacking mock: tar xz -C test/cases/nave-usemain --strip-components 1
