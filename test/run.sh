@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 fails=0
+export CDPATH=
 
 # filter out machine-specific things
 filterTest () {
