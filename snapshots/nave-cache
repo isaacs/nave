@@ -10,10 +10,10 @@ test/cases/nave-cache/cache
 5 directories, 1 file
 test/cases/nave-cache/cache
 test/cases/nave-cache/cache/a
-test/cases/nave-cache/cache/a/c
-test/cases/nave-cache/cache/a/c/d
 test/cases/nave-cache/cache/a/b
 test/cases/nave-cache/cache/a/b/d
+test/cases/nave-cache/cache/a/c
+test/cases/nave-cache/cache/a/c/d
 test/cases/nave-cache/cache/foo
 test/cases/nave-cache/cache
 STDERR

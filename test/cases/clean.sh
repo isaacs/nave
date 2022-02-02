@@ -1,5 +1,4 @@
 . test/common.sh
-xdg
 rm () {
   echo "mock rm $@" >&2
 }

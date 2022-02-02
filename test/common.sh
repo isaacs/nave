@@ -9,9 +9,8 @@ __nave_test_cleanup () {
 }
 trap __nave_test_cleanup EXIT
 
-xdg () {
-  export XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
-}
+export XDG_CONFIG_HOME=$(cd -- $testdir &>/dev/null ; pwd)
+export HOME=$XDG_CONFIG_HOME
 
 if [ "$SNAPSHOT" != "1" ]; then
   curl () {

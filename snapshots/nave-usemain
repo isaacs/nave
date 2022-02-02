@@ -2,29 +2,29 @@ STDOUT
 test/cases/nave-usemain/bin/node
 v12.6.0
 test/cases/nave-usemain
+test/cases/nave-usemain/Makefile
 test/cases/nave-usemain/bin
 test/cases/nave-usemain/bin/node
 test/cases/nave-usemain/configure
-test/cases/nave-usemain/Makefile
 test/cases/nave-usemain/nave
 test/cases/nave-usemain/nave/cache
 test/cases/nave-usemain/nave/cache/v12.6.0
 test/cases/nave-usemain/nave/cache/v12.6.0/004b7992a2621eb35a47c94d258510ca5744b5a8072364f235dc7e3d4bff7457.tgz
-test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
 test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt
+test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
 test/cases/nave-usemain/bin/node
 v12.6.0
 test/cases/nave-usemain
+test/cases/nave-usemain/Makefile
 test/cases/nave-usemain/bin
 test/cases/nave-usemain/bin/node
 test/cases/nave-usemain/configure
-test/cases/nave-usemain/Makefile
 test/cases/nave-usemain/nave
 test/cases/nave-usemain/nave/cache
 test/cases/nave-usemain/nave/cache/v12.6.0
 test/cases/nave-usemain/nave/cache/v12.6.0/004b7992a2621eb35a47c94d258510ca5744b5a8072364f235dc7e3d4bff7457.tgz
-test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
 test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt
+test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
 STDERR
 Can't usemain inside a nave subshell. Exit to main shell.
 unpacking mock: tar xz -C test/cases/nave-usemain --strip-components 1

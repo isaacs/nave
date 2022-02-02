@@ -1,5 +1,4 @@
 . test/common.sh
-xdg
 . test/mocks/curl.sh
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 
@@ -30,4 +29,4 @@ rm test/cases/get-tgz/nave/cache/v12.6.0/*.tgz
 get_tgz v12.6.0/node-v12.6.0-darwin-x64.tar.gz
 echo $?
 
-find $testdir/nave
+find $testdir/nave | sort

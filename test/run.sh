@@ -1,10 +1,23 @@
 #!/usr/bin/env bash
 
 fails=0
+unset CDPATH
+unset NAVE_DIR
+unset NAVE
+unset NAVELVL
+unset NAVENAME
+unset NAVEPATH
+unset NAVEVERSION
+unset NAVE_DIR
+unset NAVE_LOGIN
 
-# filter out machine-specific things
+# filter out machine-specific things and the mac m1's annoying noise
 filterTest () {
-  sed -e "s#$PWD#\$PWD#g" | sed -Ee "s|nave.sh: line [0-9]+|nave.sh: line #|g"
+  sed -e "s#$PWD#\$PWD#g" | \
+    sed -Ee "s|nave.sh: line [0-9]+|nave.sh: line #|g" | \
+    sed -e "s#[a-zA-Z0-9/]*/echo#echo#g" | \
+    sed -e "s#$HOME#\$HOME#g" | \
+    grep -v 'Class AMSupportURLSession'
 }
 
 afterTest () {
@@ -69,6 +82,7 @@ runTest () {
 }
 
 main () {
+  rm -rf coverage/
   rm -rf tmp
   mkdir -p tmp
   mkdir -p snapshots
@@ -89,6 +103,7 @@ main () {
     fi
   done
   if [ -n "$COV" ]; then
+    sleep 1
     kcov --merge coverage coverage
   fi
   if [ $fails -eq 0 ]; then

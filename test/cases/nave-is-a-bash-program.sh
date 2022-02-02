@@ -1,1 +1,2 @@
-BASH= . nave.sh
+unset BASH
+. nave.sh

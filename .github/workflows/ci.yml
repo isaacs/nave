@@ -1,0 +1,31 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform:
+        - os: ubuntu-latest
+        - os: macos-latest
+      fail-fast: false
+
+    runs-on: ${{ matrix.platform.os }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v1.1.0
+
+      - name: install deps (Ubuntu)
+        if: matrix.platform.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get install tree
+
+      - name: install deps (macOS)
+        if: matrix.platform.os == 'macos-latest'
+        run: |
+          brew install tree
+
+      - name: Run Tests
+        run: bash test/run.sh

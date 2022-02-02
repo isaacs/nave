@@ -2,7 +2,6 @@
 . test/mocks/uname.sh
 . test/mocks/curl.sh
 . test/mocks/tar-unpack.sh
-xdg
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
 
 # pretend we have an old version already
@@ -20,7 +19,7 @@ NAVELVL=1 nave_usemain
 nave_usemain 12.6.0
 which node
 node -v
-find $testdir
+find $testdir | sort
 
 rm -rf $testdir
 mkdir $testdir
@@ -36,7 +35,7 @@ export PATH=$testdir/bin:$PATH
 nave_usemain 12.6.0
 which node
 node -v
-find $testdir
+find $testdir | sort
 
 # using the same one over again
 nave_usemain 12.6.0
