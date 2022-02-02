@@ -9,6 +9,7 @@ tar () {
   if [[ $cmd =~ .*f ]]; then
     shift
   fi
-  $(which tar) xvf test/mocks/mock-node-tarball.tgz "$@"
+  $(which tar) xvf test/mocks/mock-node-tarball.tgz "$@" | \
+    sed -e '#^mock-node-v12.6.0/##g'
   cat >/dev/null
 }
