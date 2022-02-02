@@ -15,7 +15,8 @@ unset NAVE_LOGIN
 filterTest () {
   sed -e "s#$PWD#\$PWD#g" | \
     sed -Ee "s|nave.sh: line [0-9]+|nave.sh: line #|g" | \
-    sed -e "s#[a-zA-Z0-9/]*/echo#echo#g"
+    sed -e "s#[a-zA-Z0-9/]*/echo#echo#g" | \
+    sed -e "s#$HOME#\$HOME#g"
 }
 
 afterTest () {
