@@ -10,4 +10,5 @@ tar () {
     shift
   fi
   $(which tar) xvf test/mocks/mock-node-tarball.tgz "$@"
+  cat >/dev/null
 }
