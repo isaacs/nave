@@ -11,6 +11,7 @@ no name
 exit=1
 exit=1
 STDERR
+NAVE use xdg dir: $PWD/test/cases/add-named-env/nave
 Creating new env named 'success' using node 12.6.0
 unpacking mock: tar xz -C $PWD/test/cases/add-named-env/nave/installed/12.6.0 --strip-components 1
 x bin/

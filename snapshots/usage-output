@@ -44,5 +44,5 @@ To exit a nave subshell, type 'exit' or press ^D.
 To run nave *without* a subshell, do 'exec nave use <version>'.
 To clear the settings from a nave env, use 'exec nave exit'
 STDERR
-
+NAVE use xdg dir: /Users/isaacs/.config/nave
 CODE 0

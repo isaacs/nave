@@ -95,10 +95,13 @@ get_nave_dir () {
   if [ -z "${NAVE_DIR+defined}" ]; then
     if [ -d "$XDG_CONFIG_HOME" ] && ! [ -d "$HOME/.nave" ]; then
       NAVE_DIR="$XDG_CONFIG_HOME"/nave
+      echo "NAVE use xdg dir: ${NAVE_DIR}" >&2
     elif [ -d "$HOME" ]; then
       NAVE_DIR="$HOME"/.nave
+      echo "NAVE use home dir: ${NAVE_DIR}" >&2
     else
       local prefix=${PREFIX:-/usr/local}
+      echo "NAVE use prefix: ${NAVE_DIR}" >&2
       NAVE_DIR=$prefix/lib/nave
     fi
   fi

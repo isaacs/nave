@@ -19,5 +19,5 @@ nave_has 1 2 3
 nave_installed 1 2 3
 nave_help 1 2 3
 STDERR
-
+NAVE use xdg dir: /Users/isaacs/.config/nave
 CODE 0

@@ -1,6 +1,7 @@
 STDOUT
 
 STDERR
+NAVE use xdg dir: $PWD/test/cases/nave-test/nave
 .naverc
 configure
 MOCK MAKE test-all

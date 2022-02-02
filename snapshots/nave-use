@@ -31,11 +31,19 @@ exit=0
 noversion
 exit=1
 STDERR
+NAVE use xdg dir: $PWD/test/cases/nave-use/nave
+NAVE use xdg dir: $PWD/test/cases/nave-use/nave
 unpacking mock: tar xz -C $PWD/test/cases/nave-use/nave/installed/12.6.0 --strip-components 1
 x bin/
 x configure
 x Makefile
 x bin/node
+NAVE use xdg dir: $PWD/test/cases/nave-use/nave
+NAVE use xdg dir: $PWD/test/cases/nave-use/nave
 failed to install 12.6.0
+NAVE use xdg dir: $PWD/test/cases/nave-use/nave
+NAVE use xdg dir: $PWD/test/cases/nave-use/nave
+NAVE use xdg dir: $PWD/test/cases/nave-use/nave
+NAVE use xdg dir: $PWD/test/cases/nave-use/nave
 Must supply a version
 CODE 0

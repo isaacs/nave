@@ -1,5 +1,5 @@
 STDOUT
 curl asdf -H user-agent:nave/curl --version
 STDERR
-
+NAVE use xdg dir: /Users/isaacs/.config/nave
 CODE 0

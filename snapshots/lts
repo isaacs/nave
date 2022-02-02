@@ -5,5 +5,5 @@ STDOUT
 4.9.1
 6.17.1
 STDERR
-
+NAVE use xdg dir: $PWD/test/cases/lts/nave
 CODE 0

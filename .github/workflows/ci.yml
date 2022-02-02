@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         platform:
-        - os: ubuntu-latest
+          # - os: ubuntu-latest
         - os: macos-latest
       fail-fast: false
 

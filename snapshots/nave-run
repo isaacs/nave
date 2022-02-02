@@ -71,5 +71,5 @@ NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
 NAVE_LOGIN=1
 STDERR
-
+NAVE use xdg dir: $PWD/test/cases/nave-run/nave
 CODE 0

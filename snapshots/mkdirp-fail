@@ -1,5 +1,6 @@
 STDOUT
 
 STDERR
+NAVE use xdg dir: /Users/isaacs/.config/nave
 couldn't create test/cases/mkdirp-fail
 CODE 1

@@ -4,5 +4,5 @@ STDOUT
 ''"'"''"'"''"'"''"'"''"'"''
 '-e' '-n' 'foo'
 STDERR
-
+NAVE use xdg dir: /Users/isaacs/.config/nave
 CODE 0

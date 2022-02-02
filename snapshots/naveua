@@ -1,5 +1,5 @@
 STDOUT
 nave/hello this is curl
 STDERR
-
+NAVE use xdg dir: /Users/isaacs/.config/nave
 CODE 0

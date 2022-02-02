@@ -2,5 +2,5 @@ STDOUT
 no installed
 installed it
 STDERR
-
+NAVE use xdg dir: $PWD/test/cases/installed/nave
 CODE 0

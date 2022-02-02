@@ -3,5 +3,5 @@ get_html a/b/c
 get_tgz a/b/c.tar.gz
 get_tgz a/b/c.tgz
 STDERR
-
+NAVE use xdg dir: /Users/isaacs/.config/nave
 CODE 0

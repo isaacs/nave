@@ -3,5 +3,5 @@ mkdir -p -- $PWD/test/cases/nave-dir-prefix-no-home-no-xdg/lib/nave
 mkdir -p -- $PWD/test/cases/nave-dir-prefix-no-home-no-xdg/lib/nave/src
 mkdir -p -- $PWD/test/cases/nave-dir-prefix-no-home-no-xdg/lib/nave/installed
 STDERR
-
+NAVE use prefix: 
 CODE 1

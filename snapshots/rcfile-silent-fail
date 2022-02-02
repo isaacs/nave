@@ -2,6 +2,7 @@ STDOUT
 -r--r--r--
 XDG_CONFIG_HOME=$PWD/test/cases/rcfile-silent-fail
 STDERR
+NAVE use xdg dir: $PWD/test/cases/rcfile-silent-fail/nave
 nave.sh: line #: $PWD/test/cases/rcfile-silent-fail/nave/.zshenv: Permission denied
 Failed writing rc files to $PWD/test/cases/rcfile-silent-fail/nave
 CODE 0

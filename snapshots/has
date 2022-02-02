@@ -2,5 +2,5 @@ STDOUT
 no has
 has it
 STDERR
-
+NAVE use xdg dir: $PWD/test/cases/has/nave
 CODE 0
