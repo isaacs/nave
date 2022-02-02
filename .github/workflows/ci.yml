@@ -6,7 +6,6 @@ jobs:
   build:
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x, 17.x]
         platform:
         - os: ubuntu-latest
         - os: macos-latest
@@ -35,7 +34,10 @@ jobs:
       - name: Run Tests
         # TODO: figure out why kcov doesn't work
         # run: npm run cov:noopen
-        run: bash -x test/cases/installed.sh #npm run test
+        run: |
+          bash -x test/cases/installed.sh #npm run test
+          bash -x test/cases/nave-fetch.sh #npm run test
+          cat snapshots/nave-fetch
 
       # TODO: figure out why kcov doesn't work
       # - name: Copy Coverage to Docs Folder
