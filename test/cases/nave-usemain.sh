@@ -20,7 +20,7 @@ NAVELVL=1 nave_usemain
 nave_usemain 12.6.0
 which node
 node -v
-find $testdir
+find $testdir | sort
 
 rm -rf $testdir
 mkdir $testdir
@@ -36,7 +36,7 @@ export PATH=$testdir/bin:$PATH
 nave_usemain 12.6.0
 which node
 node -v
-find $testdir
+find $testdir | sort
 
 # using the same one over again
 nave_usemain 12.6.0
