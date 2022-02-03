@@ -24,3 +24,11 @@ jobs:
 
       - name: Run Tests
         run: COV=1 bash test/run.sh
+
+      - name: Deploy coverage report
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage-all/kcov-merged
+          user_name: 'nave-kcov-actions-bot'
+          user_email: 'nave-kcov-actions-bot@example.com'
