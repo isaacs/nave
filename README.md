@@ -4,8 +4,9 @@ Virtual Environments for Node.
 
 Switch out your node version and global npm install space in one
 command.  Supports named environments. Uses subshells by default so
-that you can `^D` or `exit` out of an environment quickly.  No need to
-edit `.bashrc` or `.profile`, just install and go.
+that you can `^D` or `exit` out of an environment quickly.
+
+No need to edit `.bashrc` or `.profile`, just install and go.
 
 ## Installation
 
@@ -214,12 +215,15 @@ The latest coverage report can be found at
 
 ## Compatibility
 
-Prior to version 0.2, nave would run programs as `node <program>`.
-However, this is somewhat more limiting, so was dropped.  If you
-prefer the old style, just prefix your command with `node`.
+Nave is a bash program.  It can still do most of its functionality if you
+use zsh or fish as your shell, as long as you have bash _somewhere_, but
+some of the magical stuff won't work (since obviously that has to run
+inline in your shell with `exec`).
 
 Nave requires bash.  It will probably never work on Windows, or other
-systems lack a native Bourne Again Shell.  Sorry.
+systems lack a native Bourne Again Shell.  Sorry.  (Patches welcome if you
+can get it to work properly on Windows that _do_ have bash, like WSL and
+Cygwin.)
 
 Nave logins work with any shell, but executing a command in the nave
 environment (ie, `nave use 12 node program.js`) requires that your shell
