@@ -21,11 +21,13 @@ jobs:
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
           sudo apt-get install tree
+          sudo apt-get install kcov
 
       - name: install deps (macOS)
         if: matrix.platform.os == 'macos-latest'
         run: |
           brew install tree
+          brew install kcov
 
       - name: Run Tests
-        run: bash test/run.sh
+        run: COV=1 bash test/run.sh
