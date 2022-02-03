@@ -1,7 +1,0 @@
-STDOUT
-mkdir -p -- $PWD/test/cases/nave-dir-home-no-xdg/.nave
-mkdir -p -- $PWD/test/cases/nave-dir-home-no-xdg/.nave/src
-mkdir -p -- $PWD/test/cases/nave-dir-home-no-xdg/.nave/installed
-STDERR
-
-CODE 1

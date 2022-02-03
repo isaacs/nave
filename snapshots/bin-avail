@@ -1,9 +1,0 @@
-STDOUT
-12.6.0 yes
-0.8.5 no
-0.7.9 no
-no os, 12.6.0 no
-NAVE_SRC_ONLY=1 12.6.0 no
-STDERR
-
-CODE 0

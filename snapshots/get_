@@ -1,5 +1,0 @@
-STDOUT
-curl asdf -H user-agent:nave/curl --version
-STDERR
-
-CODE 0

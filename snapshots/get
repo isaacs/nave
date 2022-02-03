@@ -1,7 +1,0 @@
-STDOUT
-get_html a/b/c
-get_tgz a/b/c.tar.gz
-get_tgz a/b/c.tgz
-STDERR
-
-CODE 0
