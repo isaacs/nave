@@ -70,7 +70,8 @@ runTest () {
 
   local cmd
   if [ -n "$COV" ]; then
-    cmd=(kcov --include-path=nave.sh coverage "$testcase")
+    mkdir -p coverage/"$testname"
+    cmd=(kcov --include-path=nave.sh coverage/"$testname" "$testcase")
   else
     cmd=(bash "$testcase")
   fi
@@ -104,7 +105,8 @@ main () {
   done
   if [ -n "$COV" ]; then
     sleep 1
-    kcov --merge coverage coverage
+    rm -rf coverage-all
+    kcov --merge coverage-all coverage/*
   fi
   if [ $fails -eq 0 ]; then
     echo -e '\u001b[37m\u001b[42m# all tests passing\u001b[49m\u001b[39m'

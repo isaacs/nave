@@ -12,7 +12,7 @@
     "precov": "rm -rf ./coverage",
     "cov": "COV=1 bash test/run.sh",
     "cov:noopen": "COV=1 bash test/run.sh",
-    "postcov": "open coverage/kcov-merged/nave.sh.*.html",
+    "postcov": "open coverage-all/kcov-merged/nave.sh.*.html",
     "snap": "SNAPSHOT=1 bash test/run.sh",
     "preversion": "npm test",
     "postversion": "npm publish",
