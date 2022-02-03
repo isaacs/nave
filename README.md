@@ -186,6 +186,32 @@ more :)
 * `$NAVE_SRC_ONLY` Set to `"1"` to only build from source, rather than
   fetching binaries.
 
+## Contributing
+
+Patches welcome!  Before spending too much time on a patch or feature
+request, please [post an issue](/isaacs/nave/issues) to see if it's
+something that's going to be accepted or have unforeseen consequences.
+
+Patches will usually not be accepted if they break tests or cause coverage
+to drop below 100%.  You can run tests with:
+
+```
+npm test
+# or...
+bash test/run.sh
+```
+
+And you can check coverage with:
+
+```
+npm run cov
+# or...
+COV=1 bash test/run.sh && open coverage-all/kcov-merged/nave.sh.*.html
+```
+
+The latest coverage report can be found at
+<https://isaacs.github.io/nave/kcov-merged/index.html>
+
 ## Compatibility
 
 Prior to version 0.2, nave would run programs as `node <program>`.
