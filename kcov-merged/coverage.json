@@ -1,6 +1,6 @@
 {
   "files": [
-    {"file": "/home/runner/work/nave/nave/nave.sh", "percent_covered": "100.00", "covered_lines": "484", "total_lines": "484"}
+    {"file": "/Users/runner/work/nave/nave/nave.sh", "percent_covered": "100.00", "covered_lines": "484", "total_lines": "484"}
   ],
   "percent_covered": "100.00",
   "covered_lines": 484,
@@ -8,5 +8,5 @@
   "percent_low": 25,
   "percent_high": 75,
   "command": "",
-  "date": "2022-03-05 09:44:25"
+  "date": "2022-03-05 09:44:26"
 }
