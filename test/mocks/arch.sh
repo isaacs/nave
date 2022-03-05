@@ -1,0 +1,3 @@
+arch () {
+  echo "ARCH SWAP $@"
+}

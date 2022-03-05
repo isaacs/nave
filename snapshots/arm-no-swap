@@ -1,0 +1,5 @@
+STDOUT
+BUILD 4.9.1
+STDERR
+Warning: using old node version on arm64, might fail
+CODE 0

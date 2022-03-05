@@ -1,0 +1,5 @@
+STDOUT
+ARCH SWAP -x86_64 /bin/bash test/cases/arm-swap.sh install 4.9.1
+STDERR
+attempting to switch to x86 for old node version
+CODE 0

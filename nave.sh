@@ -478,6 +478,21 @@ nave_install () {
   fi
 
   local version=$(ver "$1" "NONAMES")
+
+  # special case for newer macOS machines using arm64
+  if [[ "$(uname)" =~ "arm64" ]] && [[ "$version" =~ ^([0-9]|10)\. ]]; then
+    if type arch &>/dev/null; then
+      echo "attempting to switch to x86 for old node version" >&2
+      # have to use the system's bash, in case $(which bash) is
+      # compiled for this architecture only, more likely the builtin
+      # one is set up for backwards compatibility.
+      arch -x86_64 /bin/bash $0 install "$version"
+      return $?
+    else
+      echo "Warning: using old node version on arm64, might fail" >&2
+    fi
+  fi
+
   if [ -z "$version" ]; then
     err "Must supply a version ('lts', 'stable', 'latest' or numeric)"
     return 1
@@ -633,9 +648,10 @@ ver () {
     lts-* | lts/*) nave_lts $version ;;
     lts | latest | stable) nave_$version ;;
     +([0-9])) nave_version_family "$version\."'[0-9]+' ;;
-    +([0-9])\.) nave_version_family "$version"'[0-9]+' ;;
-    +([0-9])\.+([0-9])) nave_version_family "$version" ;;
-    +([0-9])\.+([0-9])\.+([0-9])) echo $version ;;
+    +([0-9]).) nave_version_family "$version"'[0-9]+' ;;
+    +([0-9]).+([0-9])) nave_version_family "$version" ;;
+    +([0-9]).+([0-9]).) nave_version_family "$version" ;;
+    +([0-9]).+([0-9]).+([0-9])) echo $version ;;
     *) [ "$nonames" = "" ] && echo $version ;;
   esac
 }
@@ -643,7 +659,9 @@ ver () {
 nave_version_family () {
   local family="$1"
   family="${family#v}"
-  get / | egrep -o $family'\.[0-9]+' | semver_sort | tail -n1
+  family="${family%.}"
+  get / | egrep -o 'v'$family'\.[0-9]+' | sed -e 's|^v||g' \
+    | semver_sort | tail -n1
 }
 
 semver_sort () {
