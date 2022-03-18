@@ -14,11 +14,15 @@ nave_exit () {
 }
 
 setup () {
+  # a/b has a naverc
+  # a/b/c/d/e has a naverc
+  # a has a nvmrc
+  # a/b/c has a .git, so can't walk up past it
   mkdir -p $testdir/a/b/c/d/e/f
   mkdir -p $testdir/a/b/c/.git
   echo foo 1.2.3 > $testdir/a/b/.naverc
   echo 4.2.0 > $testdir/a/b/c/d/e/.naverc
-  echo bar 6.9.0 > $testdir/.naverc
+  echo bar 6.9.0 > $testdir/a/.nvmrc
   touch $testdir/a/b/c/d/e/f/file.abcdef
   touch $testdir/a/b/c/d/e/file.abcde
   touch $testdir/a/b/c/d/file.abcd
@@ -45,11 +49,13 @@ case $1 in
     nave_auto $testdir/a/b/c
     ;;
 
+  root) nave_auto $testdir ;;
   a) nave_auto $testdir/a ;;
   a/b) nave_auto $testdir/a/b ;;
   a/b/c) nave_auto $testdir/a/b/c ;;
   a/b/c/d/e/f) nave_auto $testdir/a/b/c/d/e/f ;;
 
+  cmd-root) nave_auto $testdir cmd ;;
   cmd-a) nave_auto $testdir/a cmd ;;
   cmd-a/b) nave_auto $testdir/a/b cmd ;;
   cmd-a/b/c) nave_auto $testdir/a/b/c cmd ;;

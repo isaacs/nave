@@ -422,30 +422,23 @@ USAGE
 # nave setting in that directory.
 nave_auto () {
   if [ $# -gt 0 ]; then
-    cd $1
+    cd -- $1
     if [ $? -ne 0 ]; then
       exec $SHELL
     fi
     shift
   fi
 
-  local dir=$(pwd)
-  while ! [ "$dir" = "/" ]; do
-    if [ -f "$dir"/.naverc ]; then
-      local args=($(cat "$dir"/.naverc))
-      if [ "$#" -eq 0 ]; then
-        nave_use "${args[@]}" exec $SHELL
-      else
-        nave_use "${args[@]}" $SHELL -c "$(enquote_all "$@")"
-      fi
-      return $?
-    elif [ -d "$dir"/.git ]; then
-      break
+  local rcfile=$(local_naverc_filename "$(pwd)")
+  if [ $? -eq 0 ] && [ -n "$rcfile" ]; then
+    local args=($(cat "$rcfile"))
+    if [ "$#" -eq 0 ]; then
+      nave_use "${args[@]}" exec $SHELL
     else
-      dir=$(dirname -- "$dir")
+      nave_use "${args[@]}" $SHELL -c "$(enquote_all "$@")"
     fi
-  done
-  nave_exit
+    nave_exit
+  fi
 }
 
 nave_usemain () {
@@ -537,6 +530,24 @@ nave_exit () {
 
 naverc_filename () {
   echo $(cd -- $NAVE_DIR/.. &>/dev/null; pwd)/.naverc
+}
+
+local_naverc_filename () {
+  local dir="$1"
+  while ! [ "$dir" = "/" ] && ! [ "$dir" = "." ]; do
+    if [ -f "$dir"/.naverc ]; then
+      echo "$dir"/.naverc
+      return 0
+    elif [ -f "$dir"/.nvmrc ]; then
+      echo "$dir"/.nvmrc
+      return 0
+    elif [ -f "$dir"/.git ] || [ -d "$dir"/.git ]; then
+      break
+    else
+      dir=$(dirname -- "$dir")
+    fi
+  done
+  return 1
 }
 
 source_naverc () {

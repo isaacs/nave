@@ -3,20 +3,24 @@ bad-dir
 mock exec echo
 a
 mock nave use bar 6.9.0 exec echo (pwd=$PWD/test/cases/nave-auto/a)
+mock nave exit
 a/b
 mock nave use foo 1.2.3 exec echo (pwd=$PWD/test/cases/nave-auto/a/b)
-a/b/c
 mock nave exit
+a/b/c
 a/b/c/d/e/f
 mock nave use 4.2.0 exec echo (pwd=$PWD/test/cases/nave-auto/a/b/c/d/e/f)
+mock nave exit
 cmd-a
 mock nave use bar 6.9.0 echo -c 'cmd' (pwd=$PWD/test/cases/nave-auto/a)
+mock nave exit
 cmd-a/b
 mock nave use foo 1.2.3 echo -c 'cmd' (pwd=$PWD/test/cases/nave-auto/a/b)
-cmd-a/b/c
 mock nave exit
+cmd-a/b/c
 cmd-a/b/c/d/e/f
 mock nave use 4.2.0 echo -c 'cmd' (pwd=$PWD/test/cases/nave-auto/a/b/c/d/e/f)
+mock nave exit
 STDERR
 mock cd fail
 CODE 0
