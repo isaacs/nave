@@ -480,7 +480,7 @@ nave_install () {
   local version=$(ver "$1" "NONAMES")
 
   # special case for newer macOS machines using arm64
-  if [[ "$(uname)" =~ "arm64" ]] && [[ "$version" =~ ^([0-9]|10)\. ]]; then
+  if [[ "$(uname -m)" =~ "arm64" ]] && [[ "$version" =~ ^([0-9]|10|12)\. ]]; then
     if type arch &>/dev/null; then
       echo "attempting to switch to x86 for old node version" >&2
       # have to use the system's bash, in case $(which bash) is
