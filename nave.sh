@@ -73,10 +73,10 @@ main () {
   local cmd="$1"
   shift
   case $cmd in
-    ls-remote | ls-all)
+    ls-remote | ls-all | should-auto)
       cmd="nave_${cmd/-/_}"
       ;;
-    auto|cache|exit|install|fetch|use|clean|test|named|ls|uninstall|usemain|latest|stable|lts|has|installed|get)
+    auto|cache|exit|install|fetch|use|clean|test|named|ls|uninstall|usemain|latest|stable|lts|has|installed|get|rcfile)
       cmd="nave_$cmd"
       ;;
     * )
@@ -431,13 +431,37 @@ nave_auto () {
 
   local rcfile=$(local_naverc_filename "$(pwd)")
   if [ $? -eq 0 ] && [ -n "$rcfile" ]; then
+    export NAVE_AUTO_RC=$rcfile
     local args=($(cat "$rcfile"))
+    export NAVE_AUTO_CFG="${args[@]}"
     if [ "$#" -eq 0 ]; then
       nave_use "${args[@]}" exec $SHELL
     else
       nave_use "${args[@]}" $SHELL -c "$(enquote_all "$@")"
     fi
+  elif [ "$#" -eq 0 ]; then
     nave_exit
+  else
+    nave_exit "$@"
+  fi
+}
+
+nave_should_auto () {
+  local rcfile=$(local_naverc_filename "$(pwd)")
+  if [ "$rcfile" != "$NAVE_AUTO_RC" ]; then
+    return 0
+  elif [ "$rcfile" != "" ] && [ "$NAVE_AUTO_CFG" != "$(cat "$rcfile")" ]; then
+    return 0
+  fi
+  return 1
+}
+
+nave_rcfile () {
+  local rcfile=$(local_naverc_filename "$(pwd)")
+  if [ $? -eq 0 ] && [ -n "$rcfile" ]; then
+    echo "$rcfile"
+  else
+    return 1
   fi
 }
 
@@ -508,6 +532,8 @@ nave_exit () {
   if [ -n "$NAVEPATH" ]; then
     export PATH=${PATH//:$NAVEPATH/}
   fi
+  unset NAVE_AUTO_RC
+  unset NAVE_AUTO_CFG
   unset NAVEDEBUG
   unset NAVE_JOBS
   unset NAVELVL
@@ -525,7 +551,12 @@ nave_exit () {
   unset npm_config_root
   unset npm_config_manroot
   unset npm_config_prefix
-  exec $SHELL
+
+  if [ "$#" -gt 0 ]; then
+    "$SHELL" -c "$(enquote_all "$@")"
+  else
+    exec $SHELL
+  fi
 }
 
 naverc_filename () {
@@ -858,8 +889,20 @@ nave_run () {
   # executing, whether that's a login or a command.  otherwise there
   # are actually TWO subshells, rather than one.
 
+  local path=$bin
+  if [ "$NAVE_NPX" = "1" ]; then
+    # walk up cwd to find the first package.json or node_modules
+    local p=$PWD
+    while [ -d "$p" ] && [ -n "$p" ] && ! [ "$p" = "/" ]; do
+      if [ -d "$p/node_modules" ] || [ -f "$p/package.json" ]; then
+        path="$p/node_modules/.bin:$path"
+        break
+      fi
+    done
+  fi
+
   NAVELVL=$lvl \
-  NAVEPATH="$bin" \
+  NAVEPATH="$path" \
   NAVEVERSION="$version" \
   NAVENAME="$name" \
   NAVE="$nave" \
@@ -870,6 +913,7 @@ nave_run () {
   NODE_PATH="$lib" \
   NAVE_LOGIN="$isLogin" \
   NAVE_DIR="$NAVE_DIR" \
+  NAVE_NPX="$NAVE_NPX" \
   ZDOTDIR="$NAVE_DIR" \
     exec "$runShell" "${args[@]}"
 }

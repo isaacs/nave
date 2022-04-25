@@ -123,12 +123,11 @@ If there is need to run a shell script with version of node.js provided by nave 
 [ "${IN_SUBSHELL}" != "$0" ] && exec env IN_SUBSHELL="$0" nave use 5.0.0 bash "$0" "$@" || :
 ```
 
-
 ## AUTOMAGICAL!
 
 You can put a `.naverc` file in the root of your project (or
 anywhere).  This file should contain the version that you want to use.
-It can be something like `lts/boron` or `6.8` or `latest`
+It can be something like `lts/boron` or `16` or `latest`
 
 ```
 echo lts/boron > ~/projects/my-project/.naverc
@@ -162,9 +161,53 @@ as an explicit action whenever you want this behavior to happen.
 Bottom line, it's your shell, and I hope that this helps you enjoy it
 more :)
 
+### NO THAT'S TOO MAGICAL, BE JUST SLIGHTLY LESS MAGICAL THAN THAT
+
+Ok, put this snippet in a `PROMPT_COMMAND` export in your bash
+profile (`.bashrc` or `.bash_profile` or whatever you use for
+that).
+
+```bash
+export PROMPT_COMMAND='nave should-auto && exec nave auto'
+```
+
+Now you'll always be in the configured nave environment in any
+project with a `.naverc` (or `.nvmrc`), and always _not_ in a
+nave environment in your main shell in any folder that isn't
+set up for nave auto.
+
+This has no effect on the normal nave subshells you get from
+`nave use`.
+
+The output of your `PROMPT_COMMAND` is used for the main bash
+prompt, so you can also do some fancy stuff like this:
+
+```bash
+__prompt () {
+  if nave should-auto; then
+    exec nave auto
+  if
+  # Show the nave version in white-on-blue, but the "normal" node
+  # version in green
+  if [ "$NAVE" != "" ]; then
+    echo -ne " \033[44;37mnode@$NAVE\033[0m"
+  else
+    echo -ne " \033[32mnode@$(node -p 'process.version.slice(1)' 2>/dev/null)\033[0m"
+  fi
+}
+PS1="\\$ "
+export PROMPT_COMMAND='__prompt'
+```
+
 ## env vars
 
 * `$NAVE` The current shell.  Either a version, or a name and version.
+* `$NAVE_NPX` Set to `"1"` to add `node_modules/.bin` to the
+  `$PATH` in all nave shells (including the main shell when `exec
+  nave auto` is used).
+* `$NAVE_AUTO_RC` The `.naverc` file found by `nave auto`.
+* `$NAVE_AUTO_CFG` The contents of the `.naverc` file that was
+  read when entering the `nave auto` environment.
 * `$NAVENAME` The name of the current shell.  Equal to `$NAVEVERSION`
   in unnammed environments.
 * `$NAVEVERSION` The version of node that the current shell is
