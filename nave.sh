@@ -1038,11 +1038,20 @@ latest                Show the most recent dist version
 cache                 Clear or view the cache
 help                  Output help information
 auto                  Find a .naverc and then be in that env
+                      If no .naverc is found, then alias for 'nave exit'
 auto <dir>            cd into <dir>, then find a .naverc, and be in that env
+                      If no .naverc is found, then alias for 'nave exit' in
+                      the specified directory.
 auto <dir> <cmd>      cd into <dir>, then find a .naverc, and run a command
                       in that env
+                      If no .naverc is found, then alias for 'nave exit <cmd>'
+                      in the specified directory.
+should-auto           Exits with 1 if the nave auto env already
+                      matches the config, or 0 if a change should
+                      be made (ie, by calling 'nave auto')
 get <variable>        Print out various nave config values.
 exit                  Unset all the NAVE environs (use with 'exec')
+exit <cmd>            Run the specified command in a nave-free environment
 
 Version Strings:
 Any command that calls for a version can be provided any of the
