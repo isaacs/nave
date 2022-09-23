@@ -712,7 +712,7 @@ nave_ls_remote () {
 nave_ls_named () {
   echo "named:"
   ls -- "$NAVE_ROOT" \
-    | egrep -v '[0-9]+\.[0-9]+\.[0-9]+' \
+    | grep -E -v '[0-9]+\.[0-9]+\.[0-9]+' \
     | sort \
     | while read name; do
       echo "$name: $(ver $($NAVE_ROOT/$name/bin/node -v 2>/dev/null))"
@@ -743,7 +743,7 @@ nave_version_family () {
   local family="$1"
   family="${family#v}"
   family="${family%.}"
-  get / | egrep -o 'v'$family'\.[0-9]+' | sed -e 's|^v||g' \
+  get / | grep -E -o 'v'$family'\.[0-9]+' | sed -e 's|^v||g' \
     | semver_sort | tail -n1
 }
 
@@ -753,7 +753,7 @@ semver_sort () {
 
 nave_latest () {
   get / \
-    | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
+    | grep -E -o '[0-9]+\.[0-9]+\.[0-9]+' \
     | semver_sort \
     | tail -n1
 }
@@ -767,7 +767,7 @@ nave_lts () {
   local lts="$1"
   case $lts in
     "" | "lts/*")
-      lts="$(get / | egrep -o 'latest-[^v][^/]+' | sort | uniq | tail -n1)"
+      lts="$(get / | grep -E -o 'latest-[^v][^/]+' | sort | uniq | tail -n1)"
       lts=${lts/latest-/}
       ;;
     lts/*)
@@ -780,12 +780,12 @@ nave_lts () {
   esac
   # err "nave_lts lts=[$lts]"
 
-  get latest-$lts/ | egrep -o '[0-9]+\.[0-9]+\.[0-9]+' | head -n1
+  get latest-$lts/ | grep -E -o '[0-9]+\.[0-9]+\.[0-9]+' | head -n1
 }
 
 version_list () {
   echo "$1:"
-  egrep -o '[0-9]+\.[0-9]+\.[0-9]+' \
+  grep -E -o '[0-9]+\.[0-9]+\.[0-9]+' \
     | semver_sort \
     | organize_version_list
 }
