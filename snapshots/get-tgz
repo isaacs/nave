@@ -1,11 +1,11 @@
 STDOUT
 $PWD/test/cases/get-tgz/nave/cache/v12.6.0/004b7992a2621eb35a47c94d258510ca5744b5a8072364f235dc7e3d4bff7457.tgz
 2
-test/cases/get-tgz/nave
-test/cases/get-tgz/nave/cache
-test/cases/get-tgz/nave/cache/v12.6.0
-test/cases/get-tgz/nave/cache/v12.6.0/SHASUMS256.txt
-test/cases/get-tgz/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
+$PWD/test/cases/get-tgz/nave
+$PWD/test/cases/get-tgz/nave/cache
+$PWD/test/cases/get-tgz/nave/cache/v12.6.0
+$PWD/test/cases/get-tgz/nave/cache/v12.6.0/SHASUMS256.txt
+$PWD/test/cases/get-tgz/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
 STDERR
 shasum mismatch, expect ___intentionally-invalid-shasum___, got 004b7992a2621eb35a47c94d258510ca5744b5a8072364f235dc7e3d4bff7457
 shasum not found for not-a-thing.tar.gz. aborting download.

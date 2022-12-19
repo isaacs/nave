@@ -2,7 +2,16 @@
 . test/mocks/uname.sh
 . test/mocks/curl.sh
 . test/mocks/tar-unpack.sh
+. test/mocks/arch.sh
 _TESTING_NAVE_NO_MAIN=1 . nave.sh
+
+setup () {
+  mkdir -p $testdir/has/nm/node_modules/.bin
+  mkdir -p $testdir/has/nm/sub/dir
+  mkdir -p $testdir/has/pj
+  mkdir -p $testdir/has/pj/sub/dir
+  touch $testdir/has/pj/package.json
+}
 
 nave_named () {
   echo "mock nave_named $@"
@@ -13,6 +22,30 @@ case $1 in
     nave_use 12.6.0 <<END
     env | grep NAVE | sort
 END
+    ;;
+
+  npx-nm)
+    setup
+    cd $testdir/has/nm &>/dev/null
+    NAVE_NPX=1 nave_use 12.6.0 bash -c 'env | grep NAVE | sort; pwd'
+    ;;
+
+  npx-pj)
+    setup
+    cd $testdir/has/pj &>/dev/null
+    NAVE_NPX=1 nave_use 12.6.0 bash -c 'env | grep NAVE | sort; pwd'
+    ;;
+
+  npx-nm-sub)
+    setup
+    cd $testdir/has/nm/sub/dir &>/dev/null
+    NAVE_NPX=1 nave_use 12.6.0 bash -c 'env | grep NAVE | sort; pwd'
+    ;;
+
+  npx-pj-sub)
+    setup
+    cd $testdir/has/pj/sub/dir &>/dev/null
+    NAVE_NPX=1 nave_use 12.6.0 bash -c 'env | grep NAVE | sort; pwd'
     ;;
 
   named)
@@ -44,9 +77,14 @@ END
     ;;
 
   *)
+    setup
     cases=(
       enter-login
       named
+      npx-nm
+      npx-pj
+      npx-nm-sub
+      npx-pj-sub
       install-fail
       enter-exec
       here-exec

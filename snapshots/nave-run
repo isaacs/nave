@@ -3,73 +3,89 @@ mock exec /bin/bash -c . '$PWD/test/cases/nave-run/nave/.zshenv';
 NAVE=1.2.3
 NAVELVL=1
 NAVENAME=1.2.3
-NAVEPATH=test/cases/nave-run/nave/installed/1.2.3/bin
+NAVEPATH=$PWD/test/cases/nave-run/nave/installed/1.2.3/bin
 NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
+NAVE_EXIT=0
 NAVE_LOGIN=
+NAVE_NPX=
 
 mock exec /bin/bash --rcfile $PWD/test/cases/nave-run/nave/.zshenv
 NAVE=1.2.3
 NAVELVL=2
 NAVENAME=1.2.3
-NAVEPATH=test/cases/nave-run/nave/installed/1.2.3/bin
+NAVEPATH=$PWD/test/cases/nave-run/nave/installed/1.2.3/bin
 NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
+NAVE_EXIT=0
 NAVE_LOGIN=1
+NAVE_NPX=
 
 mock exec /bin/bash -c . '$PWD/test/cases/nave-run/nave/.zshenv'; 
 NAVE=myname-1.2.3
 NAVELVL=3
 NAVENAME=myname
-NAVEPATH=test/cases/nave-run/nave/installed/myname/bin
+NAVEPATH=$PWD/test/cases/nave-run/nave/installed/myname/bin
 NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
+NAVE_EXIT=0
 NAVE_LOGIN=
+NAVE_NPX=
 
 mock exec /bin/bash --rcfile $PWD/test/cases/nave-run/nave/.zshenv
 NAVE=myname-1.2.3
 NAVELVL=4
 NAVENAME=myname
-NAVEPATH=test/cases/nave-run/nave/installed/myname/bin
+NAVEPATH=$PWD/test/cases/nave-run/nave/installed/myname/bin
 NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
+NAVE_EXIT=0
 NAVE_LOGIN=1
+NAVE_NPX=
 
 mock exec /bin/zsh -c . '$PWD/test/cases/nave-run/nave/.zshenv'; 
 NAVE=1.2.3
 NAVELVL=5
 NAVENAME=1.2.3
-NAVEPATH=test/cases/nave-run/nave/installed/1.2.3/bin
+NAVEPATH=$PWD/test/cases/nave-run/nave/installed/1.2.3/bin
 NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
+NAVE_EXIT=0
 NAVE_LOGIN=
+NAVE_NPX=
 
 mock exec /bin/zsh
 NAVE=1.2.3
 NAVELVL=6
 NAVENAME=1.2.3
-NAVEPATH=test/cases/nave-run/nave/installed/1.2.3/bin
+NAVEPATH=$PWD/test/cases/nave-run/nave/installed/1.2.3/bin
 NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
+NAVE_EXIT=0
 NAVE_LOGIN=1
+NAVE_NPX=
 
 mock exec /bin/fish -c . '$PWD/test/cases/nave-run/nave/.zshenv'; 
 NAVE=1.2.3
 NAVELVL=7
 NAVENAME=1.2.3
-NAVEPATH=test/cases/nave-run/nave/installed/1.2.3/bin
+NAVEPATH=$PWD/test/cases/nave-run/nave/installed/1.2.3/bin
 NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
+NAVE_EXIT=0
 NAVE_LOGIN=
+NAVE_NPX=
 
 mock exec bash -c . $PWD/test/cases/nave-run/nave/.zshenv && /bin/fish
 NAVE=1.2.3
 NAVELVL=8
 NAVENAME=1.2.3
-NAVEPATH=test/cases/nave-run/nave/installed/1.2.3/bin
+NAVEPATH=$PWD/test/cases/nave-run/nave/installed/1.2.3/bin
 NAVEVERSION=1.2.3
 NAVE_DIR=$PWD/test/cases/nave-run/nave
+NAVE_EXIT=0
 NAVE_LOGIN=1
+NAVE_NPX=
 STDERR
 
 CODE 0

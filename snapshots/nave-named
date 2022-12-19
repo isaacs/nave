@@ -6,7 +6,9 @@ NAVENAME=success
 NAVEPATH=$PWD/test/cases/nave-named/nave/installed/success/bin
 NAVEVERSION=12.6.0
 NAVE_DIR=$PWD/test/cases/nave-named/nave
+NAVE_EXIT=0
 NAVE_LOGIN=1
+NAVE_NPX=
 exit=0
 enter-exec
 NAVE=success-12.6.0
@@ -15,7 +17,9 @@ NAVENAME=success
 NAVEPATH=$PWD/test/cases/nave-named/nave/installed/success/bin
 NAVEVERSION=12.6.0
 NAVE_DIR=$PWD/test/cases/nave-named/nave
+NAVE_EXIT=0
 NAVE_LOGIN=
+NAVE_NPX=
 exit=0
 here-noop
 exit=0
@@ -24,11 +28,11 @@ NAVENAME=success
 NAVEVERSION=12.6.0
 exit=0
 install-only
-test/cases/nave-named/nave/installed/foo/bin
-test/cases/nave-named/nave/installed/foo/bin/node
-test/cases/nave-named/nave/installed/foo/bin/node-waf
-test/cases/nave-named/nave/installed/foo/bin/npm
-test/cases/nave-named/nave/installed/foo/bin/npx
+$PWD/test/cases/nave-named/nave/installed/foo/bin
+$PWD/test/cases/nave-named/nave/installed/foo/bin/node
+$PWD/test/cases/nave-named/nave/installed/foo/bin/node-waf
+$PWD/test/cases/nave-named/nave/installed/foo/bin/npm
+$PWD/test/cases/nave-named/nave/installed/foo/bin/npx
 exit=0
 STDERR
 Creating new env named 'success' using node 12.6.0

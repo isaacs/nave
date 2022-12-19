@@ -1,6 +1,7 @@
 testcase=$0
 testname=$(basename "$testcase" .sh)
-testdir=test/cases/$testname
+testroot=$(pwd -P)
+testdir=${testroot}/test/cases/$testname
 mkdir -p "$testdir"
 __nave_test_cleanup () {
   if [ "$NO_CLEANUP" != "1" ]; then

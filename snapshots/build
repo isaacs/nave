@@ -1,12 +1,12 @@
 STDOUT
-mock configure --prefix=test/cases/build/bin-build-fail
+mock configure --prefix=$PWD/test/cases/build/bin-build-fail
 mock make all
 mock make install
-mock configure --prefix=test/cases/build/make-install-fail
+mock configure --prefix=$PWD/test/cases/build/make-install-fail
 mock make all
-mock configure --prefix=test/cases/build/make-fail
+mock configure --prefix=$PWD/test/cases/build/make-fail
 STDERR
-unpacking mock: tar xz -C test/cases/build/success --strip-components 1
+unpacking mock: tar xz -C $PWD/test/cases/build/success --strip-components 1
 x bin/
 x configure
 x Makefile
@@ -14,7 +14,7 @@ x bin/node
 successwin 0
 test build binary failure
 Binary install failed, trying source.
-unpacking mock: tar xzf $PWD/test/cases/build/nave/src/12.6.0.tgz -C $PWD/test/cases/build/nave/src/12.6.0 --strip-components=1
+unpacking mock: tar xz -C $PWD/test/cases/build/nave/src/12.6.0 --strip-components=1
 x bin/
 x configure
 x Makefile

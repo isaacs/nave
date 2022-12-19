@@ -25,12 +25,6 @@ bash program in npm anyway?  It's fine.  Bits don't judge.
 npm install -g nave
 ```
 
-### with [basher](https://github.com/basherpm/basher)
-
-```
-basher install isaacs/nave
-```
-
 ## Usage
 
 To use a version of node, you do this:
@@ -56,47 +50,121 @@ Here's the full usage statement:
 ```
 Usage: nave <cmd>
 
-Commands:
+COMMANDS
 
-install <version>     Install the version specified (ex: 12.8.0)
-install <name> <ver>  Install the version as a named env
-use <version>         Enter a subshell where <version> is being used
-use <ver> <program>   Enter a subshell, and run "<program>", then exit
-use <name> <ver>      Create a named env, using the specified version.
-                      If the name already exists, but the version differs,
-                      then it will update the link.
-usemain <version>     Install in /usr/local/bin (ie, use as your main nodejs)
-clean <version>       Delete the source code for <version>
-uninstall <version>   Delete the install for <version>
-ls                    List versions currently installed
-ls-remote             List remote node versions
-ls-all                List remote and local node versions
-latest                Show the most recent dist version
-cache                 Clear or view the cache
-help                  Output help information
-auto                  Find a .naverc and then be in that env
-auto <dir>            cd into <dir>, then find a .naverc, and be in that env
-auto <dir> <cmd>      cd into <dir>, then find a .naverc, and run a command
-                      in that env
-get <variable>        Print out various nave config values.
-exit                  Unset all the NAVE environs (use with 'exec')
+  install <version>     Install the version specified (ex: 12.8.0)
+  install <name> <ver>  Install the version as a named env
+  use <version>         Enter a subshell where <version> is being used
+  use <ver> <program>   Enter a subshell, and run "<program>", then exit
+  use <name> <ver>      Create a named env, using the specified version.
+                        If the name already exists, but the version differs,
+                        then it will update the link.
+  usemain <version>     Install in /usr/local/bin (ie, use as your main nodejs)
+  clean <version>       Delete the source code for <version>
+  uninstall <version>   Delete the install for <version>
+  ls                    List versions currently installed
+  ls-remote             List remote node versions
+  ls-all                List remote and local node versions
+  latest                Show the most recent dist version
+  cache                 Clear or view the cache
+  help                  Output help information
+  auto                  Find a .naverc and then be in that env
+                        If no .naverc is found, then alias for 'nave exit'
+  auto <dir>            cd into <dir>, then find a .naverc, and be in that env
+                        If no .naverc is found, then alias for 'nave exit' in
+                        the specified directory.
+  auto <dir> <cmd>      cd into <dir>, then find a .naverc, and run a command
+                        in that env
+                        If no .naverc is found, then alias for 'nave exit <cmd>'
+                        in the specified directory.
+  should-auto           Exits with 1 if the nave auto env already
+                        matches the config, or 0 if a change should
+                        be made (ie, by calling 'nave auto')
+                        An explicit call to 'nave use' or 'nave exit' will
+                        tell nave that it should NOT auto.
+  get <variable>        Print out various nave config values.
+  exit                  Unset all the NAVE environs (use with 'exec')
+  exit <cmd>            Run the specified command in a nave-free environment
+                        (Note that nave will still set NAVE_EXIT=1 in order to
+                        prevent 'nave should-auto' from evaluating true.)
 
-Version Strings:
-Any command that calls for a version can be provided any of the
-following "version-ish" identifies:
+VERSION STRINGS
 
-- x.y.z       A specific SemVer tuple
-- x.y         Major and minor version number
-- x           Just a major version number
-- lts         The most recent LTS (long-term support) node version
-- lts/<name>  The latest in a named LTS set. (argon, boron, etc.)
-- lts/*       Same as just "lts"
-- latest      The most recent (non-LTS) version
-- stable      Backwards-compatible alias for "lts".
+  Any command that calls for a version can be provided any of the
+  following "version-ish" identifies:
 
-To exit a nave subshell, type 'exit' or press ^D.
-To run nave *without* a subshell, do 'exec nave use <version>'.
-To clear the settings from a nave env, use 'exec nave exit'
+  - x.y.z       A specific SemVer tuple
+  - x.y         Major and minor version number
+  - x           Just a major version number
+  - lts         The most recent LTS (long-term support) node version
+  - lts/<name>  The latest in a named LTS set. (argon, boron, etc.)
+  - lts/*       Same as just "lts"
+  - latest      The most recent (non-LTS) version
+  - stable      Backwards-compatible alias for "lts".
+
+  To exit a nave subshell, type 'exit' or press ^D.
+  To run nave *without* a subshell, do 'exec nave use <version>'.
+  To clear the settings from a nave env, use 'exec nave exit'
+
+ENVIRONMENT VARIABLES
+
+  The following environment variables can be set to change nave's behavior.
+
+  NAVE_DIR        Root directory for nave to operate in.  Defaults to
+                  $XDG_CONFIG_HOME/nave if set (eg, ~/.config/nave), or
+                  ~/.nave otherwise.
+  NAVE_NPX        Set this to '1' to add node_modules/.bin to the PATH
+  NAVE_DEBUG      Set this to '1' to run in debug mode.
+  NAVE_CACHE_DUR  Duration in seconds to cache version information (86400)
+  NAVEUA          User-agent header to send when fetching version information
+  NAVE_SRC_ONLY   Set to '1' to *only* build node from source, and never use
+                  binary distributions.  (This is much slower!)
+  NAVE_JOBS       Set to the number of JOBS to use when building node.
+                  Defaults to the number of CPUs on the system.
+  NODEDIST        The distribution server to fetch node from.  Defaults to
+                  https://nodejs.org/dist
+  NAVE_CONFIG     Arguments to pass to ./configure when building from source.
+
+  Nave sets the following environment variables when in use:
+
+  NAVE            A descriptive string of the nave setting in use.
+  NAVENAME        The name, in named subshells, otherwise $NAVEVERSION
+  NAVEVERSION     The version of node in use.
+  NAVELVL         The number of subshells currently in use (like bash $SHLVL)
+  NAVE_LOGIN      '1' in interactive nave subshells, '0' otherwise.
+  NAVE_ROOT       Location of nave installed environments
+  NAVE_SRC        Location of downloaded Node.js source
+  NAVE_AUTO_RC    The .naverc file used by 'nave auto'
+  NAVE_AUTO_CFG   The contents of the .naverc file used by 'nave auto'
+
+CONFIGURATION FILES
+
+  Nave subshells will source the same .bashrc, .bash_profile, .zprofile, etc.
+  configuration files as normal shells, based on whether it is being run as a
+  login shell, or to run a specific command.
+
+  In addition, the following files are sourced in all nave subshells if found,
+  after the normal shell profile files, in the following order, based on the
+  resulting environment variables described above. When run in a subdirectory,
+  nave will walk up the directory tree looking for any of these that it finds,
+  but will not walk up further than any folder containing a '.git' entry.
+
+    .nave_profile_${NAVE}
+    .nave_profile_${NAVENAME}, if a named environment
+    .nave_profile_${NAVEVERSION}, eg .nave_profile_16.19.0
+    .nave_profile_${NAVEVERSION major.minor}, eg .nave_profile_16.19
+    .nave_profile_${NAVEVERSION major}, eg .nave_profile_16
+    .nave_profile
+
+  Finally, it will always source ${NAVEDIR}/../.naverc if present.
+  (eg, ~/.config/.naverc)
+
+  These may be used to set project-specific confirations, env variables, or
+  other behavior based on the Nave environment in use, without the use of
+  configuration files in the home directory.
+
+  The 'nave auto' command will walk up the directory tree looking for a
+  '.naverc' or '.nvmrc' file, and use the contents as arguments to 'nave use'.
 ```
 
 ## Subshell-free operation
