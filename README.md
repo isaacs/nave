@@ -12,7 +12,13 @@ No need to edit `.bashrc` or `.profile`, just install and go.
 
 If you want a global `nave` command, you could install this thing with
 npm.  But that's not really necessary.  You can run the `nave.sh`
-shell script from here, or symlink it wherever you want.
+shell script from here, or symlink it wherever you want, or even
+just download the script and just put it where you want it.
+
+```
+curl https://raw.githubusercontent.com/isaacs/nave/main/nave.sh > /usr/local/bin/nave
+chmod 0755 /usr/local/bin/nave
+```
 
 ### with [npm](http://npm.im)
 
