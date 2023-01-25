@@ -538,6 +538,7 @@ nave_exit () {
   unset NAVEPATH
   unset NAVEVERSION
   unset NAVENAME
+  unset NAVEVERSIONARG
   unset NAVE
   unset NAVE_SRC
   unset NAVE_CONFIG
@@ -842,6 +843,7 @@ nave_use () {
     return $?
   fi
 
+  local versionarg="$1"
   if [ "$version" == "$NAVENAME" ]; then
     # we're already here
     if [ $# -gt 1 ]; then
@@ -865,9 +867,9 @@ nave_use () {
   local lvl=$[ ${NAVELVL-0} + 1 ]
   if [ $# -gt 1 ]; then
     shift
-    nave_exec "$lvl" "$version" "$version" "$prefix" "$@"
+    nave_exec "$lvl" "$version" "$version" "$prefix" "$versionarg" "$@"
   else
-    nave_login "$lvl" "$version" "$version" "$prefix"
+    nave_login "$lvl" "$version" "$version" "$prefix" "$versionarg"
   fi
 }
 
@@ -892,7 +894,9 @@ nave_run () {
   shift
   local prefix="$1"
   shift
-  #err "nave_run exec=$exec lvl=$lvl name=$name version=$version prefix=$prefix"
+  local versionarg="$1"
+  shift
+  # err "nave_run exec=$exec lvl=$lvl name=$name version=$version prefix=$prefix versionarg=$versionarg"
 
   local bin="$prefix/bin"
   local lib="$prefix/lib/node"
@@ -959,6 +963,7 @@ nave_run () {
   NAVELVL=$lvl \
   NAVEPATH="$path" \
   NAVEVERSION="$version" \
+  NAVEVERSIONARG="$versionarg" \
   NAVENAME="$name" \
   NAVE="$nave" \
   npm_config_binroot="$bin"\
@@ -978,7 +983,9 @@ nave_named () {
   shift
 
   local version=$(ver "$1" NONAMES)
+  local versionarg
   if [ "$version" != "" ]; then
+    versionarg="$1"
     shift
   fi
 
@@ -997,6 +1004,7 @@ nave_named () {
 
   if [ "$version" = "" ]; then
     version="$(ver "$("$NAVE_ROOT/$name/bin/node" -v 2>/dev/null)")"
+    versionarg="$version"
   fi
 
   local prefix="$NAVE_ROOT/$name"
@@ -1004,9 +1012,9 @@ nave_named () {
   local lvl=$[ ${NAVELVL-0} + 1 ]
   # get the version
   if [ $# -gt 0 ]; then
-    nave_exec "$lvl" "$name" "$version" "$prefix" "$@"
+    nave_exec "$lvl" "$name" "$version" "$prefix" "$versionarg" "$@"
   else
-    nave_login "$lvl" "$name" "$version" "$prefix"
+    nave_login "$lvl" "$name" "$version" "$prefix" "$versionarg"
   fi
 }
 
@@ -1154,6 +1162,7 @@ ENVIRONMENT VARIABLES
   NAVE            A descriptive string of the nave setting in use.
   NAVENAME        The name, in named subshells, otherwise \$NAVEVERSION
   NAVEVERSION     The version of node in use.
+  NAVEVERSIONARG  The version specifier provided ("18.13" or "lts", etc.)
   NAVELVL         The number of subshells currently in use (like bash \$SHLVL)
   NAVE_LOGIN      '1' in interactive nave subshells, '0' otherwise.
   NAVE_ROOT       Location of nave installed environments

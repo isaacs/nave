@@ -82,6 +82,7 @@ ENVIRONMENT VARIABLES
   NAVE            A descriptive string of the nave setting in use.
   NAVENAME        The name, in named subshells, otherwise $NAVEVERSION
   NAVEVERSION     The version of node in use.
+  NAVEVERSIONARG  The version specifier provided ("18.13" or "lts", etc.)
   NAVELVL         The number of subshells currently in use (like bash $SHLVL)
   NAVE_LOGIN      '1' in interactive nave subshells, '0' otherwise.
   NAVE_ROOT       Location of nave installed environments
@@ -95,21 +96,25 @@ CONFIGURATION FILES
   configuration files as normal shells, based on whether it is being run as a
   login shell, or to run a specific command.
 
-  In addition, the following files are sourced in all nave subshells if found,
-  after the normal shell profile files, in the following order, based on the
-  resulting environment variables described above. When run in a subdirectory,
-  nave will walk up the directory tree looking for any of these that it finds,
-  but will not walk up further than any folder containing a '.git' entry.
+  In addition, after sourcing the normal shell profile files, nave looks for
+  environment specific '.nave_profile_*' files, first in the $NAVE_DIR
+  (~/.config/nave if present, otherwise ~/.nave), and then by walking up from
+  the current working directory.
+
+  The walk up process stops when it encounters a folder with a '.git' entry,
+  or when it hits the user's $HOME directory.
+
+  The environment-specific .nave_profile files that it searches for are:
 
     .nave_profile_${NAVE}
     .nave_profile_${NAVENAME}, if a named environment
-    .nave_profile_${NAVEVERSION}, eg .nave_profile_16.19.0
-    .nave_profile_${NAVEVERSION major.minor}, eg .nave_profile_16.19
-    .nave_profile_${NAVEVERSION major}, eg .nave_profile_16
+    .nave_profile_${NAVEVERSION}, eg .nave_profile_18.13.0
+    .nave_profile_${NAVEVERSION major.minor}, eg .nave_profile_18.13
+    .nave_profile_${NAVEVERSION major}, eg .nave_profile_18
     .nave_profile
 
-  Finally, it will always source ${NAVEDIR}/../.naverc if present.
-  (eg, ~/.config/.naverc)
+  Finally, it will always source ${NAVE_DIR}/../.naverc if present.
+  (eg, ~/.config/.naverc or ~/.naverc)
 
   These may be used to set project-specific confirations, env variables, or
   other behavior based on the Nave environment in use, without the use of
