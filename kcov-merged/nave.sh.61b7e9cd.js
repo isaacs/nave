@@ -713,7 +713,7 @@ var data = {lines:[
 {"lineNum":"  712","line":"nave_ls_named () {"},
 {"lineNum":"  713","line":"  echo \"named:\"","class":"lineCov","hits":"1","order":"272",},
 {"lineNum":"  714","line":"  ls -- \"$NAVE_ROOT\" \\","class":"lineCov","hits":"1","order":"285",},
-{"lineNum":"  715","line":"    | egrep -v \'[0-9]+\\.[0-9]+\\.[0-9]+\' \\"},
+{"lineNum":"  715","line":"    | grep -E -v \'[0-9]+\\.[0-9]+\\.[0-9]+\' \\"},
 {"lineNum":"  716","line":"    | sort \\"},
 {"lineNum":"  717","line":"    | while read name; do"},
 {"lineNum":"  718","line":"      echo \"$name: $(ver $($NAVE_ROOT/$name/bin/node -v 2>/dev/null))\"","class":"lineCov","hits":"1","order":"271",},
@@ -744,7 +744,7 @@ var data = {lines:[
 {"lineNum":"  743","line":"  local family=\"$1\"","class":"lineCov","hits":"1","order":"153",},
 {"lineNum":"  744","line":"  family=\"${family#v}\"","class":"lineCov","hits":"1","order":"147",},
 {"lineNum":"  745","line":"  family=\"${family%.}\"","class":"lineCov","hits":"1","order":"152",},
-{"lineNum":"  746","line":"  get / | egrep -o \'v\'$family\'\\.[0-9]+\' | sed -e \'s|^v||g\' \\","class":"lineCov","hits":"1","order":"146",},
+{"lineNum":"  746","line":"  get / | grep -E -o \'v\'$family\'\\.[0-9]+\' | sed -e \'s|^v||g\' \\","class":"lineCov","hits":"1","order":"146",},
 {"lineNum":"  747","line":"    | semver_sort | tail -n1"},
 {"lineNum":"  748","line":"}"},
 {"lineNum":"  749","line":""},
@@ -754,7 +754,7 @@ var data = {lines:[
 {"lineNum":"  753","line":""},
 {"lineNum":"  754","line":"nave_latest () {"},
 {"lineNum":"  755","line":"  get / \\","class":"lineCov","hits":"1","order":"265",},
-{"lineNum":"  756","line":"    | egrep -o \'[0-9]+\\.[0-9]+\\.[0-9]+\' \\"},
+{"lineNum":"  756","line":"    | grep -E -o \'[0-9]+\\.[0-9]+\\.[0-9]+\' \\"},
 {"lineNum":"  757","line":"    | semver_sort \\"},
 {"lineNum":"  758","line":"    | tail -n1"},
 {"lineNum":"  759","line":"}"},
@@ -768,7 +768,7 @@ var data = {lines:[
 {"lineNum":"  767","line":"  local lts=\"$1\"","class":"lineCov","hits":"1","order":"244",},
 {"lineNum":"  768","line":"  case $lts in","class":"lineCov","hits":"1","order":"254",},
 {"lineNum":"  769","line":"    \"\" | \"lts/*\")"},
-{"lineNum":"  770","line":"      lts=\"$(get / | egrep -o \'latest-[^v][^/]+\' | sort | uniq | tail -n1)\"","class":"lineCov","hits":"1","order":"249",},
+{"lineNum":"  770","line":"      lts=\"$(get / | grep -E -o \'latest-[^v][^/]+\' | sort | uniq | tail -n1)\"","class":"lineCov","hits":"1","order":"249",},
 {"lineNum":"  771","line":"      lts=${lts/latest-/}","class":"lineCov","hits":"1","order":"250",},
 {"lineNum":"  772","line":"      ;;"},
 {"lineNum":"  773","line":"    lts/*)"},
@@ -781,12 +781,12 @@ var data = {lines:[
 {"lineNum":"  780","line":"  esac"},
 {"lineNum":"  781","line":"  # err \"nave_lts lts=[$lts]\""},
 {"lineNum":"  782","line":""},
-{"lineNum":"  783","line":"  get latest-$lts/ | egrep -o \'[0-9]+\\.[0-9]+\\.[0-9]+\' | head -n1","class":"lineCov","hits":"1","order":"245",},
+{"lineNum":"  783","line":"  get latest-$lts/ | grep -E -o \'[0-9]+\\.[0-9]+\\.[0-9]+\' | head -n1","class":"lineCov","hits":"1","order":"245",},
 {"lineNum":"  784","line":"}"},
 {"lineNum":"  785","line":""},
 {"lineNum":"  786","line":"version_list () {"},
 {"lineNum":"  787","line":"  echo \"$1:\"","class":"lineCov","hits":"1","order":"282",},
-{"lineNum":"  788","line":"  egrep -o \'[0-9]+\\.[0-9]+\\.[0-9]+\' \\","class":"lineCov","hits":"1","order":"281",},
+{"lineNum":"  788","line":"  grep -E -o \'[0-9]+\\.[0-9]+\\.[0-9]+\' \\","class":"lineCov","hits":"1","order":"281",},
 {"lineNum":"  789","line":"    | semver_sort \\"},
 {"lineNum":"  790","line":"    | organize_version_list"},
 {"lineNum":"  791","line":"}"},
@@ -1189,5 +1189,5 @@ var data = {lines:[
 {"lineNum":" 1188","line":"fi"},
 ]};
 var percent_low = 25;var percent_high = 75;
-var header = { "command" : "", "date" : "2022-12-19 22:06:39", "instrumented" : 520, "covered" : 520,};
+var header = { "command" : "", "date" : "2023-01-25 17:19:58", "instrumented" : 520, "covered" : 520,};
 var merged_data = [];
