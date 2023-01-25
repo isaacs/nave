@@ -601,7 +601,7 @@ write_shell_rcfile () {
   # For zsh compatibility, we name this file ".zshenv" instead of
   # the more reasonable "naverc" name.
   # Important! Update this number any time the init content is changed.
-  local rcversion="#5"
+  local rcversion="#6"
 
   local rcfile="$NAVE_DIR/.zshenv"
   if ! [ -f "$rcfile" ] \
@@ -648,6 +648,17 @@ __nave_source_profiles () {
   export IFS="\$s"
   naves+=("\${vparts[0]}"."\${vparts[1]}")
   naves+=("\${vparts[0]}")
+  # first find any .nave_profile_{n} in NAVE_DIR, and source those
+  # then do the project ones, so that they have higher priority
+  for n in "\${naves[@]}"; do
+    local f="\${NAVE_DIR}/.nave_profile_\${n}"
+    if [ -f "\$f" ]; then
+      source "\$f"
+    fi
+  done
+  if [ -f "\${NAVE_DIR}/.nave_profile" ]; then
+    source "\${NAVE_DIR}/.nave_profile"
+  fi
   for n in "\${naves[@]}"; do
     local f=\$(__nave_findup "\$dir" ".nave_profile_\${n}")
     if [ -n "\$f" ]; then
@@ -1156,21 +1167,25 @@ CONFIGURATION FILES
   configuration files as normal shells, based on whether it is being run as a
   login shell, or to run a specific command.
 
-  In addition, the following files are sourced in all nave subshells if found,
-  after the normal shell profile files, in the following order, based on the
-  resulting environment variables described above. When run in a subdirectory,
-  nave will walk up the directory tree looking for any of these that it finds,
-  but will not walk up further than any folder containing a '.git' entry.
+  In addition, after sourcing the normal shell profile files, nave looks for
+  environment specific '.nave_profile_*' files, first in the \$NAVE_DIR
+  (~/.config/nave if present, otherwise ~/.nave), and then by walking up from
+  the current working directory.
+
+  The walk up process stops when it encounters a folder with a '.git' entry,
+  or when it hits the user's \$HOME directory.
+
+  The environment-specific .nave_profile files that it searches for are:
 
     .nave_profile_\${NAVE}
     .nave_profile_\${NAVENAME}, if a named environment
-    .nave_profile_\${NAVEVERSION}, eg .nave_profile_16.19.0
-    .nave_profile_\${NAVEVERSION major.minor}, eg .nave_profile_16.19
-    .nave_profile_\${NAVEVERSION major}, eg .nave_profile_16
+    .nave_profile_\${NAVEVERSION}, eg .nave_profile_18.13.0
+    .nave_profile_\${NAVEVERSION major.minor}, eg .nave_profile_18.13
+    .nave_profile_\${NAVEVERSION major}, eg .nave_profile_18
     .nave_profile
 
-  Finally, it will always source \${NAVEDIR}/../.naverc if present.
-  (eg, ~/.config/.naverc)
+  Finally, it will always source \${NAVE_DIR}/../.naverc if present.
+  (eg, ~/.config/.naverc or ~/.naverc)
 
   These may be used to set project-specific confirations, env variables, or
   other behavior based on the Nave environment in use, without the use of
