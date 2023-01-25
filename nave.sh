@@ -574,7 +574,7 @@ __nave_findup () {
     elif [ -f "$dir"/.nvmrc ] && [ "$file" = ".naverc" ]; then
       echo "$dir"/.nvmrc
       return 0
-    elif [ -f "$dir"/.git ] || [ -d "$dir"/.git ]; then
+    elif [ -e "$dir"/.git ]; then
       break
     else
       dir=$(dirname -- "$dir")
