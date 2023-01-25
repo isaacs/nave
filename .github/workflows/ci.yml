@@ -19,8 +19,10 @@ jobs:
 
       - name: install deps
         run: |
-          brew install tree
-          brew install kcov
+          brew install tree || true
+          brew install kcov || true
+          sudo apt-get install -y kcov || true
+          sudo apt-get install -y tree || true
 
       - name: Run Tests
         run: COV=1 bash test/run.sh
