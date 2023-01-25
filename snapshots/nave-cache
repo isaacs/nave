@@ -7,7 +7,6 @@ $PWD/test/cases/nave-cache/cache
 │       └── d
 └── foo
 
-5 directories, 1 file
 $PWD/test/cases/nave-cache/cache
 $PWD/test/cases/nave-cache/cache/a
 $PWD/test/cases/nave-cache/cache/a/b
