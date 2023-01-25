@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="1.000" lines-covered="527" lines-valid="527" branch-rate="1.0" branches-covered="1.0" branches-rate="1.0" complexity="1.0" version="1.9" timestamp="1674670117">
+<coverage line-rate="1.000" lines-covered="527" lines-valid="527" branch-rate="1.0" branches-covered="1.0" branches-rate="1.0" complexity="1.0" version="1.9" timestamp="1674670478">
 	<sources>
 		<source>/Users/runner/work/nave/nave/nave.sh/</source>
 	</sources>
