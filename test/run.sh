@@ -10,6 +10,7 @@ unset NAVEPATH
 unset NAVEVERSION
 unset NAVE_DIR
 unset NAVE_LOGIN
+unset NAVE_NPX
 
 # filter out machine-specific things and the mac m1's annoying noise
 filterTest () {
