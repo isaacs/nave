@@ -295,7 +295,7 @@ var data = {lines:[
 {"lineNum":"  294","line":"}"},
 {"lineNum":"  295","line":""},
 {"lineNum":"  296","line":"get_ () {"},
-{"lineNum":"  297","line":"  curl \"$@\" -H \"user-agent:$NAVEUA\" || return 2","class":"lineCov","hits":"1","order":"40",},
+{"lineNum":"  297","line":"  curl \"$@\" -f -H \"user-agent:$NAVEUA\" || return 2","class":"lineCov","hits":"1","order":"40",},
 {"lineNum":"  298","line":"}"},
 {"lineNum":"  299","line":""},
 {"lineNum":"  300","line":"get () {"},
@@ -1213,5 +1213,5 @@ var data = {lines:[
 {"lineNum":" 1212","line":"fi"},
 ]};
 var percent_low = 25;var percent_high = 75;
-var header = { "command" : "", "date" : "2023-01-25 18:14:51", "instrumented" : 527, "covered" : 527,};
+var header = { "command" : "", "date" : "2023-04-27 17:21:55", "instrumented" : 527, "covered" : 527,};
 var merged_data = [];
