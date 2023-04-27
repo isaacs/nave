@@ -294,7 +294,7 @@ get_html () {
 }
 
 get_ () {
-  curl "$@" -H "user-agent:$NAVEUA" || return 2
+  curl "$@" -f -H "user-agent:$NAVEUA" || return 2
 }
 
 get () {
