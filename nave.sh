@@ -425,7 +425,7 @@ nave_auto () {
   if [ $# -gt 0 ]; then
     cd -- $1
     if [ $? -ne 0 ]; then
-      exec $SHELL
+      exec "$SHELL"
     fi
     shift
   fi
@@ -436,10 +436,10 @@ nave_auto () {
     if [ "$#" -eq 0 ]; then
       export NAVE_AUTO_RC=$rcfile
       export NAVE_AUTO_CFG="${args[@]}"
-      nave_use "${args[@]}" exec $SHELL
+      nave_use "${args[@]}" exec "$SHELL"
     else
       NAVE_AUTO_RC=$rcfile NAVE_AUTO_CFG="${args[@]}" \
-        nave_use "${args[@]}" $SHELL -c "$(enquote_all "$@")"
+        nave_use "${args[@]}" "$SHELL" -c "$(enquote_all "$@")"
     fi
   elif [ "$#" -eq 0 ]; then
     nave_exit
@@ -499,7 +499,7 @@ nave_install () {
       # have to use the system's bash, in case $(which bash) is
       # compiled for this architecture only, more likely the builtin
       # one is set up for backwards compatibility.
-      arch -x86_64 /bin/bash $0 install "$version"
+      arch -x86_64 /bin/bash "$0" install "$version"
       return $?
     else
       echo "Warning: using old node version on arm64, might fail" >&2
@@ -554,7 +554,7 @@ nave_exit () {
   if [ "$#" -gt 0 ]; then
     "$SHELL" -c "$(enquote_all "$@")"
   else
-    exec $SHELL
+    exec "$SHELL"
   fi
 }
 
@@ -915,7 +915,7 @@ nave_run () {
     # source the nave env file, then run the command.
     args=("-c" ". $(enquote_all $NAVE_DIR/.zshenv); $(enquote_all "$@")")
   else
-    case "$(basename $SHELL)" in
+    case "$(basename "$SHELL")" in
       zsh)
         isLogin="1"
         # no need to set rcfile, since ZDOTDIR is set.
@@ -1021,7 +1021,7 @@ nave_named () {
 add_named_env () {
   local name="$1"
   local version="$2"
-  local cur="$(ver "$($NAVE_ROOT/$name/bin/node -v 2>/dev/null)" "NONAMES")"
+  local cur="$(ver "$("$NAVE_ROOT/$name/bin/node" -v 2>/dev/null)" "NONAMES")"
 
   if [ "$name" == "" ]; then
     err "Must provide a name"
