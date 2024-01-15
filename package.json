@@ -8,12 +8,12 @@
     "nave": "./nave.sh"
   },
   "scripts": {
-    "test": "bash test/run.sh",
+    "test": "bash test/run.sh | tap -",
     "precov": "rm -rf ./coverage",
     "cov": "COV=1 bash test/run.sh",
     "cov:noopen": "COV=1 bash test/run.sh",
     "postcov": "open coverage-all/kcov-merged/nave.sh.*.html",
-    "snap": "SNAPSHOT=1 bash test/run.sh",
+    "snap": "SNAPSHOT=1 bash test/run.sh | tap -",
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "git push origin --follow-tags"
@@ -25,5 +25,8 @@
   "funding": {
     "url": "https://github.com/sponsors/isaacs"
   },
-  "repository": "https://github.com/isaacs/nave"
+  "repository": "https://github.com/isaacs/nave",
+  "devDependencies": {
+    "tap": "^18.4.5"
+  }
 }
