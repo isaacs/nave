@@ -6,10 +6,14 @@ mock configure --prefix=$PWD/test/cases/build/make-install-fail
 mock make all
 mock configure --prefix=$PWD/test/cases/build/make-fail
 STDERR
-unpacking mock: tar xz -C $PWD/test/cases/build/success --strip-components 1
+unpacking mock: tar xz -C $PWD/test/cases/build/success --strip-components=1 */bin */include */lib */share
 x bin/
-x configure
-x Makefile
+x include/
+x lib/
+x share/
+x share/x
+x lib/x
+x include/x
 x bin/node
 successwin 0
 test build binary failure
@@ -18,6 +22,12 @@ unpacking mock: tar xz -C $PWD/test/cases/build/nave/src/12.6.0 --strip-componen
 x bin/
 x configure
 x Makefile
+x include/
+x lib/
+x share/
+x share/x
+x lib/x
+x include/x
 x bin/node
 fetched 12.6.0
 bin build fail 0

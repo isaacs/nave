@@ -343,7 +343,12 @@ build_binary () {
   local ret=$?
   if [ $ret -eq 0 ]; then
     # it worked!
-    cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components 1
+    # only extract the folders we care about, not docs, license, etc
+    cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components=1 \
+      '*/bin' \
+      '*/include' \
+      '*/lib' \
+      '*/share'
   else
     return $ret
   fi

@@ -89,10 +89,14 @@ exit=0
 noversion
 exit=1
 STDERR
-unpacking mock: tar xz -C $PWD/test/cases/nave-use/nave/installed/12.6.0 --strip-components 1
+unpacking mock: tar xz -C $PWD/test/cases/nave-use/nave/installed/12.6.0 --strip-components=1 */bin */include */lib */share
 x bin/
-x configure
-x Makefile
+x include/
+x lib/
+x share/
+x share/x
+x lib/x
+x include/x
 x bin/node
 failed to install 12.6.0
 Must supply a version

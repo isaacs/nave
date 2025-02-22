@@ -38,10 +38,14 @@ $PWD/test/cases/nave-named/nave/installed/foo/bin/npx
 exit=0
 STDERR
 Creating new env named 'success' using node 12.6.0
-unpacking mock: tar xz -C $PWD/test/cases/nave-named/nave/installed/12.6.0 --strip-components 1
+unpacking mock: tar xz -C $PWD/test/cases/nave-named/nave/installed/12.6.0 --strip-components=1 */bin */include */lib */share
 x bin/
-x configure
-x Makefile
+x include/
+x lib/
+x share/
+x share/x
+x lib/x
+x include/x
 x bin/node
 Creating new env named 'foo' using node 12.6.0
 CODE 0
