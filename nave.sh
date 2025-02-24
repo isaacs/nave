@@ -345,6 +345,7 @@ build_binary () {
     # it worked!
     # only extract the folders we care about, not docs, license, etc
     cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components=1 \
+      --wildcards \
       '*/bin' \
       '*/include' \
       '*/lib' \

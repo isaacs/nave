@@ -27,6 +27,6 @@
   },
   "repository": "https://github.com/isaacs/nave",
   "devDependencies": {
-    "tap": "^18.4.5"
+    "tap": "^21.1.0"
   }
 }

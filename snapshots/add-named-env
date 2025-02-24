@@ -1,6 +1,7 @@
 STDOUT
 $PWD/test/cases/add-named-env/nave/installed/12.6.0/bin/node
 $PWD/test/cases/add-named-env/nave/installed/12.6.0/bin/node
+What version of node?
 $PWD/test/cases/add-named-env/nave/installed/12.6.0/bin/node
 $PWD/test/cases/add-named-env/nave/installed/12.5.0/bin/node
 What version of node?
