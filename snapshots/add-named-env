@@ -1,7 +1,6 @@
 STDOUT
 $PWD/test/cases/add-named-env/nave/installed/12.6.0/bin/node
 $PWD/test/cases/add-named-env/nave/installed/12.6.0/bin/node
-What version of node?
 $PWD/test/cases/add-named-env/nave/installed/12.6.0/bin/node
 $PWD/test/cases/add-named-env/nave/installed/12.5.0/bin/node
 What version of node?
@@ -13,8 +12,10 @@ exit=1
 exit=1
 STDERR
 Creating new env named 'success' using node 12.6.0
-unpacking mock: tar xz -C $PWD/test/cases/add-named-env/nave/installed/12.6.0 --strip-components=1 */bin */include */lib */share
+unpacking mock: tar xz -C $PWD/test/cases/add-named-env/nave/installed/12.6.0 --strip-components=1
 x bin/
+x configure
+x Makefile
 x include/
 x lib/
 x share/
@@ -23,8 +24,10 @@ x lib/x
 x include/x
 x bin/node
 Creating new env named 'success' using node 12.5.0
-unpacking mock: tar xz -C $PWD/test/cases/add-named-env/nave/installed/12.5.0 --strip-components=1 */bin */include */lib */share
+unpacking mock: tar xz -C $PWD/test/cases/add-named-env/nave/installed/12.5.0 --strip-components=1
 x bin/
+x configure
+x Makefile
 x include/
 x lib/
 x share/

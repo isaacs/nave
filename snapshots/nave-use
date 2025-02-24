@@ -89,8 +89,10 @@ exit=0
 noversion
 exit=1
 STDERR
-unpacking mock: tar xz -C $PWD/test/cases/nave-use/nave/installed/12.6.0 --strip-components=1 */bin */include */lib */share
+unpacking mock: tar xz -C $PWD/test/cases/nave-use/nave/installed/12.6.0 --strip-components=1
 x bin/
+x configure
+x Makefile
 x include/
 x lib/
 x share/

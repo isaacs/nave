@@ -3,5 +3,5 @@ successwin 0
 no os 1
 get fail 1
 STDERR
-no-op mock: tar xz -C $PWD/test/cases/build-binary/success --strip-components=1 */bin */include */lib */share
+no-op mock: tar xz -C $PWD/test/cases/build-binary/success --strip-components=1
 CODE 0

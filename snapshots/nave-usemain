@@ -14,6 +14,17 @@ $PWD/test/cases/nave-usemain/nave/cache/v12.6.0
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/004b7992a2621eb35a47c94d258510ca5744b5a8072364f235dc7e3d4bff7457.tgz
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
+$PWD/test/cases/nave-usemain/nave/main
+$PWD/test/cases/nave-usemain/nave/main/Makefile
+$PWD/test/cases/nave-usemain/nave/main/bin
+$PWD/test/cases/nave-usemain/nave/main/bin/node
+$PWD/test/cases/nave-usemain/nave/main/configure
+$PWD/test/cases/nave-usemain/nave/main/include
+$PWD/test/cases/nave-usemain/nave/main/include/x
+$PWD/test/cases/nave-usemain/nave/main/lib
+$PWD/test/cases/nave-usemain/nave/main/lib/x
+$PWD/test/cases/nave-usemain/nave/main/share
+$PWD/test/cases/nave-usemain/nave/main/share/x
 $PWD/test/cases/nave-usemain/share
 $PWD/test/cases/nave-usemain/share/x
 $PWD/test/cases/nave-usemain/bin/node
@@ -31,12 +42,25 @@ $PWD/test/cases/nave-usemain/nave/cache/v12.6.0
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/004b7992a2621eb35a47c94d258510ca5744b5a8072364f235dc7e3d4bff7457.tgz
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
+$PWD/test/cases/nave-usemain/nave/main
+$PWD/test/cases/nave-usemain/nave/main/Makefile
+$PWD/test/cases/nave-usemain/nave/main/bin
+$PWD/test/cases/nave-usemain/nave/main/bin/node
+$PWD/test/cases/nave-usemain/nave/main/configure
+$PWD/test/cases/nave-usemain/nave/main/include
+$PWD/test/cases/nave-usemain/nave/main/include/x
+$PWD/test/cases/nave-usemain/nave/main/lib
+$PWD/test/cases/nave-usemain/nave/main/lib/x
+$PWD/test/cases/nave-usemain/nave/main/share
+$PWD/test/cases/nave-usemain/nave/main/share/x
 $PWD/test/cases/nave-usemain/share
 $PWD/test/cases/nave-usemain/share/x
 STDERR
 Can't usemain inside a nave subshell. Exit to main shell.
-unpacking mock: tar xz -C $PWD/test/cases/nave-usemain --strip-components=1 */bin */include */lib */share
+unpacking mock: tar xz -C $PWD/test/cases/nave-usemain/nave/main --strip-components=1
 x bin/
+x configure
+x Makefile
 x include/
 x lib/
 x share/
@@ -44,8 +68,10 @@ x share/x
 x lib/x
 x include/x
 x bin/node
-unpacking mock: tar xz -C $PWD/test/cases/nave-usemain --strip-components=1 */bin */include */lib */share
+unpacking mock: tar xz -C $PWD/test/cases/nave-usemain/nave/main --strip-components=1
 x bin/
+x configure
+x Makefile
 x include/
 x lib/
 x share/

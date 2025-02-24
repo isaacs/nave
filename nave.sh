@@ -344,12 +344,7 @@ build_binary () {
   if [ $ret -eq 0 ]; then
     # it worked!
     # only extract the folders we care about, not docs, license, etc
-    cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components=1 \
-      --wildcards \
-      '*/bin' \
-      '*/include' \
-      '*/lib' \
-      '*/share'
+    cat "$tarfile" | $tar xz -C "$targetfolder" --strip-components=1
   else
     return $ret
   fi
@@ -475,7 +470,9 @@ nave_usemain () {
   local version=$(ver "$1")
   local current=$(node -v 2>/dev/null)
   local wn=$(which node)
+  local localPrefix="${NAVE_DIR}/main"
   local prefix=${PREFIX:-/usr/local}
+  mkdir -p "$localPrefix"
   if [ -x "$wn" ] && [[ "$current" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
     local p="${wn/\/bin\/node/}"
     if [ "$p" != "" ] && [ -d "$prefix" ]; then
@@ -487,7 +484,11 @@ nave_usemain () {
     return 0
   fi
 
-  build "$version" "$prefix"
+  build "$version" "$localPrefix"
+  for dir in bin include lib share; do
+    mkdir -p "$prefix/$dir"
+    cp -R "$localPrefix/$dir/"* "$prefix/$dir"
+  done
 }
 
 nave_install () {
