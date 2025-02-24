@@ -1,12 +1,12 @@
 {
   "files": [
-    {"file": "/Users/runner/work/nave/nave/nave.sh", "percent_covered": "100.00", "covered_lines": "527", "total_lines": "527"}
+    {"file": "/Users/runner/work/nave/nave/nave.sh", "percent_covered": "100.00", "covered_lines": "532", "total_lines": "532"}
   ],
   "percent_covered": "100.00",
-  "covered_lines": 527,
-  "total_lines": 527,
+  "covered_lines": 532,
+  "total_lines": 532,
   "percent_low": 25,
   "percent_high": 75,
   "command": "",
-  "date": "2025-02-10 17:51:50"
+  "date": "2025-02-24 20:27:22"
 }
