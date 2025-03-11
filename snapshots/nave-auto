@@ -42,7 +42,7 @@ mock nave use bar 6.9.0 exec echo (pwd=$PWD/test/cases/nave-auto/a)
 a/b
 mock nave use foo 1.2.3 exec echo (pwd=$PWD/test/cases/nave-auto/a/b)
 a/b/c
-mock nave exit
+
 a/b/c/d/e/f
 mock nave use 4.2.0 exec echo (pwd=$PWD/test/cases/nave-auto/a/b/c/d/e/f)
 cmd-a

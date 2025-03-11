@@ -443,7 +443,8 @@ nave_auto () {
         nave_use "${args[@]}" "$SHELL" -c "$(enquote_all "$@")"
     fi
   elif [ "$#" -eq 0 ]; then
-    nave_exit
+    nave_unset
+    exec "$SHELL"
   else
     nave_exit "$@"
   fi
@@ -531,11 +532,10 @@ nave_install () {
   fi
 }
 
-nave_exit () {
+nave_unset () {
   if [ -n "$NAVEPATH" ]; then
     export PATH=${PATH//$NAVEPATH:/}
   fi
-  export NAVE_EXIT='1'
   unset NAVE_NPX
   unset NAVE_AUTO_RC
   unset NAVE_AUTO_CFG
@@ -553,10 +553,13 @@ nave_exit () {
   unset NODE_PATH
   unset NAVE_LOGIN
   unset NAVE_DIR
-  unset npm_config_binroot
-  unset npm_config_root
-  unset npm_config_manroot
   unset npm_config_prefix
+}
+
+nave_exit () {
+  export NAVE_EXIT='1'
+
+  nave_unset
 
   if [ "$#" -gt 0 ]; then
     "$SHELL" -c "$(enquote_all "$@")"
@@ -973,9 +976,6 @@ nave_run () {
   NAVEVERSIONARG="$versionarg" \
   NAVENAME="$name" \
   NAVE="$nave" \
-  npm_config_binroot="$bin"\
-  npm_config_root="$lib" \
-  npm_config_manroot="$man" \
   npm_config_prefix="$prefix" \
   NODE_PATH="$lib" \
   NAVE_LOGIN="$isLogin" \
