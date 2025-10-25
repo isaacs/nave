@@ -18,7 +18,7 @@
     "postversion": "npm publish",
     "postpublish": "git push origin --follow-tags"
   },
-  "license": "ISC",
+  "license": "BlueOak-1.0.0",
   "files": [
     "nave.sh"
   ],
