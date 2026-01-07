@@ -15,7 +15,6 @@ $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/004b7992a2621eb35a47c94d258510ca
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
 $PWD/test/cases/nave-usemain/nave/main
-$PWD/test/cases/nave-usemain/nave/main/Makefile
 $PWD/test/cases/nave-usemain/nave/main/bin
 $PWD/test/cases/nave-usemain/nave/main/bin/node
 $PWD/test/cases/nave-usemain/nave/main/configure
@@ -23,6 +22,7 @@ $PWD/test/cases/nave-usemain/nave/main/include
 $PWD/test/cases/nave-usemain/nave/main/include/x
 $PWD/test/cases/nave-usemain/nave/main/lib
 $PWD/test/cases/nave-usemain/nave/main/lib/x
+$PWD/test/cases/nave-usemain/nave/main/Makefile
 $PWD/test/cases/nave-usemain/nave/main/share
 $PWD/test/cases/nave-usemain/nave/main/share/x
 $PWD/test/cases/nave-usemain/share
@@ -43,7 +43,6 @@ $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/004b7992a2621eb35a47c94d258510ca
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt
 $PWD/test/cases/nave-usemain/nave/cache/v12.6.0/SHASUMS256.txt-timestamp
 $PWD/test/cases/nave-usemain/nave/main
-$PWD/test/cases/nave-usemain/nave/main/Makefile
 $PWD/test/cases/nave-usemain/nave/main/bin
 $PWD/test/cases/nave-usemain/nave/main/bin/node
 $PWD/test/cases/nave-usemain/nave/main/configure
@@ -51,6 +50,7 @@ $PWD/test/cases/nave-usemain/nave/main/include
 $PWD/test/cases/nave-usemain/nave/main/include/x
 $PWD/test/cases/nave-usemain/nave/main/lib
 $PWD/test/cases/nave-usemain/nave/main/lib/x
+$PWD/test/cases/nave-usemain/nave/main/Makefile
 $PWD/test/cases/nave-usemain/nave/main/share
 $PWD/test/cases/nave-usemain/nave/main/share/x
 $PWD/test/cases/nave-usemain/share
