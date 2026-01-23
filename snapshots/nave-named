@@ -26,7 +26,6 @@ exit=0
 here-noop
 exit=0
 here-exec
-NAVE_EXIT=0
 NAVENAME=success
 NAVEVERSION=12.6.0
 exit=0

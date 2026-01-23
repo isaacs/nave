@@ -61,6 +61,7 @@ osarch () {
 }
 
 tar=${TAR-tar}
+SHASUM=${SHASUM:-$(which shasum)}
 
 main () {
   get_nave_dir
@@ -88,6 +89,15 @@ main () {
 }
 
 get_nave_dir () {
+  if ! [ -x "$SHASUM" ]; then
+    cat >&2 <<ERR
+NAVE: Required "shasum(1)" program not found. Install shasum on
+the \$PATH or set a \$SHASUM environment variable to the executable.
+Found: ${SHASUM}
+ERR
+    return 1
+  fi
+
   NODEDIST=${NODEDIST:-https://nodejs.org/dist}
   NAVE_CACHE_DUR=${NAVE_CACHE_DUR:-86400}
   NAVEUA="nave/$(curl --version | head -n1)"
@@ -223,7 +233,7 @@ get_tgz () {
     return 2
   fi
 
-  local actualshasum=$(shasum -a 256 "$cache/$dir/$base" | awk '{print $1}')
+  local actualshasum=$("$SHASUM" -a 256 "$cache/$dir/$base" | awk '{print $1}')
   if ! [ "$shasum" = "$actualshasum" ]; then
     err "shasum mismatch, expect $shasum, got $actualshasum"
     rm "$cache/$dir/$base"

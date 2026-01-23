@@ -1,5 +1,5 @@
 STDOUT
-NAVE_EXIT=0
+NAVE_EXIT=
 -c 'some' 'args'
 NAVE_EXIT=1
 STDERR

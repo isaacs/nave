@@ -1,0 +1,10 @@
+STDOUT
+
+STDERR
+NAVE: Required "shasum(1)" program not found. Install shasum on
+the $PATH or set a $SHASUM environment variable to the executable.
+Found: no-shasum-here-this-is-not-executable
+NAVE: Required "shasum(1)" program not found. Install shasum on
+the $PATH or set a $SHASUM environment variable to the executable.
+Found: no-shasum-here-this-is-not-executable
+CODE 1
