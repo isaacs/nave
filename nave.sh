@@ -495,7 +495,24 @@ nave_usemain () {
     return 0
   fi
 
-  build "$version" "$localPrefix"
+  # start clean, or files from the last usemain version linger here
+  rimraf "$localPrefix"
+  mkdirp "$localPrefix"
+  if ! build "$version" "$localPrefix"; then
+    return 1
+  fi
+
+  # remove what this version replaces, rather than copying over it.
+  # cp onto a signed binary rewrites it in place, and macOS kills it
+  # on launch. merging directories leaves the old npm's files behind.
+  local entry
+  for entry in "$localPrefix"/bin/* "$localPrefix"/include/* \
+               "$localPrefix"/lib/node_modules/*; do
+    if [ -e "$entry" ] || [ -L "$entry" ]; then
+      rimraf "$prefix/${entry#"$localPrefix"/}"
+    fi
+  done
+
   for dir in bin include lib share; do
     mkdir -p "$prefix/$dir"
     cp -R "$localPrefix/$dir/"* "$prefix/$dir"

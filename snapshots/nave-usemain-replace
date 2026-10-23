@@ -1,0 +1,37 @@
+STDOUT
+v12.6.0
+bin/node replaced with a new file
+$PWD/test/cases/nave-usemain-replace
+$PWD/test/cases/nave-usemain-replace/bin
+$PWD/test/cases/nave-usemain-replace/bin/node
+$PWD/test/cases/nave-usemain-replace/include
+$PWD/test/cases/nave-usemain-replace/include/x
+$PWD/test/cases/nave-usemain-replace/lib
+$PWD/test/cases/nave-usemain-replace/lib/x
+$PWD/test/cases/nave-usemain-replace/nave
+$PWD/test/cases/nave-usemain-replace/nave/main
+$PWD/test/cases/nave-usemain-replace/nave/main/bin
+$PWD/test/cases/nave-usemain-replace/nave/main/bin/node
+$PWD/test/cases/nave-usemain-replace/nave/main/configure
+$PWD/test/cases/nave-usemain-replace/nave/main/include
+$PWD/test/cases/nave-usemain-replace/nave/main/include/x
+$PWD/test/cases/nave-usemain-replace/nave/main/lib
+$PWD/test/cases/nave-usemain-replace/nave/main/lib/x
+$PWD/test/cases/nave-usemain-replace/nave/main/Makefile
+$PWD/test/cases/nave-usemain-replace/nave/main/share
+$PWD/test/cases/nave-usemain-replace/nave/main/share/x
+$PWD/test/cases/nave-usemain-replace/share
+$PWD/test/cases/nave-usemain-replace/share/x
+STDERR
+unpacking mock: tar xz -C $PWD/test/cases/nave-usemain-replace/nave/main --strip-components=1
+x bin/
+x configure
+x Makefile
+x include/
+x lib/
+x share/
+x share/x
+x lib/x
+x include/x
+x bin/node
+CODE 0
